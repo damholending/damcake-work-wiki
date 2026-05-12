@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<!-- saved from url=(0059)file:///Users/dam.ho/Downloads/zlp_road_to_4k_final_v2.html -->
+<html lang="vi"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZLP — Road to 4K Final Analysis</title>
+<script src="./ZLP — Road to 4K Final Analysis_files/chart.umd.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#E8E8EF;font-family:'Be Vietnam Pro',sans-serif;padding:32px 16px;}
+.w{max-width:800px;margin:0 auto;}
+.hero{background:linear-gradient(135deg,#FF2D71,#7B2FBE);border-radius:20px;padding:24px 28px;color:#fff;margin-bottom:20px;}
+.hero-eyebrow{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;opacity:.75;margin-bottom:6px;}
+.hero-title{font-size:24px;font-weight:700;margin-bottom:4px;}
+.hero-sub{font-size:13px;opacity:.85;}
+.sec{font-size:11px;font-weight:700;color:#B8154F;text-transform:uppercase;letter-spacing:.9px;margin:22px 0 10px;}
+.cards4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px;}
+.cards3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px;}
+.cards2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:12px;}
+.mc{background:#fff;border-radius:16px;padding:14px 16px;}
+.mc .lbl{font-size:11px;color:#888;font-weight:600;margin-bottom:4px;}
+.mc .val{font-size:20px;font-weight:700;color:#1A1033;}
+.mc .sub{font-size:11px;color:#aaa;margin-top:2px;}
+.mc.pink{background:linear-gradient(135deg,#FF2D71,#7B2FBE);}
+.mc.pink .lbl,.mc.pink .val,.mc.pink .sub{color:#fff;}
+.mc.dark{background:linear-gradient(160deg,#1A1033,#2D1B55);}
+.mc.dark .lbl,.mc.dark .val,.mc.dark .sub{color:#fff;}
+.mc.mint{background:#E8FFF2;}
+.mc.mint .val{color:#059952;}
+.mc.amber{background:#FFF4E0;}
+.mc.amber .val{color:#B85500;}
+.blk{background:#fff;border-radius:16px;padding:18px 20px;margin-bottom:12px;}
+.blk-t{font-size:13px;font-weight:700;color:#1A1033;margin-bottom:12px;}
+.row-bar{display:flex;align-items:center;margin-bottom:9px;gap:10px;}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.pn{font-size:12px;font-weight:600;color:#1A1033;min-width:170px;}
+.bw{flex:1;background:#e8e8ef;border-radius:999px;height:8px;overflow:hidden;}
+.br{height:8px;border-radius:999px;}
+.pv{font-size:13px;font-weight:700;color:#1A1033;min-width:70px;text-align:right;}
+.pp{font-size:11px;color:#aaa;min-width:36px;text-align:right;}
+.init{background:#F7F7F9;border-radius:14px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:flex-start;gap:14px;}
+.icon{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.it{font-size:13px;font-weight:700;color:#1A1033;margin-bottom:3px;}
+.id{font-size:12px;color:#555;line-height:1.55;}
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;margin-left:6px;}
+.bp{background:#FFE0EA;color:#B8154F;}
+.bpu{background:#EDE0FF;color:#5A1EA0;}
+.bm{background:#D2FBE8;color:#059952;}
+.ba{background:#FFF0E0;color:#B85500;}
+.bg{background:#E8E8EF;color:#444;}
+.qtable{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px;}
+.qtable th{background:#1A1033;color:#fff;padding:8px 10px;text-align:right;font-weight:600;}
+.qtable th:first-child{text-align:left;}
+.qtable td{padding:7px 10px;text-align:right;border-bottom:.5px solid #eee;color:#1A1033;}
+.qtable td:first-child{text-align:left;font-weight:600;}
+.qtable tr:last-child td{font-weight:700;background:#fff3f7;color:#B8154F;}
+.qtable tr:nth-child(even) td{background:#fafafa;}
+.prog-wrap{margin-top:14px;}
+.prog-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.prog-lbl{font-size:12px;color:#555;min-width:36px;font-weight:600;}
+.prog-bar-bg{flex:1;height:16px;background:#e8e8ef;border-radius:999px;overflow:hidden;}
+.prog-bar{height:16px;border-radius:999px;display:flex;align-items:center;padding-left:8px;}
+.prog-val{font-size:10px;font-weight:700;color:#fff;white-space:nowrap;}
+.prog-total{font-size:12px;font-weight:700;color:#1A1033;min-width:64px;text-align:right;}
+.risk-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:.5px solid #eee;}
+.risk-item:last-child{border-bottom:none;}
+.risk-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:3px;}
+.risk-t{font-size:12px;font-weight:700;color:#1A1033;margin-bottom:2px;}
+.risk-d{font-size:12px;color:#666;line-height:1.5;}
+@media(max-width:600px){
+  .cards4,.cards3{grid-template-columns:repeat(2,1fr);}
+  .pn{min-width:120px;}
+}
+</style>
+</head>
+<body>
+<div class="w">
+
+<div class="hero">
+  <div class="hero-eyebrow">ZLP · Final Analysis · Apr 2026</div>
+  <div class="hero-title">Road to 4,000 tỷ — Full Picture</div>
+  <div class="hero-sub">Đơn vị: tỷ VNĐ/ngày · Baseline · Gap · Initiatives · Quarterly ramp · Risk</div>
+</div>
+
+<div class="sec">1 · Snapshot hiện tại (Q1 2026)</div>
+<div class="cards4">
+  <div class="mc">
+    <div class="lbl">Daily disbursement (as-is)</div>
+    <div class="val">~4 tỷ</div>
+    <div class="sub">3,999 triệu/ngày · CL Pool A only</div>
+  </div>
+  <div class="mc">
+    <div class="lbl">E2E Conversion Rate</div>
+    <div class="val">9.52%</div>
+    <div class="sub">+73% vs 5.51% năm 2025</div>
+  </div>
+  <div class="mc">
+    <div class="lbl">Avg ticket size (có BH)</div>
+    <div class="val">13.7 triệu</div>
+    <div class="sub">tăng 5% vs 2025 (13.1 triệu)</div>
+  </div>
+  <div class="mc amber">
+    <div class="lbl">Q1 2026 thực tế</div>
+    <div class="val">301 tỷ</div>
+    <div class="sub">7.3% target năm · ramp-up giai đoạn đầu</div>
+  </div>
+</div>
+
+<div class="sec">2 · Gap Analysis — As-is → To-be</div>
+<div class="cards3">
+  <div class="mc dark">
+    <div class="lbl">Daily disbursement (as-is)</div>
+    <div class="val">~4 tỷ/ngày</div>
+    <div class="sub">3,999 triệu · CL Pool A only</div>
+  </div>
+  <div class="mc dark">
+    <div class="lbl">Daily disbursement (to-be stable)</div>
+    <div class="val">~17 tỷ/ngày</div>
+    <div class="sub">17,082 triệu · 6 pools full scale</div>
+  </div>
+  <div class="mc dark">
+    <div class="lbl">Gap &amp; multiplier</div>
+    <div class="val">+13 tỷ/ngày</div>
+    <div class="sub">4.3× baseline · cần 5 pool mới</div>
+  </div>
+</div>
+
+<div class="sec">3 · Phân bổ Daily Disbursement theo Pool (To-be stable · tỷ/ngày)</div>
+<div class="blk">
+  <div class="blk-t">Contribution → tổng ~17 tỷ/ngày</div>
+  <div class="row-bar">
+    <div class="dot" style="background:#FF2D71"></div>
+    <div class="pn">CL – Pool A</div>
+    <div class="bw"><div class="br" style="width:42.8%;background:#FF2D71"></div></div>
+    <div class="pv">7.31 tỷ</div><div class="pp">42.8%</div>
+  </div>
+  <div class="row-bar">
+    <div class="dot" style="background:#FF7A2F"></div>
+    <div class="pn">CL – Xsell ZLP Paylater</div>
+    <div class="bw"><div class="br" style="width:19.3%;background:#FF7A2F"></div></div>
+    <div class="pv">3.29 tỷ</div><div class="pp">19.3%</div>
+  </div>
+  <div class="row-bar">
+    <div class="dot" style="background:#0BC76A"></div>
+    <div class="pn">CL – Pool B</div>
+    <div class="bw"><div class="br" style="width:15.0%;background:#0BC76A"></div></div>
+    <div class="pv">2.57 tỷ</div><div class="pp">15.0%</div>
+  </div>
+  <div class="row-bar">
+    <div class="dot" style="background:#7B2FBE"></div>
+    <div class="pn">PD – Pool A</div>
+    <div class="bw"><div class="br" style="width:13.9%;background:#7B2FBE"></div></div>
+    <div class="pv">2.38 tỷ</div><div class="pp">13.9%</div>
+  </div>
+  <div class="row-bar">
+    <div class="dot" style="background:#B8154F"></div>
+    <div class="pn">VNeID</div>
+    <div class="bw"><div class="br" style="width:5.4%;background:#B8154F"></div></div>
+    <div class="pv">0.91 tỷ</div><div class="pp">5.4%</div>
+  </div>
+  <div class="row-bar">
+    <div class="dot" style="background:#888"></div>
+    <div class="pn">PD – Pool B</div>
+    <div class="bw"><div class="br" style="width:3.6%;background:#888"></div></div>
+    <div class="pv">0.62 tỷ</div><div class="pp">3.6%</div>
+  </div>
+</div>
+
+<div class="sec">4 · Quarterly Ramp — Disbursed Volume (tỷ VNĐ)</div>
+<div class="blk">
+  <div class="blk-t">12 tháng đầy đủ · Jan–Dec 2026</div>
+  <table class="qtable">
+    <thead>
+      <tr>
+        <th>Pool / Segment</th>
+        <th>Q1 (tỷ)</th>
+        <th>Q2 (tỷ)</th>
+        <th>Q3 (tỷ)</th>
+        <th>Q4 (tỷ)</th>
+        <th>Total (tỷ)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>CL – Pool A</td><td>269.5</td><td>532.0</td><td>672.8</td><td>672.8</td><td>2,147.1</td></tr>
+      <tr><td>CL – Pool B</td><td>—</td><td>45.4</td><td>212.6</td><td>236.5</td><td>494.5</td></tr>
+      <tr><td>CL – Xsell Paylater</td><td>—</td><td>24.7</td><td>277.4</td><td>338.1</td><td>639.9</td></tr>
+      <tr><td>PD – Pool A</td><td>31.6</td><td>68.3</td><td>218.7</td><td>218.7</td><td>537.3</td></tr>
+      <tr><td>PD – Pool B</td><td>—</td><td>9.3</td><td>50.6</td><td>57.2</td><td>117.0</td></tr>
+      <tr><td>VNeID</td><td>—</td><td>13.7</td><td>84.1</td><td>84.1</td><td>181.9</td></tr>
+      <tr><td>TOTAL</td><td>301.2</td><td>693.4</td><td>1,516.3</td><td>1,607.0</td><td>4,117.8</td></tr>
+    </tbody>
+  </table>
+  <div class="prog-wrap">
+    <div class="prog-row">
+      <div class="prog-lbl">Q1</div>
+      <div class="prog-bar-bg"><div class="prog-bar" style="width:7.3%;background:#FFAEC7;"></div></div>
+      <div class="prog-total">301 tỷ</div>
+    </div>
+    <div class="prog-row">
+      <div class="prog-lbl">Q2</div>
+      <div class="prog-bar-bg"><div class="prog-bar" style="width:16.8%;background:#FF7A2F;"><span class="prog-val">693 tỷ</span></div></div>
+      <div class="prog-total">693 tỷ</div>
+    </div>
+    <div class="prog-row">
+      <div class="prog-lbl">Q3</div>
+      <div class="prog-bar-bg"><div class="prog-bar" style="width:60%;background:#7B2FBE;"><span class="prog-val">1,516 tỷ</span></div></div>
+      <div class="prog-total">1,516 tỷ</div>
+    </div>
+    <div class="prog-row">
+      <div class="prog-lbl">Q4</div>
+      <div class="prog-bar-bg"><div class="prog-bar" style="width:63.6%;background:#FF2D71;"><span class="prog-val">1,607 tỷ</span></div></div>
+      <div class="prog-total">1,607 tỷ</div>
+    </div>
+  </div>
+</div>
+
+<div class="sec">5 · Monthly Disbursement — tỷ VNĐ/tháng</div>
+<div class="blk">
+  <div style="display:flex;gap:16px;font-size:11px;color:#888;margin-bottom:10px;flex-wrap:wrap;">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#FFAEC7;margin-right:4px;vertical-align:middle;"></span>Q1 actual</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#FF7A2F;margin-right:4px;vertical-align:middle;"></span>Q2 ramp-up</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#7B2FBE;margin-right:4px;vertical-align:middle;"></span>Q3 scale</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#FF2D71;margin-right:4px;vertical-align:middle;"></span>Q4 stable</span>
+    <span style="display:flex;align-items:center;gap:4px;"><span style="width:20px;border-top:2px dashed #0BC76A;display:inline-block;"></span>Pace ~333 tỷ/tháng</span>
+  </div>
+  <div style="position:relative;height:220px;">
+    <canvas id="disbChart" width="1520" height="440" style="display: block; box-sizing: border-box; height: 220px; width: 760px;"></canvas>
+  </div>
+</div>
+
+<div class="sec">6 · Initiatives chi tiết</div>
+
+<div class="init">
+  <div class="icon" style="background:#FFE0EA;">🏊</div>
+  <div>
+    <div class="it">Pool mở rộng — CL Pool A &amp; B <span class="badge bp">Core · 57.8%</span></div>
+    <div class="id">Pool A: WL 2.5M → 4M, daily checks 3,000 → 4,800, ticket 14→16 triệu → <b>7.31 tỷ/ngày</b>. Pool B mới: WL 3M, 3,600 checks/ngày, CR 4.76% (half-rate kiểm soát risk), ticket 15 triệu → <b>2.57 tỷ/ngày</b>. Tổng 9.88 tỷ/ngày, đòn bẩy chính và low-risk nhất.</div>
+  </div>
+</div>
+
+<div class="init">
+  <div class="icon" style="background:#EDE0FF;">🔄</div>
+  <div>
+    <div class="it">Xsell từ ZLP Paylater <span class="badge bpu">New · 19.3%</span></div>
+    <div class="id">Tận dụng base khách ZLP Paylater. WL 1M, CR cao nhất 14.26% (vs 9.52% chuẩn) do đã biết behavior, ticket 20 triệu → <b>3.29 tỷ/ngày</b>. Ramp: 25% tháng 6 → 70% tháng 7 → stable từ tháng 8. Scale thêm 5–15% Q4.</div>
+  </div>
+</div>
+
+<div class="init">
+  <div class="icon" style="background:#D2FBE8;">📊</div>
+  <div>
+    <div class="it">PD – Pool A &amp; B <span class="badge bm">Scale-up · 17.5%</span></div>
+    <div class="id">Product mới Personal Device. Pool A: WL 4M, CR 9.52%, ticket 4 triệu → <b>2.38 tỷ/ngày</b>. Pool B: WL 3M, CR 4.76%, ticket 3 triệu → <b>0.62 tỷ/ngày</b>. Ticket thấp nhưng mở segment hoàn toàn mới. Bắt đầu Q2, full scale Q3.</div>
+  </div>
+</div>
+
+<div class="init">
+  <div class="icon" style="background:#FFF0E0;">🪪</div>
+  <div>
+    <div class="it">VNeID eKYC <span class="badge ba">Enabler · 5.4%</span></div>
+    <div class="id">WL riêng 500K users, CR 9.52%, ticket 16 triệu → <b>0.91 tỷ/ngày</b> khi stable. Phụ thuộc hoàn toàn tiến độ eKYC enhancement (từ 24/3). Ramp thận trọng: 50% tháng 6 → 100% từ tháng 7.</div>
+  </div>
+</div>
+
+<div class="init">
+  <div class="icon" style="background:#E8E8EF;">⚙️</div>
+  <div>
+    <div class="it">Funnel Optimization <span class="badge bg">Foundation · Done</span></div>
+    <div class="id">Dedup rules + offer upsell/xsell + eKYC enhancement → E2E CR tăng 5.51% → 9.52% (+73%). API CheckProfile giảm 68%, RequestDisburse giảm 60%. Foundation cho tất cả pool hoạt động hiệu quả.</div>
+  </div>
+</div>
+
+<div class="sec">7 · Risk &amp; Điều kiện thành công</div>
+<div class="blk">
+  <div class="risk-item">
+    <div class="risk-dot" style="background:#FF2D71"></div>
+    <div>
+      <div class="risk-t">DPD30+MOB3 tăng khi scale pool <span class="badge bp">High</span></div>
+      <div class="risk-d">Khi cutoff hạ 500→450 (tháng 10/2025), DPD30+ tăng từ 3.65% → 5.82%. Pool B &amp; PD dùng CR thấp hơn có chủ đích. Cần monitor chặt — nếu vượt 6.5% cần throttle lại volume.</div>
+    </div>
+  </div>
+  <div class="risk-item">
+    <div class="risk-dot" style="background:#FF7A2F"></div>
+    <div>
+      <div class="risk-t">VNeID phụ thuộc tiến độ tech <span class="badge ba">Medium</span></div>
+      <div class="risk-d">Toàn bộ 181.9 tỷ từ VNeID contingent vào eKYC enhancement. Delay 1 quý → mất ~84 tỷ trong kế hoạch. Cần milestone gate rõ trước khi allocate WL.</div>
+    </div>
+  </div>
+  <div class="risk-item">
+    <div class="risk-dot" style="background:#7B2FBE"></div>
+    <div>
+      <div class="risk-t">Q1 thấp — 92.7% target dồn Q2–Q4 <span class="badge bpu">Medium</span></div>
+      <div class="risk-d">Q3+Q4 cần đạt 3,123 tỷ. Buffer chỉ 2.9 tỷ trên target 4,000 tỷ — không có room nếu một pool underperform. Critical path: Q3 ≥ 1,400 tỷ.</div>
+    </div>
+  </div>
+  <div class="risk-item">
+    <div class="risk-dot" style="background:#0BC76A"></div>
+    <div>
+      <div class="risk-t">Xsell overlap &amp; dedup logic <span class="badge bm">Low-Med</span></div>
+      <div class="risk-d">CR cao nhất (14.26%) nhưng cần dedup chặt tránh cùng khách xuất hiện ở CL Pool A lẫn Xsell. Nếu overlap lớn, TAM thực tế nhỏ hơn giả định.</div>
+    </div>
+  </div>
+</div>
+
+<div class="sec">Kết luận</div>
+<div class="cards2">
+  <div class="mc pink">
+    <div class="lbl">Projected total 2026</div>
+    <div class="val">4,117.8 tỷ</div>
+    <div class="sub">Vượt 4,000 tỷ · buffer 2.9 tỷ · daily stable ~17 tỷ/ngày</div>
+  </div>
+  <div class="mc dark">
+    <div class="lbl">Critical path</div>
+    <div class="val">Q3 ≥ 1,400 tỷ</div>
+    <div class="sub">Nếu Q3 đạt → Q4 stable tự follow. Q3 miss → không thể bù từ Q4.</div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const colors=['#FFAEC7','#FFAEC7','#FFAEC7','#FF7A2F','#FF7A2F','#FF7A2F','#7B2FBE','#7B2FBE','#7B2FBE','#FF2D71','#FF2D71','#FF2D71'];
+new Chart(document.getElementById('disbChart'),{
+  type:'bar',
+  data:{
+    labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+    datasets:[
+      {label:'Disbursed (tỷ)',data:[117.6,88.6,95.0,155.5,201.7,336.2,469.3,529.6,517.4,539.8,522.3,544.9],backgroundColor:colors,borderRadius:6,order:2},
+      {label:'Pace target',data:Array(12).fill(333),type:'line',borderColor:'#0BC76A',borderDash:[5,3],borderWidth:1.5,pointRadius:0,fill:false,order:1}
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+ctx.parsed.y+' tỷ'}}},
+    scales:{
+      x:{grid:{display:false},ticks:{font:{size:10}}},
+      y:{grid:{color:'#f0f0f0'},ticks:{font:{size:10},callback:v=>v+' tỷ'},min:0,max:600}
+    }
+  }
+});
+</script>
+
+
+</body></html>

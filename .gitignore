@@ -1,0 +1,40 @@
+# macOS noise
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Python (nếu sau này có scripts)
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+venv/
+.venv/
+convert_venv/
+
+# Node (nếu sau này có scripts)
+node_modules/
+
+# Logs
+*.log
+scripts/converter.log
+
+# Temp / processed
+inbox/processed/
+staging/_temp/
+staging/auto-test*.md
+staging/test-sample.md
+
+# Working files của Claude
+.claude/worktrees/
+
+# Sensitive: archive cũ — keep local, không push (nếu cần roll back, ai có local có)
+# Bỏ comment dưới nếu muốn skip Raw/_archive
+# Raw/_archive/
