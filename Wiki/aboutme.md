@@ -140,17 +140,7 @@ Chuyên sâu về **digital lending**, từng trải qua các role:
 
 ## Stakeholder Map
 
-| Stakeholder | Style | Cách communicate |
-|---|---|---|
-| **CEO** | Dân chủ, không top-down | Outcomes & blockers, không cần justify chi tiết |
-| **CRO** ⭐ | Aggressive, data-driven, biz oriented (thân thiết) | Lead với data + P&L impact, nói thẳng |
-| **CFO** | Aggressive, thẳng thắn, hay challenge | Số liệu chính xác, anticipate câu hỏi, đừng vague về cost/revenue |
-| **CTO** | Cá tính mạnh, thẳng tính, rất logical | Logic chặt, đã nghĩ qua edge cases, tránh fluffy |
-| **BD** | Nice, hiểu lending | Collaborative, RACI rõ ràng, tránh ambiguous ownership |
-| **Legal** | Bảo thủ, default "No" | Loop in sớm, frame theo "làm sao để làm được" |
-| **Tech PM** | Nice, dễ làm việc | Clear priority + scope là đủ |
-| **Finance** | Host P&L Review monthly | Số chính xác, ready cho challenge |
-| **External Partners** | Ecosystem (ví, ecommerce, ride-hailing) | Đạm là đầu mối product phía Cake |
+→ See canonical: [`stakeholders.md`](stakeholders.md) (C-level, cross-functional, team trực tiếp, external partners).
 
 ---
 
@@ -171,4 +161,4 @@ Chuyên sâu về **digital lending**, từng trải qua các role:
 
 ---
 
-*Last updated: 2026-04-09*
+*Last updated: 2026-05-12*

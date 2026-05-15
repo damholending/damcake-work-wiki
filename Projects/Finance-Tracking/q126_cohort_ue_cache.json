@@ -1,0 +1,32 @@
+{
+  "_meta": {
+    "description": "Q1.26 per-channel cohort UE — extracted via Excel automation (recalc each sub-segment dropdown). Lifetime per-loan, mVND. Source: Q126/{CashLoan,Payday,PL}_Q1_26.xlsx. Refresh: chạy lại osascript automation khi Q126 files update (xem refresh-q126-cohort.md).",
+    "extracted_date": "2026-05-14",
+    "unit": "mVND per loan (lifetime)",
+    "fields": "disbursement (loan amount / spending per loan), anr, toi, provision, opex, pbt. provision/opex stored signed from model — loader takes abs."
+  },
+  "CL": {
+    "All":     {"disbursement": 16.047682105836, "anr": 5.070395721332, "toi": 4.275886490485, "provision": -3.036602329875, "opex": -0.951823478446, "pbt": 0.287460682164},
+    "BE":      {"disbursement": 12.668752916225, "anr": 5.384029659877, "toi": 3.266896162775, "provision": -2.974191607642, "opex": -0.960418760394, "pbt": -0.667714205261},
+    "CAKE":    {"disbursement": 15.534475834481, "anr": 4.820538957587, "toi": 3.893905020058, "provision": -2.921558919009, "opex": -0.806601856946, "pbt": 0.165744244103},
+    "MWG":     {"disbursement": 22.905783374448, "anr": 9.27544918519,  "toi": 6.813769508449, "provision": -5.43654522843,  "opex": -1.184158894862, "pbt": 0.193065385158},
+    "VNPOST":  {"disbursement": 18.679140740741, "anr": 7.081718404453, "toi": 4.922814917155, "provision": -9.25207682279,  "opex": 0.361301675165,  "pbt": -3.96796023047},
+    "VDS":     {"disbursement": 15.454808020525, "anr": 4.399151014499, "toi": 4.281186677391, "provision": -2.804933638827, "opex": -1.225496529847, "pbt": 0.250756508717},
+    "VNPAY":   {"disbursement": 19.467117164771, "anr": 6.584146745261, "toi": 5.117329834778, "provision": -3.627769173177, "opex": -0.658797157826, "pbt": 0.830763503775},
+    "ZALOPAY": {"disbursement": 14.614915579035, "anr": 5.009131152901, "toi": 3.759276590092, "provision": -2.324308282849, "opex": -0.585870260548, "pbt": 0.849098046695}
+  },
+  "PD": {
+    "All":     {"disbursement": 4.1,             "anr": 0.542100498924, "toi": 0.421480718116, "provision": -0.252197139787, "opex": -0.094999203777, "pbt": 0.074284374552},
+    "CAKE":    {"disbursement": 3.36110532336,   "anr": 0.433854342819, "toi": 0.338579454425, "provision": -0.196997289105, "opex": -0.059822330322, "pbt": 0.081759834998},
+    "VDS":     {"disbursement": 4.804095252432,  "anr": 0.654208996813, "toi": 0.497105668363, "provision": -0.31387872996,  "opex": -0.145312098204, "pbt": 0.037914840199},
+    "VNPAY":   {"disbursement": 4.110088695652,  "anr": 2.055044347826, "toi": 0.453811804185, "provision": 0.0,             "opex": -0.0672536641,   "pbt": 0.386558140085},
+    "ZALOPAY": {"disbursement": 2.922773806225,  "anr": 1.461386903113, "toi": 0.319200788634, "provision": 0.0,             "opex": -0.080329106736, "pbt": 0.238871681898}
+  },
+  "PL": {
+    "All":   {"disbursement": 26.542457890527, "anr": 1.370477364518, "toi": 2.043393631245, "provision": -2.435837217435, "opex": -0.613250126877, "pbt": -1.005693713068},
+    "BE":    {"disbursement": 10.258139435029, "anr": 0.475410471641, "toi": 0.944015337136, "provision": -1.024897141037, "opex": -0.637850208415, "pbt": -0.718732012316},
+    "VDS":   {"disbursement": 12.764629878946, "anr": 0.633838601138, "toi": 1.013414006005, "provision": -1.430229623494, "opex": -0.476268769162, "pbt": -0.893084386651},
+    "MWG":   {"disbursement": 45.74582549491,  "anr": 2.147276707275, "toi": 3.708010077188, "provision": -2.933611506718, "opex": -0.951543719453, "pbt": -0.177145148983},
+    "VNPAY": {"disbursement": 24.319567574986, "anr": 1.237581261555, "toi": 1.463775535029, "provision": -2.444905526497, "opex": -0.465172797171, "pbt": -1.446302788639}
+  }
+}

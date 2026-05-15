@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Lending Performance — Exec Summary YTD Apr 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light;
+    --pink-500:#FF2D71; --pink-700:#B8154F;
+    --grape-500:#7B2FBE; --grape-900:#1A1033;
+    --mint-500:#0BC76A; --mint-700:#059952;
+    --amber-500:#FF7A2F;
+    --surface-1:#F7F7F9; --surface-2:#FFFFFF; --page-bg:#E8E8EF;
+    --pink-glow:0 8px 24px rgba(255,45,113,.28);
+  }
+  *{box-sizing:border-box}
+  body{font-family:'Be Vietnam Pro',-apple-system,system-ui,sans-serif;
+       max-width:1400px;margin:0 auto;padding:24px;
+       color:var(--grape-900);line-height:1.5;background:var(--page-bg);}
+  .hero{background:linear-gradient(160deg,#1A1033,#2D1B55);color:#fff;padding:28px 32px;border-radius:20px;
+        box-shadow:var(--pink-glow);margin-bottom:24px;}
+  .hero h1{margin:0 0 6px;font-weight:700;font-size:1.9em;letter-spacing:-0.5px;}
+  .hero .meta{opacity:.85;font-size:.92em;margin:0;}
+  .hero .meta strong{color:#FF2D71;}
+  h2{font-weight:600;background:var(--surface-2);padding:12px 18px;border-left:4px solid var(--pink-500);
+     border-radius:0 16px 16px 0;margin-top:28px;color:var(--grape-900);font-size:1.2em;}
+  h3{font-weight:600;color:var(--grape-500);margin-top:20px;font-size:1.02em;}
+
+  /* Tabs */
+  .tab-nav{display:flex;gap:8px;border-bottom:3px solid var(--pink-500);margin:16px 0 0;}
+  .tab-btn{font-family:'Be Vietnam Pro',sans-serif;padding:13px 32px;background:var(--surface-1);
+           border:none;border-radius:14px 14px 0 0;font-size:1em;font-weight:600;cursor:pointer;color:#6b6478;
+           transition:all .15s;}
+  .tab-btn:hover{background:#DCD7E8;}
+  .tab-btn.active{background:linear-gradient(135deg,var(--pink-500),var(--grape-500));color:#fff;
+                  box-shadow:0 4px 14px rgba(255,45,113,.28);}
+  .tab-content{display:none;padding:8px 0 0;}
+  .tab-content.active{display:block;}
+
+  /* KPI cards */
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:16px 0 8px;}
+  .kpi{background:var(--surface-2);border-radius:20px;padding:18px 20px;
+       box-shadow:0 2px 8px rgba(26,16,51,.05);position:relative;overflow:hidden;}
+  .kpi.beat{border-top:4px solid var(--mint-500);}
+  .kpi.miss{border-top:4px solid var(--amber-500);}
+  .kpi.breach{border-top:4px solid var(--pink-700);}
+  .kpi.neutral{border-top:4px solid var(--grape-500);}
+  .kpi .label{font-size:.82em;color:#6b6478;text-transform:uppercase;letter-spacing:.5px;font-weight:600;}
+  .kpi .value{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:1.85em;margin:6px 0 2px;color:var(--grape-900);}
+  .kpi .target{font-size:.85em;color:#6b6478;}
+  .kpi .target strong{font-family:'JetBrains Mono',monospace;}
+  .kpi .delta{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.78em;font-weight:600;margin-top:8px;font-family:'JetBrains Mono',monospace;}
+  .delta-pos{background:rgba(11,199,106,.15);color:var(--mint-700);}
+  .delta-neg{background:rgba(255,122,47,.15);color:var(--amber-500);}
+  .delta-breach{background:rgba(184,21,79,.12);color:var(--pink-700);}
+
+  /* Tables */
+  table.data{border-collapse:collapse;width:100%;margin:12px 0;font-size:.88em;
+             background:var(--surface-2);border-radius:14px;overflow:hidden;
+             box-shadow:0 1px 6px rgba(26,16,51,.06);}
+  table.data th,table.data td{border:1px solid #E4E1EC;padding:9px 12px;text-align:right;}
+  table.data th{background:var(--grape-500);color:#fff;font-weight:600;font-size:.86em;letter-spacing:.3px;}
+  table.data td.label{text-align:left;font-weight:600;background:var(--surface-1);}
+  table.data td.accent{background:#FFF1E8;font-weight:600;}
+  table.data th.accent{background:var(--amber-500);}
+  table.data tr.total td{background:#FFF1E8;font-weight:700;border-top:2px solid var(--pink-500);}
+  .num{font-family:'JetBrains Mono',monospace;}
+  .pos{color:var(--mint-700);font-weight:600;}
+  .neg{color:var(--amber-500);font-weight:600;}
+  .breach{color:var(--pink-700);font-weight:700;}
+  .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:.75em;font-weight:600;font-family:'Be Vietnam Pro';margin-left:6px;}
+  .pill-beat{background:rgba(11,199,106,.15);color:var(--mint-700);}
+  .pill-miss{background:rgba(255,122,47,.15);color:var(--amber-500);}
+  .pill-breach{background:rgba(184,21,79,.12);color:var(--pink-700);}
+
+  /* Insights */
+  ol.insights{background:var(--surface-2);padding:18px 18px 18px 40px;
+              border-left:4px solid var(--grape-500);border-radius:0 16px 16px 0;list-style-type:decimal;}
+  ol.insights li{margin:10px 0;line-height:1.55;}
+  ol.insights li strong{color:var(--pink-700);}
+  .note{background:#FFF1E8;border-left:3px solid var(--amber-500);
+        padding:10px 14px;font-size:.9em;border-radius:0 10px 10px 0;margin:10px 0;}
+  footer{margin-top:36px;padding-top:16px;border-top:1px solid #D8D4E2;
+         font-size:.82em;color:#6b6478;text-align:center;}
+  code{font-family:'JetBrains Mono',monospace;background:#EEEAF6;padding:1px 6px;border-radius:4px;font-size:.88em;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Lending Performance — Exec Summary</h1>
+  <p class="meta">Period: <strong>YTD Apr 2026</strong> vs Budget · Audience: Lending Team · Đơn vị: <strong>Tỷ VND</strong> · Source: <code>lending-pl-data.json</code> · Generated 2026-05-14</p>
+</div>
+
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="showTab(event,'tab-pnl')">1 · P&amp;L</button>
+  <button class="tab-btn" onclick="showTab(event,'tab-ue')">2 · Unit Economics</button>
+</div>
+
+<!-- =========================================== -->
+<!--                  TAB 1: P&L                 -->
+<!-- =========================================== -->
+<div id="tab-pnl" class="tab-content active">
+
+<h2>1 · KPI Pacing vs FY 2026 Target</h2>
+
+<div class="kpi-grid">
+  <div class="kpi miss">
+    <div class="label">Disbursement YTD</div>
+    <div class="value">8,206.9</div>
+    <div class="target">FY Target <strong>40,000</strong> · Bud YTD <strong>9,778.5</strong></div>
+    <span class="delta delta-neg">−16.1% vs Budget YTD</span>
+  </div>
+  <div class="kpi beat">
+    <div class="label">PBT YTD</div>
+    <div class="value">272.2</div>
+    <div class="target">FY Target <strong>700</strong> · Bud YTD <strong>170.6</strong></div>
+    <span class="delta delta-pos">+59.6% vs Budget YTD</span>
+  </div>
+  <div class="kpi beat">
+    <div class="label">TOI YTD</div>
+    <div class="value">1,355.6</div>
+    <div class="target">Bud YTD <strong>1,399.7</strong> · YoY <strong>+246%</strong></div>
+    <span class="delta delta-neg">−3.1% vs Budget YTD</span>
+  </div>
+  <div class="kpi neutral">
+    <div class="label">PBO YTD</div>
+    <div class="value">362.2</div>
+    <div class="target">Bud YTD <strong>300.4</strong> · YoY <strong>+311%</strong></div>
+    <span class="delta delta-pos">+20.6% vs Budget YTD</span>
+  </div>
+</div>
+
+<div class="note">
+  <strong>Headline P&amp;L:</strong> Volume miss budget −16% nhưng PBT vượt +60% nhờ yield discipline + product mix (Payday surprise). Pacing 39% của 700 KPI sau 4/12 tháng — healthy.
+</div>
+
+<h2>2 · P&amp;L YTD Apr 2026 vs Budget &amp; YoY</h2>
+
+<table class="data">
+<thead>
+<tr>
+  <th class="label" style="text-align:left;background:var(--grape-900);">Metric</th>
+  <th>2025 YTD-Apr</th>
+  <th>2026 YTD-Apr</th>
+  <th>2026 Bud YTD</th>
+  <th>YoY %</th>
+  <th>vs Bud %</th>
+  <th class="accent">2026 Bud FY</th>
+</tr>
+</thead>
+<tbody>
+<tr><td class="label">Disbursement</td>
+    <td class="num">2,584.7</td><td class="num">8,206.9</td><td class="num">9,778.5</td>
+    <td class="num pos">+217.5%</td><td class="num neg">−16.1%</td><td class="num accent">40,023.7</td></tr>
+<tr><td class="label">TOI</td>
+    <td class="num">391.6</td><td class="num">1,355.6</td><td class="num">1,399.7</td>
+    <td class="num pos">+246.2%</td><td class="num neg">−3.1%</td><td class="num accent">5,632.8</td></tr>
+<tr><td class="label">Provision</td>
+    <td class="num">214.8</td><td class="num">706.7</td><td class="num">717.0</td>
+    <td class="num">+229.0%</td><td class="num pos">−1.4%</td><td class="num accent">2,961.8</td></tr>
+<tr><td class="label">PBO</td>
+    <td class="num">88.1</td><td class="num">362.2</td><td class="num">300.4</td>
+    <td class="num pos">+311.2%</td><td class="num pos">+20.6%</td><td class="num accent">1,151.5</td></tr>
+<tr class="total"><td class="label">PBT</td>
+    <td class="num">20.8</td><td class="num">272.2</td><td class="num">170.6</td>
+    <td class="num pos">+1,211.0%</td><td class="num pos">+59.6%</td><td class="num accent">653.1</td></tr>
+</tbody>
+</table>
+
+<p style="font-size:.85em;color:#6b6478;margin-top:6px;">
+<em>Provision: lower = better. PBO = TOI − Provision − Variable OPEX. PBT = PBO − Allocated overhead. Bud FY committed = 653 tỷ, KPI internal = 700 tỷ.</em>
+</p>
+
+<h2>3 · By Product — YTD Apr 2026 vs Budget</h2>
+
+<table class="data">
+<thead>
+<tr>
+  <th class="label" style="text-align:left;background:var(--grape-900);">Product</th>
+  <th>Disb YTD</th>
+  <th>Bud Disb YTD</th>
+  <th>Disb vs Bud</th>
+  <th>TOI YTD</th>
+  <th>PBO YTD</th>
+  <th>Bud PBO YTD</th>
+  <th class="accent">PBO vs Bud</th>
+</tr>
+</thead>
+<tbody>
+<tr><td class="label">CashLoan <span class="pill pill-miss">Miss vol</span></td>
+    <td class="num">4,677.6</td><td class="num">5,788.9</td><td class="num neg">−19.2%</td>
+    <td class="num">1,039.7</td><td class="num">254.8</td><td class="num">237.6</td>
+    <td class="num pos accent">+7.2%</td></tr>
+<tr><td class="label">Payday <span class="pill pill-beat">Beat both</span></td>
+    <td class="num">3,018.3</td><td class="num">2,571.4</td><td class="num pos">+17.4%</td>
+    <td class="num">280.9</td><td class="num">126.2</td><td class="num">92.2</td>
+    <td class="num pos accent">+36.9%</td></tr>
+<tr><td class="label">Overdraft <span class="pill pill-miss">Miss vol</span></td>
+    <td class="num">222.3</td><td class="num">458.5</td><td class="num neg">−51.5%</td>
+    <td class="num">11.1</td><td class="num">−6.5</td><td class="num">−11.7</td>
+    <td class="num pos accent">+44.4% (less loss)</td></tr>
+<tr><td class="label">Paylater <span class="pill pill-miss">Behind plan</span></td>
+    <td class="num">288.8</td><td class="num">959.6</td><td class="num neg">−69.9%</td>
+    <td class="num">23.9</td><td class="num">−12.3</td><td class="num">−17.7</td>
+    <td class="num pos accent">+30.5% (less loss)</td></tr>
+<tr class="total"><td class="label">Total Lending</td>
+    <td class="num">8,206.9</td><td class="num">9,778.5</td><td class="num neg">−16.1%</td>
+    <td class="num">1,355.6</td><td class="num">362.2</td><td class="num">300.4</td>
+    <td class="num pos accent">+20.6%</td></tr>
+</tbody>
+</table>
+
+<h2>4 · Channel × Product — Risk-Adjusted Net Yield</h2>
+
+<table class="data">
+<thead>
+<tr>
+  <th class="label" style="text-align:left;background:var(--grape-900);">Channel · Product</th>
+  <th>Disb YTD</th>
+  <th>TOI YTD</th>
+  <th>PBO YTD</th>
+  <th>NPL %</th>
+  <th>LG2 %</th>
+  <th class="accent">Net Yield (TOI−Risk) % ANR</th>
+</tr>
+</thead>
+<tbody>
+<tr><td class="label">CL · CAKE</td>
+    <td class="num">1,628.3</td><td class="num">373.6</td><td class="num">99.8</td>
+    <td class="num">5.99</td><td class="num breach">11.00</td><td class="num accent">5.04</td></tr>
+<tr><td class="label">CL · VDS</td>
+    <td class="num">1,892.2</td><td class="num">440.0</td><td class="num">65.9</td>
+    <td class="num">4.85</td><td class="num">10.30</td><td class="num pos accent">8.27</td></tr>
+<tr><td class="label">Payday · CAKE <span class="pill pill-beat">Top yield</span></td>
+    <td class="num">1,624.6</td><td class="num">149.9</td><td class="num">91.2</td>
+    <td class="num">7.11</td><td class="num breach">12.80</td><td class="num pos accent">22.39</td></tr>
+<tr><td class="label">Payday · VDS <span class="pill pill-breach">LG2 watch</span></td>
+    <td class="num">1,318.0</td><td class="num">124.9</td><td class="num">31.4</td>
+    <td class="num">9.06</td><td class="num breach">15.00</td><td class="num pos accent">17.93</td></tr>
+<tr><td class="label">OD · CAKE <span class="pill pill-miss">Loss</span></td>
+    <td class="num">222.3</td><td class="num">11.1</td><td class="num neg">−6.5</td>
+    <td class="num">7.85</td><td class="num">10.15</td><td class="num neg accent">−8.01</td></tr>
+<tr><td class="label">PL · MWG</td>
+    <td class="num">124.5</td><td class="num">9.3</td><td class="num neg">−3.1</td>
+    <td class="num">4.60</td><td class="num">—</td><td class="num accent">+0.50</td></tr>
+<tr><td class="label">PL · VNPAY <span class="pill pill-miss">Negative</span></td>
+    <td class="num">44.8</td><td class="num">2.7</td><td class="num neg">−4.0</td>
+    <td class="num">8.40</td><td class="num">—</td><td class="num neg accent">−6.94</td></tr>
+<tr><td class="label">PL · BE</td>
+    <td class="num">30.7</td><td class="num">2.4</td><td class="num neg">−1.7</td>
+    <td class="num">6.20</td><td class="num">—</td><td class="num neg accent">−1.51</td></tr>
+<tr><td class="label">PL · VDS</td>
+    <td class="num">22.4</td><td class="num">2.9</td><td class="num neg">−1.1</td>
+    <td class="num">9.60</td><td class="num">—</td><td class="num neg accent">−2.29</td></tr>
+<tr><td class="label">PL · FPT <span class="pill pill-breach">High NPL</span></td>
+    <td class="num">1.3</td><td class="num">0.0</td><td class="num neg">−0.4</td>
+    <td class="num breach">17.20</td><td class="num">—</td><td class="num neg accent">−21.66</td></tr>
+</tbody>
+</table>
+
+<div class="note">
+  <strong>Net Yield = TOI − Provision, normalized %ANR.</strong> So sánh fair giữa channels — raw TOI bị bias bởi partner sharing structure (xem <code>section_7_partner_sharing_params</code> trong JSON).
+</div>
+
+<h2>5 · P&amp;L Insights &amp; Asks</h2>
+
+<ol class="insights">
+  <li><strong>PBT crushing budget — yield discipline working.</strong> +60% vs Bud YTD và +13× YoY trong khi volume miss −16%. Confirm PBT-first thesis: không cần đủ 40k tỷ disb để hit 700 tỷ PBT. <em>2nd order: tránh tâm lý "push volume bằng mọi giá Q2-Q4" — sẽ phá yield mix.</em></li>
+
+  <li><strong>Payday là "dark horse" của quarter.</strong> Beat budget cả volume (+17%) và PBO (+37%). Net Yield CAKE Payday 22.4% / VDS Payday 17.9% — gấp 2–3× CL. <em>Ask: reallocate marketing/risk capacity từ Paylater (miss 70%) sang Payday? Pre-mortem: scale Payday đẩy LG2 cao hơn — đã 12.8%/15% CAKE/VDS — cần guardrail Risk.</em></li>
+
+  <li><strong>Paylater miss −70% volume.</strong> Tất cả 6 channel (VDS/VDS-EPASS/BE/VNPAY/FPT/MWG) đều negative PBO; Net Yield âm trừ MWG (+0.5%) và VDS-EPASS (small). FPT NPL 17.2% là red flag. <em>Ask: cohort-by-cohort review trước khi push volume — channel nào keep, channel nào pause. FPT cần freeze để Risk dig sâu.</em></li>
+
+  <li><strong>OD vẫn loss-making (PBO −6.5 tỷ YTD).</strong> Disb chỉ đạt 49% budget. <em>Ask: confirm hướng product OD Q2 — push utilization hay restructure pricing? Hiện Net Yield −8% sẽ không scale được.</em></li>
+
+  <li><strong>Gap to FY 700 PBT.</strong> YTD 272 = 39% của 700 trong 4/12 tháng — pacing healthy (target run-rate là 33%). Nếu giữ run-rate Apr ~60 tỷ/tháng → FY ~800 tỷ. <em>Risk chính: nếu LG2 12% chuyển thành NPL Q3-Q4 → Provision spike sẽ ăn PBT (xem Tab Unit Economics).</em></li>
+</ol>
+
+</div><!-- end tab-pnl -->
+
+<!-- =========================================== -->
+<!--             TAB 2: UNIT ECONOMICS           -->
+<!-- =========================================== -->
+<div id="tab-ue" class="tab-content">
+
+<h2>1 · Aggregate Risk Trend — Q3.25 → Q1.26</h2>
+
+<div class="kpi-grid">
+  <div class="kpi neutral">
+    <div class="label">NPL % (Q1.26)</div>
+    <div class="value">4.90%</div>
+    <div class="target">Q4.25 <strong>5.37%</strong> · Q3.25 <strong>5.46%</strong></div>
+    <span class="delta delta-pos">−0.47pp QoQ ↓ (improving)</span>
+  </div>
+  <div class="kpi breach">
+    <div class="label">LG2 % (Q1.26)</div>
+    <div class="value">12.20%</div>
+    <div class="target">Q4.25 <strong>11.02%</strong> · Target ≤ <strong>11%</strong></div>
+    <span class="delta delta-breach">+1.18pp QoQ ↑ BREACH</span>
+  </div>
+  <div class="kpi neutral">
+    <div class="label">Yield (TOI/ANR) Q1.26</div>
+    <div class="value">13.65%</div>
+    <div class="target">Q4.25 <strong>12.77%</strong> · Quarterly rate (not annualized)</div>
+    <span class="delta delta-pos">+0.88pp QoQ ↑</span>
+  </div>
+  <div class="kpi neutral">
+    <div class="label">CoR (Prov/ANR) Q1.26</div>
+    <div class="value">7.14%</div>
+    <div class="target">Q4.25 <strong>5.46%</strong> · Quarterly rate</div>
+    <span class="delta delta-neg">+1.68pp QoQ ↑</span>
+  </div>
+</div>
+
+<table class="data">
+<thead>
+<tr>
+  <th class="label" style="text-align:left;background:var(--grape-900);">Metric</th>
+  <th>Q3.25</th>
+  <th>Q4.25</th>
+  <th class="accent">Q1.26</th>
+  <th>QoQ Δ</th>
+</tr>
+</thead>
+<tbody>
+<tr><td class="label">Disbursement (Tỷ)</td>
+    <td class="num">4,889.7</td><td class="num">6,219.3</td><td class="num accent">6,062.7</td>
+    <td class="num neg">−2.5%</td></tr>
+<tr><td class="label">ANR / Balance (Tỷ)</td>
+    <td class="num">4,686.2</td><td class="num">6,942.3</td><td class="num accent">7,308.6</td>
+    <td class="num pos">+5.3%</td></tr>
+<tr><td class="label">TOI (Tỷ)</td>
+    <td class="num">582.8</td><td class="num">886.5</td><td class="num accent">997.7</td>
+    <td class="num pos">+12.5%</td></tr>
+<tr><td class="label">Provision (Tỷ)</td>
+    <td class="num">225.2</td><td class="num">378.8</td><td class="num accent">521.8</td>
+    <td class="num neg">+37.8%</td></tr>
+<tr><td class="label">PBT (Tỷ)</td>
+    <td class="num">144.7</td><td class="num">208.8</td><td class="num accent">212.7</td>
+    <td class="num pos">+1.9%</td></tr>
+<tr><td class="label">NPL %</td>
+    <td class="num">5.46</td><td class="num">5.37</td><td class="num pos accent">4.90</td>
+    <td class="num pos">−0.47pp ↓</td></tr>
+<tr><td class="label">LG2 %</td>
+    <td class="num">10.20</td><td class="num">11.02</td><td class="num breach accent">12.20</td>
+    <td class="num breach">+1.18pp ↑ BREACH</td></tr>
+</tbody>
+</table>
+
+<h2>2 · UE by Product — Quarterly Trend (NPL · LG2 · Yield)</h2>
+
+<h3>NPL % trend</h3>
+<table class="data">
+<thead>
+<tr><th class="label" style="text-align:left;background:var(--grape-900);">Product</th>
+<th>Q3.25</th><th>Q4.25</th><th class="accent">Q1.26</th><th>QoQ Δ</th><th>Comment</th></tr>
+</thead>
+<tbody>
+<tr><td class="label">CL (CashLoan)</td>
+    <td class="num">5.00</td><td class="num">4.00</td><td class="num accent">5.00</td>
+    <td class="num neg">+1.00pp</td><td style="text-align:left;">Bounce-back từ Q4 low</td></tr>
+<tr><td class="label">PD (Payday)</td>
+    <td class="num">5.00</td><td class="num">4.00</td><td class="num breach accent">7.00</td>
+    <td class="num breach">+3.00pp</td><td style="text-align:left;">Mạnh nhất — phía sau volume push</td></tr>
+<tr><td class="label">OD (Overdraft)</td>
+    <td class="num">6.00</td><td class="num">6.00</td><td class="num accent">7.00</td>
+    <td class="num neg">+1.00pp</td><td style="text-align:left;">Slight uptick, base nhỏ</td></tr>
+<tr><td class="label">PL (Paylater)</td>
+    <td class="num"><span class="na">n/a</span></td><td class="num"><span class="na">n/a</span></td><td class="num accent">6.00</td>
+    <td class="num">—</td><td style="text-align:left;">First reported quarter</td></tr>
+</tbody>
+</table>
+
+<h3>LG2 % trend (leading indicator)</h3>
+<table class="data">
+<thead>
+<tr><th class="label" style="text-align:left;background:var(--grape-900);">Product</th>
+<th>Q3.25</th><th>Q4.25</th><th class="accent">Q1.26</th><th>QoQ Δ</th><th>Comment</th></tr>
+</thead>
+<tbody>
+<tr><td class="label">CL (CashLoan)</td>
+    <td class="num">9.00</td><td class="num">10.00</td><td class="num breach accent">12.00</td>
+    <td class="num breach">+2.00pp</td><td style="text-align:left;">Trend deterioration 2 quý liên tiếp</td></tr>
+<tr><td class="label">PD (Payday)</td>
+    <td class="num">10.00</td><td class="num breach">16.00</td><td class="num breach accent">16.00</td>
+    <td class="num">+0.00pp</td><td style="text-align:left;">Steady high — sản phẩm thin-file</td></tr>
+<tr><td class="label">OD (Overdraft)</td>
+    <td class="num">13.00</td><td class="num">13.00</td><td class="num accent">10.00</td>
+    <td class="num pos">−3.00pp</td><td style="text-align:left;">Improving as portfolio shrinks</td></tr>
+<tr><td class="label">PL (Paylater)</td>
+    <td class="num"><span class="na">n/a</span></td><td class="num"><span class="na">n/a</span></td><td class="num accent">0.00</td>
+    <td class="num">—</td><td style="text-align:left;">⚠️ Data gap — source cell = 0</td></tr>
+</tbody>
+</table>
+
+<h3>P&amp;L flow trend</h3>
+<table class="data">
+<thead>
+<tr><th class="label" style="text-align:left;background:var(--grape-900);">Product</th>
+<th colspan="3" style="text-align:center;">Disbursement (Tỷ)</th>
+<th colspan="3" style="text-align:center;">TOI (Tỷ)</th>
+<th colspan="3" style="text-align:center;">PBO (Tỷ)</th></tr>
+<tr><th></th><th>Q3.25</th><th>Q4.25</th><th class="accent">Q1.26</th>
+<th>Q3.25</th><th>Q4.25</th><th class="accent">Q1.26</th>
+<th>Q3.25</th><th>Q4.25</th><th class="accent">Q1.26</th></tr>
+</thead>
+<tbody>
+<tr><td class="label">CL</td>
+    <td class="num">2,921</td><td class="num">3,938</td><td class="num accent">3,418</td>
+    <td class="num">474</td><td class="num">691</td><td class="num accent">763</td>
+    <td class="num">178</td><td class="num">236</td><td class="num accent">198</td></tr>
+<tr><td class="label">PD</td>
+    <td class="num">1,019</td><td class="num">1,864</td><td class="num accent">2,248</td>
+    <td class="num">91</td><td class="num">171</td><td class="num accent">208</td>
+    <td class="num">44</td><td class="num">96</td><td class="num accent">97</td></tr>
+<tr><td class="label">OD</td>
+    <td class="num">302</td><td class="num">228</td><td class="num accent">172</td>
+    <td class="num">18</td><td class="num">13</td><td class="num accent">9</td>
+    <td class="num neg">−3</td><td class="num neg">−10</td><td class="num neg accent">−6</td></tr>
+<tr><td class="label">PL</td>
+    <td class="num"><span class="na">n/a</span></td><td class="num"><span class="na">n/a</span></td><td class="num accent">224</td>
+    <td class="num"><span class="na">n/a</span></td><td class="num"><span class="na">n/a</span></td><td class="num accent">17</td>
+    <td class="num"><span class="na">n/a</span></td><td class="num"><span class="na">n/a</span></td><td class="num neg accent">−10</td></tr>
+</tbody>
+</table>
+
+<h2>3 · CL Channel Pricing Inputs Q1.26</h2>
+
+<table class="data">
+<thead>
+<tr>
+  <th class="label" style="text-align:left;background:var(--grape-900);">Channel</th>
+  <th>IR %</th>
+  <th>COF %</th>
+  <th>NIM %</th>
+  <th>Avg Ticket (mVND)</th>
+  <th>Tenor (mo)</th>
+  <th>Approval %</th>
+  <th>Signed %</th>
+  <th class="accent">Insurance Pen %</th>
+</tr>
+</thead>
+<tbody>
+<tr><td class="label">CAKE</td>
+    <td class="num">45.55</td><td class="num">7.79</td><td class="num">37.75</td>
+    <td class="num">15.53</td><td class="num">17</td>
+    <td class="num neg">18.2</td><td class="num">75.5</td><td class="num pos accent">85.0</td></tr>
+<tr><td class="label">VDS</td>
+    <td class="num pos">50.85</td><td class="num">7.83</td><td class="num pos">43.02</td>
+    <td class="num">15.45</td><td class="num">18</td>
+    <td class="num">40.9</td><td class="num">85.0</td><td class="num accent">83.7</td></tr>
+<tr><td class="label">MWG <span class="pill pill-beat">Top ticket</span></td>
+    <td class="num">49.20</td><td class="num">7.88</td><td class="num">41.32</td>
+    <td class="num pos">22.91</td><td class="num">17</td>
+    <td class="num pos">48.4</td><td class="num pos">90.7</td><td class="num accent">57.9</td></tr>
+<tr><td class="label">VNPAY</td>
+    <td class="num">45.26</td><td class="num">7.68</td><td class="num">37.59</td>
+    <td class="num">19.47</td><td class="num">17</td>
+    <td class="num">36.6</td><td class="num">76.7</td><td class="num accent">75.6</td></tr>
+<tr><td class="label">ZALOPAY</td>
+    <td class="num pos">50.92</td><td class="num">7.88</td><td class="num pos">43.05</td>
+    <td class="num">14.61</td><td class="num">14</td>
+    <td class="num">43.0</td><td class="num pos">94.8</td><td class="num accent">67.6</td></tr>
+<tr><td class="label">BE</td>
+    <td class="num">46.20</td><td class="num">8.03</td><td class="num">38.17</td>
+    <td class="num">12.67</td><td class="num">15</td>
+    <td class="num neg">17.0</td><td class="num">82.4</td><td class="num accent">85.3</td></tr>
+<tr><td class="label">MISA <span class="pill pill-miss">No ins</span></td>
+    <td class="num">46.64</td><td class="num">8.18</td><td class="num">38.46</td>
+    <td class="num pos">80.47</td><td class="num">21</td>
+    <td class="num pos">62.9</td><td class="num">84.1</td><td class="num neg accent">0.0</td></tr>
+<tr><td class="label">VNPOST</td>
+    <td class="num">47.09</td><td class="num">8.20</td><td class="num">38.89</td>
+    <td class="num">18.68</td><td class="num">24</td>
+    <td class="num">35.9</td><td class="num">77.3</td><td class="num accent">74.6</td></tr>
+<tr class="total"><td class="label">All channels</td>
+    <td class="num">48.47</td><td class="num">7.83</td><td class="num">40.65</td>
+    <td class="num">16.05</td><td class="num">17</td>
+    <td class="num">27.2</td><td class="num">82.3</td><td class="num accent">79.6</td></tr>
+</tbody>
+</table>
+
+<div class="note">
+  <strong>Đọc table:</strong> NIM (IR−COF) cao nhất ở VDS/ZALOPAY (~43%) — explain Net Yield VDS CL cao. CAKE approval rate thấp nhất (18.2%) = chính sách tighter; bù lại Insurance Pen cao (85%). MISA = ticket cực lớn (80mVND/loan, ~5× avg) nhưng 0 insurance — segment khác biệt (corporate-ish).
+</div>
+
+<h2>4 · UE Insights &amp; Asks</h2>
+
+<ol class="insights">
+  <li><strong>LG2 12.2% Q1.26 = breach 11% target.</strong> Leading indicator deterioration 2 quý liên tiếp (10.2 → 11.0 → 12.2). NPL đang giảm là <em>lag</em> — kỳ vọng NPL sẽ tăng lại 1–2 quý tới nếu LG2 không kéo về. <em>Ask: Risk + Portfolio review LG2 driver — Payday (16% LG2 trên aggregate, 12.8/15% CAKE/VDS) là contributor chính.</em></li>
+
+  <li><strong>CoR Q1.26 nhảy +1.68pp QoQ.</strong> Provision tăng +38% trong khi disb giảm −2.5% — provision tăng vì balance grow (+5.3%) cộng risk profile xấu đi. <em>2nd order: nếu CoR giữ 7%/quarter (~28% annualized) thì TOI yield 13.65% sẽ không đủ bù → cần monitor mỗi monthly close.</em></li>
+
+  <li><strong>Payday NPL +3pp QoQ là red flag rõ nhất.</strong> 4→7% là jump lớn nhất quarter, đi cùng LG2 đã đứng 16% suốt 2 quý. PD đang đẩy volume rất mạnh (1k → 1.9k → 2.2k tỷ). <em>Ask: scoring/cap review trước khi tiếp tục scale Payday. Pre-mortem nếu Payday hit cap risk → PBT impact dự kiến?</em></li>
+
+  <li><strong>CL approval rate CAKE (18.2%) thấp nhất hệ thống.</strong> So với VDS 40.9% / MWG 48.4% / MISA 62.9% — CAKE channel đang gating chặt. Cake App KPI ≥40% volume vẫn cần được hỗ trợ bởi approval rate. <em>Ask: review scoring CAKE — có cohort nào safe đang bị reject không? Insurance Pen cao 85% là moat cần giữ.</em></li>
+
+  <li><strong>OD shrinking but stable.</strong> NPL 7%, LG2 cải thiện 13→10%, nhưng PBO vẫn âm vì TOI quá thấp (8.8 tỷ Q1.26). <em>2nd order: nếu shrink tiếp → balance về 0, exit market segment. Cần decide rõ — pivot pricing/utilization hay sunset.</em></li>
+
+  <li><strong>Paylater data gap nguy hiểm.</strong> LG2 = 0 tất cả channels = data bug nguồn (đã note Pending data gaps). Không có LG2 không thấy được leading risk. <em>Ask: Finance/Risk fix LG2 calc cho Paylater trước Q2.26 close — kẻo push volume mà mù risk.</em></li>
+</ol>
+
+</div><!-- end tab-ue -->
+
+<footer>
+  ⚠️ Internal Cake — Lending + Finance team only · Source of truth: <code>lending-pl-data.json</code> · Pending data gaps: Paylater LG2, Q3/Q4.25 channel pricing, Q1.26 cohort UE per channel · Maintainer: <strong>Đạm</strong> (dam.ho@cake.vn)
+</footer>
+
+<script>
+function showTab(e, id){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  e.currentTarget.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+</script>
+</body>
+</html>

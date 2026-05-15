@@ -84,11 +84,34 @@ source: synced from ~/Desktop/Personal/Dam-Wiki/Wiki/work-context.md
 - **%LG2** (delinquency rate trên buckets cụ thể)
 - **Channel mix** (Cake App vs ecosystem)
 
+## Regulatory watch — Dự thảo TT sửa đổi TT39/2016/TT-NHNN
+
+> Dự thảo NHNN, hiệu lực dự kiến 2026. Đây là khung pháp lý gốc cho hoạt động cho vay của TCTD — sửa lần này ảnh hưởng trực tiếp đến **cho vay bằng phương tiện điện tử** (mảng chính của Cake).
+> Raw: [`Du_thao_Thong_tu_*.pdf`](../../Raw/Lending/Policy/Du_thao_Thong_tu_78b7_836e_d21cf894.pdf) · [`Ban_so_sanh_thuyet_minh_*.pdf`](../../Raw/Lending/Policy/Ban_so_sanh_thuyet_minh_24f8_9cf8_0d87dae4.pdf)
+
+| Điều | Thay đổi | Impact với Cake |
+|---|---|---|
+| **Đ.22 k.2 điểm h (mới)** | TCTD **phải tự quy định giới hạn dư nợ/1 KH** khi cho vay điện tử | Cần ban hành nội bộ cap dư nợ/KH cho CL + PD + OD + BNPL — thay cho cap cứng 100tr cũ |
+| **Đ.32c, Đ.32h (bãi bỏ)** | Bỏ các giới hạn cứng hiện hành cho cho vay điện tử | Mở room — chuyển sang tự quản theo Đ.22 điểm h |
+| **Đ.32b (sửa)** | KH đã onboarded tại TCTD → TCTD tự chọn biện pháp xác minh phục vụ vay điện tử | Giảm friction repeat customer — không bắt full re-eKYC |
+| **Đ.18 k.4 (sửa)** | Nợ quá hạn: **gốc thu trước, lãi thu sau** | Đổi waterfall thu hồi — impact collection workflow + accounting |
+| **Đ.8 k.6 (sửa)** | Siết điều kiện cho vay để trả nợ TCTD khác (định nghĩa lại "chưa cơ cấu lại") | Ảnh hưởng sản phẩm refinance / consolidation |
+| **Đ.2 k.13 (sửa)** | Nới định nghĩa "khoản cho vay giá trị nhỏ" (đặc thù Quỹ TDND) | Không impact trực tiếp |
+| **Đ.1 k.3 (mới)** | Cho vay theo phương án cơ cấu lại của TCTD bị kiểm soát đặc biệt | Không apply cho Cake |
+
+**Action items khi TT chính thức:**
+1. Risk + Legal: dự thảo nội bộ cap dư nợ/KH cho từng product (CL/PD/OD/BNPL) — submit cho HĐQT trước hiệu lực.
+2. Product + Eng: rà soát flow eKYC repeat customer → tối ưu friction theo Đ.32b mới.
+3. Collection + Finance: cập nhật waterfall thu nợ quá hạn (gốc trước lãi sau) trong core + GL.
+4. BD: assess impact lên Cake CL refinance use case (Đ.8 k.6).
+
 ## Raw materials
 
-- Policy: [`../../Raw/Lending/Policy/Lending_Policy_Vay trên 100M.pptx`](../../Raw/Lending/Policy/)
+- Policy hiện hành: [`../../Raw/Lending/Policy/Lending_Policy_Vay trên 100M.pptx`](../../Raw/Lending/Policy/)
+- Dự thảo TT mới (2026): [`../../Raw/Lending/Policy/Du_thao_Thong_tu_78b7_836e_d21cf894.pdf`](../../Raw/Lending/Policy/Du_thao_Thong_tu_78b7_836e_d21cf894.pdf) + [bản so sánh thuyết minh](../../Raw/Lending/Policy/Ban_so_sanh_thuyet_minh_24f8_9cf8_0d87dae4.pdf)
 - Products: [`../../Raw/Lending/Products/`](../../Raw/Lending/Products/)
 - P&L lending: [`../../Raw/Lending/Analytics/`](../../Raw/Lending/Analytics/)
+- Q2 disbursement roadmap: [`../../Raw/Lending/Disbursement/Road_to_3k_Q2.xlsx`](../../Raw/Lending/Disbursement/Road_to_3k_Q2.xlsx)
 
 ---
 
