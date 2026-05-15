@@ -34,7 +34,10 @@ staging/test-sample.md
 
 # Working files của Claude
 .claude/worktrees/
+.claude/settings.json
+.claude/settings.local.json
 
 # Sensitive: archive cũ — keep local, không push (nếu cần roll back, ai có local có)
 # Bỏ comment dưới nếu muốn skip Raw/_archive
 # Raw/_archive/
+Raw/Finance/Archive.zip
