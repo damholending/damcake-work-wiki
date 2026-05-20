@@ -1,0 +1,1894 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Lending Portfolio Tracking</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js"></script>
+<style>
+  :root{
+    color-scheme:light;
+    --pink-500:#FF2D71;--pink-700:#B8154F;
+    --grape-500:#7B2FBE;--grape-900:#1A1033;
+    --mint-500:#0BC76A;--mint-700:#059952;
+    --amber-500:#FF7A2F;
+    --surface-1:#F7F7F9;--surface-2:#FFFFFF;--page-bg:#E8E8EF;
+    --pink-glow:0 8px 24px rgba(255,45,113,.28);
+  }
+  *{box-sizing:border-box}
+  body{font-family:'Be Vietnam Pro',-apple-system,system-ui,sans-serif;
+       max-width:1400px;margin:0 auto;padding:24px;
+       color:var(--grape-900);line-height:1.55;background:var(--page-bg);}
+  .hero{background:linear-gradient(160deg,#1A1033,#2D1B55);color:#fff;padding:28px 32px;border-radius:20px;
+        box-shadow:var(--pink-glow);margin-bottom:24px;}
+  .hero h1{margin:0 0 6px;font-weight:700;font-size:2em;letter-spacing:-.5px;}
+  .hero .meta{opacity:.85;font-size:.92em;margin:0;}
+  .hero .meta strong{color:#FF2D71;}
+
+  /* Tab nav */
+  .tab-nav{display:flex;gap:8px;border-bottom:3px solid var(--pink-500);margin:16px 0 0;flex-wrap:wrap;}
+  .tab-btn{font-family:'Be Vietnam Pro',sans-serif;padding:13px 22px;background:var(--surface-1);
+           border:none;border-radius:14px 14px 0 0;font-size:.96em;font-weight:600;cursor:pointer;color:#6b6478;
+           transition:all .15s;}
+  .tab-btn:hover{background:#DCD7E8;}
+  .tab-btn.active{background:linear-gradient(135deg,var(--pink-500),var(--grape-500));color:#fff;
+                  box-shadow:0 4px 14px rgba(255,45,113,.28);}
+  .tab-btn:disabled{opacity:.45;cursor:not-allowed;background:var(--surface-1);}
+  .tab-btn:disabled:hover{background:var(--surface-1);}
+  .tab-content{display:none;padding:8px 0 0;}
+  .tab-content.active{display:block;}
+
+  h2{font-weight:600;background:var(--surface-2);padding:12px 18px;border-left:4px solid var(--pink-500);
+     border-radius:0 16px 16px 0;margin-top:28px;color:var(--grape-900);font-size:1.18em;}
+  h3{font-weight:600;color:var(--grape-500);margin-top:20px;font-size:1.02em;}
+
+  /* KPI cards */
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:16px 0 8px;}
+  .kpi{background:var(--surface-2);border-radius:20px;padding:18px 20px;
+       box-shadow:0 2px 8px rgba(26,16,51,.05);position:relative;overflow:hidden;}
+  .kpi.beat{border-top:4px solid var(--mint-500);}
+  .kpi.miss{border-top:4px solid var(--amber-500);}
+  .kpi.breach{border-top:4px solid var(--pink-700);}
+  .kpi.neutral{border-top:4px solid var(--grape-500);}
+  .kpi .label{font-size:.82em;color:#6b6478;text-transform:uppercase;letter-spacing:.5px;font-weight:600;}
+  .kpi .value{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:1.85em;margin:6px 0 2px;color:var(--grape-900);}
+  .kpi .target{font-size:.85em;color:#6b6478;}
+  .kpi .target strong{font-family:'JetBrains Mono',monospace;}
+  .kpi .delta{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.78em;font-weight:600;margin-top:8px;font-family:'JetBrains Mono',monospace;}
+  .delta-pos{background:rgba(11,199,106,.15);color:var(--mint-700);}
+  .delta-neg{background:rgba(255,122,47,.15);color:var(--amber-500);}
+  .delta-breach{background:rgba(184,21,79,.12);color:var(--pink-700);}
+
+  /* Chart cards */
+  .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:14px 0;}
+  .chart-grid.full{grid-template-columns:1fr;}
+  .chart-card{background:var(--surface-2);border-radius:16px;padding:18px;box-shadow:0 1px 6px rgba(26,16,51,.06);}
+  .chart-card h4{margin:0 0 12px;color:var(--grape-500);font-weight:600;font-size:.98em;}
+  .chart-wrap{position:relative;height:340px;}
+  .chart-wrap.tall{height:420px;}
+
+  /* Tables */
+  table.data{border-collapse:collapse;width:100%;margin:12px 0;font-size:.87em;
+             background:var(--surface-2);border-radius:14px;overflow:hidden;
+             box-shadow:0 1px 6px rgba(26,16,51,.06);}
+  table.data th,table.data td{border:1px solid #E4E1EC;padding:8px 11px;text-align:right;vertical-align:middle;}
+  table.data th{background:var(--grape-500);color:#fff;font-weight:600;font-size:.84em;letter-spacing:.3px;}
+  table.data td.label{text-align:left;font-weight:600;background:var(--surface-1);}
+  table.data td.text{text-align:left;}
+  table.data tr.subtotal td{background:#F0EAF8;font-weight:700;border-top:2px solid var(--grape-500);}
+  table.data tr.total td{background:#1A1033;color:#fff;font-weight:700;border-top:2px solid var(--pink-500);}
+  table.data tr.total td.text,table.data tr.total td.label{background:#1A1033;color:#fff;}
+  .num{font-family:'JetBrains Mono',monospace;}
+  .pos{color:var(--mint-700);font-weight:600;}
+  .neg{color:var(--amber-500);font-weight:600;}
+  .breach{color:var(--pink-700);font-weight:700;}
+  .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:.74em;font-weight:600;}
+  .pill-pos{background:rgba(11,199,106,.15);color:var(--mint-700);}
+  .pill-neg{background:rgba(255,122,47,.15);color:var(--amber-500);}
+  .pill-breach{background:rgba(184,21,79,.12);color:var(--pink-700);}
+
+  .gap-card{background:var(--surface-2);border-radius:18px;padding:16px 20px;margin:12px 0;
+            box-shadow:0 2px 8px rgba(26,16,51,.06);border-left:5px solid var(--pink-500);}
+  .gap-card.breach{border-left-color:var(--pink-700);}
+  .gap-card.win{border-left-color:var(--mint-500);}
+  .gap-card h4{margin:0 0 4px;display:flex;align-items:center;gap:10px;font-size:1em;}
+  .gap-card .gap-num{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--pink-700);}
+  .gap-card.win .gap-num{color:var(--mint-700);}
+  .gap-card p{margin:6px 0;font-size:.92em;color:#4a4458;}
+
+  .note{background:#FFF1E8;border-left:3px solid var(--amber-500);
+        padding:10px 14px;font-size:.92em;border-radius:0 10px 10px 0;margin:12px 0;}
+  .note.warn{background:rgba(184,21,79,.08);border-left-color:var(--pink-700);}
+  .note.win{background:rgba(11,199,106,.10);border-left-color:var(--mint-500);}
+  footer{margin-top:36px;padding-top:16px;border-top:1px solid #D8D4E2;
+         font-size:.82em;color:#6b6478;text-align:center;}
+  code{font-family:'JetBrains Mono',monospace;background:#EEEAF6;padding:1px 6px;border-radius:4px;font-size:.88em;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Lending Portfolio Tracking</h1>
+  <p class="meta">Audience: Lending Team · Đơn vị: <strong>Tỷ VND</strong> · Sources: <code>Lending Planning 2026.xlsx</code> · <code>lending-pl-data.json</code> · <code>Road_to_3k_Q2.xlsx</code> · <code>Lending Portfolio Review May'26</code></p>
+  <p class="meta">Generated 2026-05-20 · Owner: Hồ Đình Đạm (Head of Lending Product)</p>
+</div>
+
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="showTab(event,'tab-1')">1 · Disbursement – Actual vs Budget</button>
+  <button class="tab-btn" onclick="showTab(event,'tab-2')">2 · P&amp;L – Actual vs Budget</button>
+  <button class="tab-btn" onclick="showTab(event,'tab-3')">3 · Unit Economics</button>
+  <button class="tab-btn" onclick="showTab(event,'tab-4')">4 · Risk Tracking</button>
+</div>
+
+<!-- ============================================= -->
+<!-- TAB 1: Disbursement Actual vs Budget          -->
+<!-- ============================================= -->
+<div id="tab-1" class="tab-content active">
+
+<h2>1.1 · YTD Performance Snapshot</h2>
+<div class="kpi-grid">
+  <div class="kpi neutral">
+    <div class="label">YTD Jan→Apr Actual</div>
+    <div class="value">7,913</div>
+    <div class="target">19.7% of FY Budget</div>
+  </div>
+  <div class="kpi neutral">
+    <div class="label">YTD Jan→Apr Budget</div>
+    <div class="value">9,212</div>
+    <div class="target">22.9% of FY Budget (back-loaded)</div>
+  </div>
+  <div class="kpi miss">
+    <div class="label">YTD Achievement %</div>
+    <div class="value">86%</div>
+    <div class="target">Gap <strong>−1,299</strong> Bil vs YTD Plan</div>
+    <span class="delta delta-neg">−14% behind plan</span>
+  </div>
+  <div class="kpi miss">
+    <div class="label">FY26 Revised (Road3k Q2)</div>
+    <div class="value">32,978</div>
+    <div class="target">Budget <strong>40,150</strong> · Gap <strong>−7,172</strong></div>
+    <span class="delta delta-neg">82% of FY plan</span>
+  </div>
+</div>
+
+<div class="note warn">
+  <strong>Honest read:</strong> Nếu giữ plan và execute Road to 3k Q2 (Apr Actual + May Forecast + Jun Road3k target), rồi H2 recalibrate theo Q2 %Ach từng line → FY 2026 chạm <strong>32,978 Bil</strong> = 82% budget. Khá hơn baseline "current pace" (~30,541) khoảng 2,400 Bil nhờ Q2 Road3k aggressive. Lines gây hole lớn nhất: <strong>Ecom PL chưa launch (−4,000)</strong>, <strong>Cake CL (−2,250)</strong>, <strong>MWG PL (−1,082)</strong>. Bù lại: Cake PD overperform (+1,664), ZLP CL (+274), Cake OD (+62). Net <strong>−7,172</strong>.
+</div>
+
+<h3 style="margin-top:22px">YTD Insight — Đang làm tốt vs Đang tệ</h3>
+
+<style>
+  .insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:12px 0 8px;}
+  .insight-card{background:var(--surface-2);border-radius:18px;padding:18px 22px;box-shadow:0 2px 10px rgba(26,16,51,.06);}
+  .insight-card.win{border-top:5px solid var(--mint-500);}
+  .insight-card.lose{border-top:5px solid var(--pink-700);}
+  .insight-card h4{margin:0 0 12px;font-size:1.02em;display:flex;align-items:center;gap:8px;}
+  .insight-card.win h4{color:var(--mint-700);}
+  .insight-card.lose h4{color:var(--pink-700);}
+  .insight-card .item{display:flex;justify-content:space-between;align-items:flex-start;padding:9px 0;border-bottom:1px dashed #E4E1EC;gap:12px;}
+  .insight-card .item:last-child{border-bottom:none;}
+  .insight-card .item .meta{flex:1;}
+  .insight-card .item .name{font-weight:600;color:var(--grape-900);font-size:.94em;}
+  .insight-card .item .reason{font-size:.83em;color:#6b6478;margin-top:2px;line-height:1.4;}
+  .insight-card .item .nums{text-align:right;font-family:'JetBrains Mono',monospace;font-size:.85em;white-space:nowrap;}
+  .insight-card .item .pct{font-weight:700;font-size:1.05em;display:block;}
+  .insight-card.win .pct{color:var(--mint-700);}
+  .insight-card.lose .pct{color:var(--pink-700);}
+  .insight-card .item .gap-label{font-size:.78em;color:#6b6478;}
+</style>
+
+<div class="insight-grid">
+  <div class="insight-card win">
+    <h4>✓ Đang làm tốt — vượt YTD budget</h4>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Cake Payday</div>
+        <div class="reason">YTD 1,625 vs Bud 1,251 · Daily disburse 14B→15.8B steady growth · Repeat policy NTB1234/NTB567 deploy T5</div>
+      </div>
+      <div class="nums"><span class="pct">130%</span><span class="gap-label">+374 Bil YTD</span></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">ZLP Payday</div>
+        <div class="reason">YTD 32 vs Bud 22 · Small base nhưng beat aggressive — ZLP đang là channel ngoài Cake duy nhất bám sát plan</div>
+      </div>
+      <div class="nums"><span class="pct">145%</span><span class="gap-label">+10 Bil YTD</span></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Cake Overdraft</div>
+        <div class="reason">YTD 222 vs Bud 180 · Đang vượt mặc dù Mass đã closed từ Jul'25 — OD-TD UW sẽ unlock thêm Q3</div>
+      </div>
+      <div class="nums"><span class="pct">124%</span><span class="gap-label">+42 Bil YTD</span></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">ZLP Cashloan (Q2 inflection)</div>
+        <div class="reason">YTD-Apr 83% nhưng Apr+May actual 366 vs Q2 plan = trên track Road3k. Ticket bump T5 sẽ đẩy tiếp</div>
+      </div>
+      <div class="nums"><span class="pct">125%<span style="font-size:.6em;color:#6b6478">  Q2</span></span><span class="gap-label">+22 Bil/m</span></div>
+    </div>
+  </div>
+
+  <div class="insight-card lose">
+    <h4>✗ Đang tệ — cần action gấp</h4>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Ecom Paylater (NEW)</div>
+        <div class="reason">YTD 0 vs Bud 154 · Product CHƯA LAUNCH. Budget back-loaded ramp 77→692/m → nếu không go-live Q3 thì lose 4,000 Bil FY</div>
+      </div>
+      <div class="nums"><span class="pct">0%</span><span class="gap-label">−154 Bil YTD<br>−4,000 FY</span></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Cake Cashloan</div>
+        <div class="reason">YTD 1,628 vs Bud 2,323 · Daily app +28% MoM nhưng AR ETB rớt 16.9%→12.2% = root cause. Chưa có owner deep-dive</div>
+      </div>
+      <div class="nums"><span class="pct">70%</span><span class="gap-label">−694 Bil YTD</span></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">MWG Paylater (QTV)</div>
+        <div class="reason">YTD 124 vs Bud 290 · AR đang ~6x% (target 70%). Budget back-loaded mạnh Dec gấp 11x Jan, gần như không có buffer</div>
+      </div>
+      <div class="nums"><span class="pct">43%</span><span class="gap-label">−166 Bil YTD</span></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Other Paylater BAU (BE/VNPAY/FPT)</div>
+        <div class="reason">YTD 77 vs Bud 180 · 3 partner stuck, no clear lift action. Risk Committee đã flag VNPAY "rủi ro thấp, cần mở rộng" mà chưa kick</div>
+      </div>
+      <div class="nums"><span class="pct">43%</span><span class="gap-label">−103 Bil YTD</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="note">
+  <strong>Pattern:</strong> 3 best performers đều là <strong>own-channel products</strong> (Cake PD, Cake OD) hoặc <strong>small base high-momentum</strong> (ZLP PD). 4 worst performers đều là <strong>Paylater hoặc CL với budget back-loaded</strong> — risk lớn là budget assumed ramp aggressive trong khi delivery chưa ramp kịp. <strong>Cake Cashloan là exception</strong>: own-channel nhưng AR drop làm miss — fix được sẽ recover nhanh nhất.
+</div>
+
+<h2>1.2 · YTD Actual vs Budget — by Channel</h2>
+<div class="chart-grid">
+  <div class="chart-card">
+    <h4>YTD Jan→Apr · Actual vs Budget (Bil VND)</h4>
+    <div class="chart-wrap tall"><canvas id="chartYtdAvB"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <h4>FY26 Budget vs Revised Forecast (Bil VND)</h4>
+    <div class="chart-wrap tall"><canvas id="chartFyAvB"></canvas></div>
+  </div>
+</div>
+
+<h2>1.3 · Monthly Trajectory 2026 — Actual / Budget / Revised</h2>
+<div class="chart-grid full">
+  <div class="chart-card">
+    <h4>Lending Disbursement Monthly Run-rate (Bil VND)</h4>
+    <div class="chart-wrap"><canvas id="chartMonthly"></canvas></div>
+  </div>
+</div>
+
+<div class="note">
+  <strong>Reading the chart:</strong>
+  <ul style="margin:6px 0 0 18px;font-size:.9em;line-height:1.5">
+    <li><span style="color:#7B2FBE;font-weight:600">━━ Budget</span>: kế hoạch FY26 từ Sales Plan 2026 fin v4. Back-loaded (Dec gấp 2.3x Jan).</li>
+    <li><span style="color:#FF2D71;font-weight:600">━━ Actual + May forecast</span>: Apr 2,144 / May 2,400.</li>
+    <li><span style="color:#0BC76A;font-weight:600">┄┄ Revised Apr→Dec</span>: Apr Actual + May Forecast + Jun Road3k target + Jul-Dec recalibrated theo Q2 %Ach từng line. FY = <strong>32,978 Bil</strong>.</li>
+  </ul>
+</div>
+
+<h2>1.4 · Channel × Product · YTD + FY Revised</h2>
+<table class="data">
+  <thead>
+    <tr>
+      <th class="label" style="text-align:left">Channel</th>
+      <th class="label" style="text-align:left">Product</th>
+      <th>YTD Apr Actual</th>
+      <th>YTD Apr Budget</th>
+      <th>%Ach</th>
+      <th>Q2 Revised (Apr+May+Jun)</th>
+      <th>Q2 %Ach</th>
+      <th>FY26 Budget</th>
+      <th>Revised FY</th>
+      <th>FY Gap</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td class="label" rowspan="3">VDS</td><td class="text">Cashloan</td><td class="num">1,897</td><td class="num">2,151</td><td class="num neg">88%</td><td class="num">1,691</td><td class="num neg">95%</td><td class="num">7,759</td><td class="num">7,258</td><td class="num neg">−501</td></tr>
+    <tr><td class="text">Payday</td><td class="num">1,324</td><td class="num">1,547</td><td class="num neg">86%</td><td class="num">1,103</td><td class="num neg">86%</td><td class="num">5,590</td><td class="num">4,818</td><td class="num neg">−773</td></tr>
+    <tr class="subtotal"><td class="text"><strong>VDS subtotal</strong></td><td class="num">3,221</td><td class="num">3,698</td><td class="num neg">87%</td><td class="num">2,794</td><td class="num neg">91%</td><td class="num">13,349</td><td class="num">12,076</td><td class="num neg">−1,274</td></tr>
+
+    <tr><td class="label" rowspan="4">CAKE</td><td class="text">Cashloan</td><td class="num">1,628</td><td class="num">2,323</td><td class="num breach">70%</td><td class="num">1,521</td><td class="num breach">76%</td><td class="num">8,890</td><td class="num">6,640</td><td class="num breach">−2,250</td></tr>
+    <tr><td class="text">Payday</td><td class="num">1,625</td><td class="num">1,251</td><td class="num pos">130%</td><td class="num">1,465</td><td class="num pos">137%</td><td class="num">4,679</td><td class="num">6,343</td><td class="num pos">+1,664</td></tr>
+    <tr><td class="text">Overdraft</td><td class="num">222</td><td class="num">180</td><td class="num pos">124%</td><td class="num">150</td><td class="num pos">120%</td><td class="num">500</td><td class="num">562</td><td class="num pos">+62</td></tr>
+    <tr class="subtotal"><td class="text"><strong>CAKE subtotal</strong></td><td class="num">3,475</td><td class="num">3,754</td><td class="num">93%</td><td class="num">3,136</td><td class="num">101%</td><td class="num">14,069</td><td class="num">13,545</td><td class="num neg">−524</td></tr>
+
+    <tr><td class="label" rowspan="3">MWG</td><td class="text">Cashloan</td><td class="num">503</td><td class="num">561</td><td class="num">90%</td><td class="num">383</td><td class="num neg">68%</td><td class="num">2,945</td><td class="num">2,130</td><td class="num neg">−815</td></tr>
+    <tr><td class="text">Paylater (QTV)</td><td class="num">124</td><td class="num">290</td><td class="num breach">43%</td><td class="num">272</td><td class="num neg">67%</td><td class="num">3,186</td><td class="num">2,104</td><td class="num breach">−1,082</td></tr>
+    <tr class="subtotal"><td class="text"><strong>MWG subtotal</strong></td><td class="num">628</td><td class="num">851</td><td class="num neg">74%</td><td class="num">655</td><td class="num neg">67%</td><td class="num">6,131</td><td class="num">4,234</td><td class="num breach">−1,897</td></tr>
+
+    <tr><td class="label" rowspan="3">ZLP</td><td class="text">Cashloan</td><td class="num">458</td><td class="num">554</td><td class="num neg">83%</td><td class="num">576</td><td class="num pos">125%</td><td class="num">1,985</td><td class="num">2,259</td><td class="num pos">+274</td></tr>
+    <tr><td class="text">Payday</td><td class="num">32</td><td class="num">22</td><td class="num pos">145%</td><td class="num">20</td><td class="num pos">110%</td><td class="num">77</td><td class="num">100</td><td class="num pos">+23</td></tr>
+    <tr class="subtotal"><td class="text"><strong>ZLP subtotal</strong></td><td class="num">490</td><td class="num">576</td><td class="num neg">85%</td><td class="num">596</td><td class="num pos">125%</td><td class="num">2,063</td><td class="num">2,359</td><td class="num pos">+297</td></tr>
+
+    <tr><td class="label" rowspan="4">OTHERS</td><td class="text">Other Paylater BAU (BE/VNPAY/FPT)</td><td class="num">77</td><td class="num">180</td><td class="num breach">43%</td><td class="num">40</td><td class="num breach">30%</td><td class="num">540</td><td class="num">184</td><td class="num breach">−356</td></tr>
+    <tr><td class="text">Ecom Paylater (NEW · chưa launch)</td><td class="num">0</td><td class="num">154</td><td class="num breach">0%</td><td class="num">0</td><td class="num breach">0%</td><td class="num">4,000</td><td class="num">0</td><td class="num breach">−4,000</td></tr>
+    <tr><td class="text">Other CL+PD (BE CL, VNPAY CL/PD, etc.)</td><td class="num">~123</td><td class="num">—</td><td class="num">—</td><td class="num">~200</td><td class="num">—</td><td class="num">0</td><td class="num pos">~580</td><td class="num pos">+580</td></tr>
+    <tr class="subtotal"><td class="text"><strong>OTHERS subtotal</strong></td><td class="num">~200</td><td class="num">334</td><td class="num breach">60%</td><td class="num">~240</td><td class="num breach">42%</td><td class="num">4,540</td><td class="num">764</td><td class="num breach">−3,776</td></tr>
+
+    <tr class="total"><td class="text" colspan="2"><strong>GRAND TOTAL</strong></td><td class="num">7,913</td><td class="num">9,212</td><td class="num">86%</td><td class="num">7,421</td><td class="num neg">88%</td><td class="num">40,150</td><td class="num">32,978</td><td class="num">−7,172</td></tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <strong>Cách tính Revised FY:</strong> Revised FY = Jan-Mar Actual + (Apr Actual + May Forecast + Jun Road3k target) + Jul-Dec recalibrated theo Q2 %Ach từng line × monthly budget. Cake OD và ZLP PD cap ach% ở 100% cho H2 (vì hard limit của product). Other CL+PD (BE/VNPAY/VNPOST) không có trong budget plan nên tính như "bonus" vào tổng.
+</div>
+
+<h2>1.5 · Monthly View · Actual / Budget / Revised by Channel × Product</h2>
+
+<style>
+  table.monthly{font-size:.78em;}
+  table.monthly th,table.monthly td{padding:5px 6px;}
+  table.monthly th{font-size:.78em;}
+  table.monthly tr.actual td{background:rgba(255,45,113,.06);color:var(--pink-700);}
+  table.monthly tr.budget td{background:rgba(123,47,190,.05);color:var(--grape-500);}
+  table.monthly tr.revised td{background:rgba(11,199,106,.06);color:var(--mint-700);font-weight:600;}
+  table.monthly tr.actual td.label,table.monthly tr.budget td.label,table.monthly tr.revised td.label{background:var(--surface-1);color:var(--grape-900);}
+  table.monthly tr.actual td.row-type,table.monthly tr.budget td.row-type,table.monthly tr.revised td.row-type{font-weight:700;text-align:left;font-family:'Be Vietnam Pro';font-size:.85em;}
+  table.monthly .ftcell{font-weight:700;background:#1A1033;color:#fff;font-family:'JetBrains Mono';}
+  .legend{display:flex;gap:18px;font-size:.86em;margin:8px 0 4px;align-items:center;}
+  .legend .swatch{display:inline-block;width:14px;height:14px;border-radius:3px;margin-right:4px;vertical-align:middle;}
+</style>
+
+<div class="legend">
+  <span><span class="swatch" style="background:rgba(255,45,113,.18);border:1px solid #FF2D71"></span><strong style="color:#B8154F">Actual</strong> · Jan→Apr exact, May = forecast</span>
+  <span><span class="swatch" style="background:rgba(123,47,190,.15);border:1px solid #7B2FBE"></span><strong style="color:#7B2FBE">Budget</strong> · Sales Plan 2026 fin v4</span>
+  <span><span class="swatch" style="background:rgba(11,199,106,.18);border:1px solid #0BC76A"></span><strong style="color:#059952">Revised</strong> · Q2 = Apr+May+Jun(Road3k), H2 = recalib theo Q2 %Ach</span>
+</div>
+
+<div style="overflow-x:auto">
+<table class="data monthly">
+  <thead>
+    <tr>
+      <th class="label" style="text-align:left">Channel</th>
+      <th class="label" style="text-align:left">Product</th>
+      <th class="label" style="text-align:left">Type</th>
+      <th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Jun</th>
+      <th>Jul</th><th>Aug</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th>
+      <th>FY Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- VDS CASHLOAN -->
+    <tr class="actual"><td class="label" rowspan="3">VDS</td><td class="text" rowspan="3">Cashloan</td><td class="row-type">Actual</td>
+      <td class="num">479</td><td class="num">431</td><td class="num">494</td><td class="num">492</td><td class="num">539</td><td class="num">—</td>
+      <td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num ftcell">2,436</td></tr>
+    <tr class="budget"><td class="row-type">Budget</td>
+      <td class="num">539</td><td class="num">485</td><td class="num">555</td><td class="num">572</td><td class="num">595</td><td class="num">619</td>
+      <td class="num">644</td><td class="num">669</td><td class="num">703</td><td class="num">729</td><td class="num">784</td><td class="num">867</td><td class="num ftcell">7,759</td></tr>
+    <tr class="revised"><td class="row-type">Revised</td>
+      <td class="num">479</td><td class="num">431</td><td class="num">494</td><td class="num">492</td><td class="num">539</td><td class="num">660</td>
+      <td class="num">609</td><td class="num">634</td><td class="num">666</td><td class="num">690</td><td class="num">742</td><td class="num">821</td><td class="num ftcell">7,258</td></tr>
+
+    <!-- VDS PAYDAY -->
+    <tr class="actual"><td class="label" rowspan="3">VDS</td><td class="text" rowspan="3">Payday</td><td class="row-type">Actual</td>
+      <td class="num">339</td><td class="num">305</td><td class="num">348</td><td class="num">333</td><td class="num">370</td><td class="num">—</td>
+      <td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num ftcell">1,694</td></tr>
+    <tr class="budget"><td class="row-type">Budget</td>
+      <td class="num">388</td><td class="num">349</td><td class="num">399</td><td class="num">411</td><td class="num">428</td><td class="num">445</td>
+      <td class="num">463</td><td class="num">481</td><td class="num">506</td><td class="num">521</td><td class="num">566</td><td class="num">633</td><td class="num ftcell">5,590</td></tr>
+    <tr class="revised"><td class="row-type">Revised</td>
+      <td class="num">339</td><td class="num">305</td><td class="num">348</td><td class="num">333</td><td class="num">370</td><td class="num">400</td>
+      <td class="num">398</td><td class="num">414</td><td class="num">434</td><td class="num">448</td><td class="num">486</td><td class="num">544</td><td class="num ftcell">4,818</td></tr>
+
+    <!-- CAKE CASHLOAN -->
+    <tr class="actual"><td class="label" rowspan="3">CAKE</td><td class="text" rowspan="3">Cashloan</td><td class="row-type">Actual</td>
+      <td class="num">404</td><td class="num">364</td><td class="num">416</td><td class="num">444</td><td class="num">478</td><td class="num">—</td>
+      <td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num ftcell">2,106</td></tr>
+    <tr class="budget"><td class="row-type">Budget</td>
+      <td class="num">578</td><td class="num">520</td><td class="num">595</td><td class="num">630</td><td class="num">668</td><td class="num">708</td>
+      <td class="num">751</td><td class="num">796</td><td class="num">844</td><td class="num">875</td><td class="num">922</td><td class="num">1,003</td><td class="num ftcell">8,890</td></tr>
+    <tr class="revised"><td class="row-type">Revised</td>
+      <td class="num">404</td><td class="num">364</td><td class="num">416</td><td class="num">444</td><td class="num">478</td><td class="num">599</td>
+      <td class="num">569</td><td class="num">603</td><td class="num">640</td><td class="num">664</td><td class="num">699</td><td class="num">760</td><td class="num ftcell">6,640</td></tr>
+
+    <!-- CAKE PAYDAY -->
+    <tr class="actual"><td class="label" rowspan="3">CAKE</td><td class="text" rowspan="3">Payday</td><td class="row-type">Actual</td>
+      <td class="num">406</td><td class="num">366</td><td class="num">427</td><td class="num">426</td><td class="num">521</td><td class="num">—</td>
+      <td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num ftcell">2,146</td></tr>
+    <tr class="budget"><td class="row-type">Budget</td>
+      <td class="num">309</td><td class="num">278</td><td class="num">324</td><td class="num">340</td><td class="num">357</td><td class="num">375</td>
+      <td class="num">394</td><td class="num">414</td><td class="num">434</td><td class="num">475</td><td class="num">478</td><td class="num">501</td><td class="num ftcell">4,679</td></tr>
+    <tr class="revised"><td class="row-type">Revised</td>
+      <td class="num">406</td><td class="num">366</td><td class="num">427</td><td class="num">426</td><td class="num">521</td><td class="num">518</td>
+      <td class="num">538</td><td class="num">565</td><td class="num">593</td><td class="num">648</td><td class="num">652</td><td class="num">683</td><td class="num ftcell">6,343</td></tr>
+
+    <!-- CAKE OVERDRAFT -->
+    <tr class="actual"><td class="label" rowspan="3">CAKE</td><td class="text" rowspan="3">Overdraft</td><td class="row-type">Actual</td>
+      <td class="num">57</td><td class="num">57</td><td class="num">57</td><td class="num">50</td><td class="num">50</td><td class="num">—</td>
+      <td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num ftcell">272</td></tr>
+    <tr class="budget"><td class="row-type">Budget</td>
+      <td class="num">45</td><td class="num">45</td><td class="num">45</td><td class="num">45</td><td class="num">40</td><td class="num">40</td>
+      <td class="num">40</td><td class="num">40</td><td class="num">40</td><td class="num">40</td><td class="num">40</td><td class="num">40</td><td class="num ftcell">500</td></tr>
+    <tr class="revised"><td class="row-type">Revised</td>
+      <td class="num">57</td><td class="num">57</td><td class="num">57</td><td class="num">50</td><td class="num">50</td><td class="num">50</td>
+      <td class="num">40</td><td class="num">40</td><td class="num">40</td><td class="num">40</td><td class="num">40</td><td class="num">40</td><td class="num ftcell">562</td></tr>
+
+    <!-- MWG CASHLOAN -->
+    <tr class="actual"><td class="label" rowspan="3">MWG</td><td class="text" rowspan="3">Cashloan</td><td class="row-type">Actual</td>
+      <td class="num">131</td><td class="num">124</td><td class="num">144</td><td class="num">104</td><td class="num">120</td><td class="num">—</td>
+      <td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num ftcell">623</td></tr>
+    <tr class="budget"><td class="row-type">Budget</td>
+      <td class="num">128</td><td class="num">121</td><td class="num">141</td><td class="num">171</td><td class="num">188</td><td class="num">207</td>
+      <td class="num">249</td><td class="num">274</td><td class="num">301</td><td class="num">332</td><td class="num">396</td><td class="num">436</td><td class="num ftcell">2,945</td></tr>
+    <tr class="revised"><td class="row-type">Revised</td>
+      <td class="num">131</td><td class="num">124</td><td class="num">144</td><td class="num">104</td><td class="num">120</td><td class="num">159</td>
+      <td class="num">169</td><td class="num">186</td><td class="num">204</td><td class="num">225</td><td class="num">269</td><td class="num">295</td><td class="num ftcell">2,130</td></tr>
+
+    <!-- MWG PAYLATER -->
+    <tr class="actual"><td class="label" rowspan="3">MWG</td><td class="text" rowspan="3">Paylater (QTV)</td><td class="row-type">Actual</td>
+      <td class="num">28</td><td class="num">24</td><td class="num">37</td><td class="num">35</td><td class="num">70</td><td class="num">—</td>
+      <td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num ftcell">194</td></tr>
+    <tr class="budget"><td class="row-type">Budget</td>
+      <td class="num">60</td><td class="num">51</td><td class="num">78</td><td class="num">101</td><td class="num">132</td><td class="num">171</td>
+      <td class="num">223</td><td class="num">290</td><td class="num">377</td><td class="num">459</td><td class="num">560</td><td class="num">684</td><td class="num ftcell">3,186</td></tr>
+    <tr class="revised"><td class="row-type">Revised</td>
+      <td class="num">28</td><td class="num">24</td><td class="num">37</td><td class="num">35</td><td class="num">70</td><td class="num">167</td>
+      <td class="num">150</td><td class="num">195</td><td class="num">253</td><td class="num">309</td><td class="num">377</td><td class="num">459</td><td class="num ftcell">2,104</td></tr>
+
+    <!-- ZLP CASHLOAN -->
+    <tr class="actual"><td class="label" rowspan="3">ZLP</td><td class="text" rowspan="3">Cashloan</td><td class="row-type">Actual</td>
+      <td class="num">96</td><td class="num">86</td><td class="num">99</td><td class="num">176</td><td class="num">190</td><td class="num">—</td>
+      <td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num ftcell">648</td></tr>
+    <tr class="budget"><td class="row-type">Budget</td>
+      <td class="num">139</td><td class="num">125</td><td class="num">143</td><td class="num">147</td><td class="num">153</td><td class="num">159</td>
+      <td class="num">166</td><td class="num">172</td><td class="num">181</td><td class="num">190</td><td class="num">200</td><td class="num">210</td><td class="num ftcell">1,985</td></tr>
+    <tr class="revised"><td class="row-type">Revised</td>
+      <td class="num">96</td><td class="num">86</td><td class="num">99</td><td class="num">176</td><td class="num">190</td><td class="num">210</td>
+      <td class="num">208</td><td class="num">216</td><td class="num">227</td><td class="num">238</td><td class="num">250</td><td class="num">262</td><td class="num ftcell">2,259</td></tr>
+
+    <!-- ZLP PAYDAY -->
+    <tr class="actual"><td class="label" rowspan="3">ZLP</td><td class="text" rowspan="3">Payday</td><td class="row-type">Actual</td>
+      <td class="num">11</td><td class="num">10</td><td class="num">11</td><td class="num">0</td><td class="num">10</td><td class="num">—</td>
+      <td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num ftcell">42</td></tr>
+    <tr class="budget"><td class="row-type">Budget</td>
+      <td class="num">5</td><td class="num">5</td><td class="num">6</td><td class="num">6</td><td class="num">6</td><td class="num">6</td>
+      <td class="num">7</td><td class="num">7</td><td class="num">7</td><td class="num">7</td><td class="num">8</td><td class="num">8</td><td class="num ftcell">77</td></tr>
+    <tr class="revised"><td class="row-type">Revised</td>
+      <td class="num">11</td><td class="num">10</td><td class="num">11</td><td class="num">0</td><td class="num">10</td><td class="num">10</td>
+      <td class="num">7</td><td class="num">7</td><td class="num">8</td><td class="num">8</td><td class="num">9</td><td class="num">9</td><td class="num ftcell">100</td></tr>
+
+    <!-- OTHERS: Other PL BAU -->
+    <tr class="actual"><td class="label" rowspan="3">OTHERS</td><td class="text" rowspan="3">Other Paylater BAU</td><td class="row-type">Actual</td>
+      <td class="num">22</td><td class="num">21</td><td class="num">21</td><td class="num">13</td><td class="num">13</td><td class="num">—</td>
+      <td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num ftcell">90</td></tr>
+    <tr class="budget"><td class="row-type">Budget</td>
+      <td class="num">45</td><td class="num">45</td><td class="num">45</td><td class="num">45</td><td class="num">45</td><td class="num">45</td>
+      <td class="num">45</td><td class="num">45</td><td class="num">45</td><td class="num">45</td><td class="num">45</td><td class="num">45</td><td class="num ftcell">540</td></tr>
+    <tr class="revised"><td class="row-type">Revised</td>
+      <td class="num">22</td><td class="num">21</td><td class="num">21</td><td class="num">13</td><td class="num">13</td><td class="num">13</td>
+      <td class="num">13</td><td class="num">13</td><td class="num">13</td><td class="num">13</td><td class="num">13</td><td class="num">13</td><td class="num ftcell">184</td></tr>
+
+    <!-- OTHERS: Ecom PL -->
+    <tr class="actual"><td class="label" rowspan="3">OTHERS</td><td class="text" rowspan="3">Ecom Paylater (NEW)</td><td class="row-type">Actual</td>
+      <td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">—</td>
+      <td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num ftcell">0</td></tr>
+    <tr class="budget"><td class="row-type">Budget</td>
+      <td class="num">0</td><td class="num">0</td><td class="num">77</td><td class="num">77</td><td class="num">154</td><td class="num">308</td>
+      <td class="num">385</td><td class="num">462</td><td class="num">538</td><td class="num">615</td><td class="num">692</td><td class="num">692</td><td class="num ftcell">4,000</td></tr>
+    <tr class="revised"><td class="row-type">Revised</td>
+      <td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td>
+      <td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num ftcell">0</td></tr>
+
+    <!-- OTHERS: Other CL+PD bonus -->
+    <tr class="actual"><td class="label" rowspan="3">OTHERS</td><td class="text" rowspan="3">Other CL+PD (BE/VNPAY/etc.)</td><td class="row-type">Actual</td>
+      <td class="num">~27</td><td class="num">~27</td><td class="num">~27</td><td class="num">~75</td><td class="num">~50</td><td class="num">—</td>
+      <td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num ftcell">~206</td></tr>
+    <tr class="budget"><td class="row-type">Budget</td>
+      <td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td>
+      <td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num ftcell">0</td></tr>
+    <tr class="revised"><td class="row-type">Revised</td>
+      <td class="num">~27</td><td class="num">~27</td><td class="num">~27</td><td class="num">~75</td><td class="num">~50</td><td class="num">~75</td>
+      <td class="num">~50</td><td class="num">~50</td><td class="num">~50</td><td class="num">~50</td><td class="num">~50</td><td class="num">~50</td><td class="num ftcell">~580</td></tr>
+
+    <!-- GRAND TOTAL -->
+    <tr class="actual"><td class="label" colspan="2"><strong>GRAND TOTAL</strong></td><td class="row-type">Actual</td>
+      <td class="num">2,000</td><td class="num">1,815</td><td class="num">2,098</td><td class="num">2,148</td><td class="num">2,411</td><td class="num">—</td>
+      <td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num ftcell">10,471</td></tr>
+    <tr class="budget"><td class="label" colspan="2"></td><td class="row-type">Budget</td>
+      <td class="num">2,235</td><td class="num">2,023</td><td class="num">2,407</td><td class="num">2,546</td><td class="num">2,766</td><td class="num">3,084</td>
+      <td class="num">3,365</td><td class="num">3,650</td><td class="num">3,976</td><td class="num">4,289</td><td class="num">4,692</td><td class="num">5,118</td><td class="num ftcell">40,150</td></tr>
+    <tr class="revised"><td class="label" colspan="2"></td><td class="row-type">Revised</td>
+      <td class="num">2,000</td><td class="num">1,815</td><td class="num">2,098</td><td class="num">2,148</td><td class="num">2,411</td><td class="num">2,861</td>
+      <td class="num">2,751</td><td class="num">2,923</td><td class="num">3,128</td><td class="num">3,333</td><td class="num">3,587</td><td class="num">3,936</td><td class="num ftcell">32,991</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="note">
+  <strong>Notes:</strong>
+  <ul style="margin:6px 0 0 18px;font-size:.9em">
+    <li>Jan-Mar Actual per line được proportionally allocated từ YTD Jan-Apr Actual (JSON) trừ Apr Actual (sheet 7), distribute theo budget weight. Total Jan-Mar reconciles với JSON.</li>
+    <li>Jun Revised = Road to 3k Q2 target (Daily × 30 days). Cake OD và Other CL+PD không có trong Road3k, dùng May actual extrapolate.</li>
+    <li>H2 Revised (Jul-Dec) = Budget × Q2 %Ach per line. Cake OD và ZLP PD cap 100%.</li>
+    <li>Grand Total Revised FY 32,991 ≈ 32,978 (rounding khác do per-line cap).</li>
+  </ul>
+</div>
+
+<h2>1.6 · Action Gap — Top Lines Cần Quyết Định</h2>
+
+<div class="gap-card breach">
+  <h4>Ecom Paylater · Gap <span class="gap-num">−4,000 Bil FY</span></h4>
+  <p><strong>Tình trạng:</strong> Budget 4,000 Bil FY (Mar→Dec ramp from 77 → 692/m), nhưng product CHƯA LAUNCH. YTD Apr Actual = 0.</p>
+  <p><strong>Required to recover:</strong> Live sớm Q3, đạt run-rate 500 Bil/m T7 trở đi → có thể đóng được ~3,000 Bil trong nửa cuối năm. Cần BRD finalize T5, dev kick T6.</p>
+  <p><strong>Decision needed:</strong> Có go-live không? Nếu yes → assign owner + timeline. Nếu no → de-scope khỏi FY plan, accept gap và bù bằng line khác.</p>
+</div>
+
+<div class="gap-card breach">
+  <h4>Cake Cashloan · Gap <span class="gap-num">−2,250 Bil FY</span></h4>
+  <p><strong>Tình trạng:</strong> Q2 %Ach 76% (worst trong CL portfolio). May AR ETB rớt 16.9% → 12.2% là root cause hiện tại. Daily app đang +28% MoM nhưng conversion rớt.</p>
+  <p><strong>Required to recover:</strong> Đưa AR ETB về 16-17% từ T6 — capacity đủ (daily app 10.3k). Nếu fix được, run-rate có thể về 700 Bil/m late Q3 → đóng được ~1,200 Bil gap.</p>
+  <p><strong>Decision needed:</strong> Kick Risk deep-dive AR drop trong tuần 4 T5 (hiện chưa có owner).</p>
+</div>
+
+<div class="gap-card breach">
+  <h4>MWG Paylater QTV · Gap <span class="gap-num">−1,082 Bil FY</span></h4>
+  <p><strong>Tình trạng:</strong> Q2 %Ach 67% (Jun Road3k aggressive 167 Bil vs Apr 35). Budget back-loaded mạnh (Dec 684 Bil vs Jan 60 Bil ~ 11x). Hiện AR ~6x%.</p>
+  <p><strong>Required to recover:</strong> Transaction score build T5 + AR lên 70% target có thể đẩy run-rate. Live CD 1:1 đang in-progress. Nếu Q2 hit Road3k 167 Bil Jun, H2 run-rate có thể chạm ~450 Bil/m late year.</p>
+  <p><strong>Decision needed:</strong> Realistic về budget MWG PL — có giảm Dec ramp xuống không?</p>
+</div>
+
+<div class="gap-card win">
+  <h4>Cake Payday · Surplus <span class="gap-num">+1,664 Bil FY</span></h4>
+  <p><strong>Tình trạng:</strong> Q2 %Ach 137% — overperform mạnh nhất. Daily disburse 14B → 15.8B đang growth tốt. Repeat policy NTB1234/NTB567 deploy T5 sẽ thêm +30-60 Bil/m.</p>
+  <p><strong>Recommendation:</strong> Đây là buffer chính để bù gap Cake CL + MWG PL. Tiếp tục push, monitor LG2 để không break risk control. Revised FY 6,343 Bil vượt budget 4,679 ~36%.</p>
+</div>
+
+<div class="gap-card win">
+  <h4>ZLP · Surplus <span class="gap-num">+297 Bil FY</span></h4>
+  <p><strong>Tình trạng:</strong> Q2 %Ach 125% — channel duy nhất ngoài Cake PD vượt plan. ZLP CL ticket bump (NTB1 70M / NTB2 60M / NTB3 50M) đã align Risk, golive đầu T5.</p>
+  <p><strong>Recommendation:</strong> Đây là channel high-quality để push thêm. Risk Committee đã warning ZLP "đạt target rất thấp" — nhưng dùng Road3k aggressive thì lại beat. Cần verify Q2 actual khớp Road3k T6.</p>
+</div>
+
+<div class="gap-card breach">
+  <h4>VDS · Gap <span class="gap-num">−1,274 Bil FY</span> (combined CL + PD)</h4>
+  <p><strong>Tình trạng:</strong> Q2 %Ach 91% (CL 95%, PD 86%) — gần bám sát Road3k. Approve=Request pilot S2 đang +44 Bil/m, full rollout T6.</p>
+  <p><strong>Required to recover:</strong> Score policy enhancement + ticket bump series → đủ để bám sát 90-95% budget. VDS PD cut nhóm 450-700 telco vì chạm ngưỡng lỗ.</p>
+  <p><strong>Decision needed:</strong> Pilot rollout timeline. Risk approval cho phase 2.</p>
+</div>
+
+</div>
+<!-- END TAB 1 -->
+
+<!-- ============================================= -->
+<!-- TAB 2: P&L Actual vs Budget                   -->
+<!-- ============================================= -->
+<div id="tab-2" class="tab-content">
+
+<h2>2.1 · P&amp;L YTD Snapshot (Jan→Apr 2026)</h2>
+<div class="kpi-grid">
+  <div class="kpi beat">
+    <div class="label">TOI YTD</div>
+    <div class="value">1,356</div>
+    <div class="target">Budget <strong>1,354</strong> · 100%</div>
+    <span class="delta delta-pos">+0.2% on plan</span>
+  </div>
+  <div class="kpi beat">
+    <div class="label">Provision YTD</div>
+    <div class="value">707</div>
+    <div class="target">Budget <strong>739</strong> · 96%</div>
+    <span class="delta delta-pos">−32 Bil dưới budget (good)</span>
+  </div>
+  <div class="kpi beat">
+    <div class="label">PBO YTD</div>
+    <div class="value">362</div>
+    <div class="target">Budget <strong>330</strong> · 110%</div>
+    <span class="delta delta-pos">+32 Bil vượt budget</span>
+  </div>
+  <div class="kpi beat">
+    <div class="label">PBT YTD</div>
+    <div class="value">272</div>
+    <div class="target">Budget <strong>229</strong> · 119% · FY Tgt <strong>700</strong></div>
+    <span class="delta delta-pos">+43 Bil vượt budget</span>
+  </div>
+</div>
+
+<div class="note win">
+  <strong>Highlight:</strong> Mặc dù Disbursement miss budget 14% (Tab 1), P&amp;L bottom line đang <strong>vượt plan</strong> ở mọi metric: TOI match (100%), Provision thấp hơn budget (96% = ít rủi ro thực tế), PBO vượt (+10%), PBT vượt mạnh (+19%). Đây là kết quả của <strong>yield-first execution</strong> — biên lợi nhuận cao hơn assumption budget bù được volume gap. PBT YTD = 272 Bil = <strong>39% FY target 700</strong> (pro-rata 4/12 = 33% → đang vượt linear pace).
+</div>
+
+<h3 style="margin-top:22px">YTD Insight — Margin Compression vs Expansion</h3>
+
+<div class="insight-grid">
+  <div class="insight-card win">
+    <h4>✓ Đang expand margin / overperform P&amp;L</h4>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Cake Payday</div>
+        <div class="reason">CoR Act 3.0% vs Bud 3.3% (−0.3pp). Volume vượt 30% YTD đẩy TOI +5 Bil, PBO +9 Bil. Best PBO margin trong portfolio (5.6%)</div>
+      </div>
+      <div class="nums"><span class="pct">+9 Bil</span><span class="gap-label">PBO surplus</span></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">MWG Cashloan</div>
+        <div class="reason">Yield 20.4% (no budget benchmark). PBO margin 7.1% — top trong CL portfolio. Volume YTD 90% budget nhưng margin chất lượng</div>
+      </div>
+      <div class="nums"><span class="pct">7.1%</span><span class="gap-label">PBO margin</span></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">ZLP Cashloan</div>
+        <div class="reason">PBO margin 8.9% — cao nhất ALL channel × product. Yield 19.3% + CoR thấp 7.2% (NPL 3.3%, LG2 8.0%)</div>
+      </div>
+      <div class="nums"><span class="pct">8.9%</span><span class="gap-label">PBO margin</span></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">VDS Cashloan</div>
+        <div class="reason">Match budget gần như exact (Yield 23.2%, CoR 11.5%, PBO 3.5%). Largest contributor TOI tuyệt đối (441 Bil = 33% total TOI)</div>
+      </div>
+      <div class="nums"><span class="pct">100%</span><span class="gap-label">on plan</span></div>
+    </div>
+  </div>
+
+  <div class="insight-card lose">
+    <h4>✗ Margin compression / cần watch</h4>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Cake Cashloan</div>
+        <div class="reason">CoR Act 14.9% vs Bud 15.3% — hơi tốt hơn budget thực tế. NHƯNG Volume miss 30% (−694 Bil) → TOI miss tương ứng. Còn lại PBO match budget chỉ vì cost không scale theo volume</div>
+      </div>
+      <div class="nums"><span class="pct">14.9%</span><span class="gap-label">CoR</span></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Cake Overdraft</div>
+        <div class="reason">PBO margin <strong>−2.9%</strong> (lỗ ở PBO). Mass closed Jul'25, không có scale → fixed cost ăn margin. Budget cũng đã predict lỗ (−4.2%) nên có khá hơn nhưng vẫn không cover overhead</div>
+      </div>
+      <div class="nums"><span class="pct">−2.9%</span><span class="gap-label">PBO loss</span></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">VDS Payday</div>
+        <div class="reason">CoR 4.6% (Bud 4.8%) — slightly tốt. Yield 9.4% — match. NHƯNG Roll Rate chạm ngưỡng lỗ −0.1% PBT%ticket (Risk Committee April flag). Cần cut nhóm 450-700 telco</div>
+      </div>
+      <div class="nums"><span class="pct">9.4%</span><span class="gap-label">Yield</span></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Cake Payday %Active CoR</div>
+        <div class="reason">Repeat policy deploy T5 → expect Provision tăng 3-4% (CRO Vinh Hà flag). Sẽ chèn ép PBO margin trong T5-T6 nếu Volume không tăng kịp</div>
+      </div>
+      <div class="nums"><span class="pct">↑3-4%</span><span class="gap-label">Prov forward</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="note">
+  <strong>Pattern:</strong> Portfolio đang chạy đúng strategy <strong>PBT-first mindset</strong> (yield optimization + risk control thay vì volume chase). PBT YTD vượt budget 19% mặc dù Disbursement chỉ 86% → nếu maintain trend H2, có thể đạt 700 Bil PBT FY mà không cần đủ 40k Bil disbursement. Tuy nhiên 4 line đang dưới — Cake CL volume miss, Cake OD lỗ, VDS PD risk, Cake PD forward provision — cần monitor không cho compress margin tiếp.
+</div>
+
+<h2>2.2 · Monthly P&amp;L Trend — Actual vs Budget</h2>
+
+<style>
+  .filter-bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:10px 0 6px;}
+  .filter-bar label{font-weight:600;color:var(--grape-500);font-size:.9em;}
+  .filter-bar select{font-family:'Be Vietnam Pro',sans-serif;padding:8px 14px;border:1.5px solid var(--grape-500);
+                     border-radius:999px;background:#fff;color:var(--grape-900);font-size:.92em;cursor:pointer;outline:none;}
+  .filter-bar select:focus{border-color:var(--pink-500);box-shadow:0 0 0 3px rgba(255,45,113,.15);}
+</style>
+
+<div class="filter-bar">
+  <label for="pnl-metric">Metric:</label>
+  <select id="pnl-metric" onchange="updatePnlChart()">
+    <option value="toi">TOI</option>
+    <option value="prov">Provision</option>
+    <option value="pbo">PBO (Profit Before Overhead)</option>
+    <option value="pbt" selected>PBT (Profit Before Tax)</option>
+    <option value="disb">Disbursement</option>
+  </select>
+</div>
+
+<div class="chart-grid full">
+  <div class="chart-card">
+    <h4 id="pnl-chart-title">PBT — Monthly Actual vs Budget (Bil VND)</h4>
+    <div class="chart-wrap"><canvas id="chartPnlMonthly"></canvas></div>
+  </div>
+</div>
+
+<h2>2.3 · Monthly P&amp;L Table — Total Portfolio</h2>
+
+<div style="overflow-x:auto">
+<table class="data monthly">
+  <thead>
+    <tr>
+      <th class="label" style="text-align:left">Metric</th>
+      <th class="label" style="text-align:left">Type</th>
+      <th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Jun</th>
+      <th>Jul</th><th>Aug</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th>
+      <th>FY Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- TOI -->
+    <tr class="actual"><td class="label" rowspan="3"><strong>TOI</strong></td><td class="row-type">Actual</td>
+      <td class="num">342</td><td class="num">307</td><td class="num">348</td><td class="num">358</td><td class="num">—</td><td class="num">—</td>
+      <td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num ftcell">1,356</td></tr>
+    <tr class="budget"><td class="row-type">Budget</td>
+      <td class="num">342</td><td class="num">307</td><td class="num">348</td><td class="num">357</td><td class="num">399</td><td class="num">432</td>
+      <td class="num">468</td><td class="num">504</td><td class="num">542</td><td class="num">582</td><td class="num">628</td><td class="num">683</td><td class="num ftcell">5,592</td></tr>
+    <tr class="revised"><td class="row-type">%Ach</td>
+      <td class="num">100%</td><td class="num">100%</td><td class="num">100%</td><td class="num pos">100%</td><td class="num">—</td><td class="num">—</td>
+      <td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num ftcell">100%</td></tr>
+
+    <!-- PROVISION -->
+    <tr class="actual"><td class="label" rowspan="3"><strong>Provision</strong></td><td class="row-type">Actual</td>
+      <td class="num">126</td><td class="num">184</td><td class="num">212</td><td class="num">185</td><td class="num">—</td><td class="num">—</td>
+      <td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num ftcell">707</td></tr>
+    <tr class="budget"><td class="row-type">Budget</td>
+      <td class="num">126</td><td class="num">184</td><td class="num">212</td><td class="num">217</td><td class="num">234</td><td class="num">253</td>
+      <td class="num">279</td><td class="num">253</td><td class="num">267</td><td class="num">280</td><td class="num">295</td><td class="num">317</td><td class="num ftcell">2,917</td></tr>
+    <tr class="revised"><td class="row-type">%Ach <small>(lower=good)</small></td>
+      <td class="num">100%</td><td class="num">100%</td><td class="num">100%</td><td class="num pos">85%</td><td class="num">—</td><td class="num">—</td>
+      <td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num ftcell">96%</td></tr>
+
+    <!-- PBO -->
+    <tr class="actual"><td class="label" rowspan="3"><strong>PBO</strong></td><td class="row-type">Actual</td>
+      <td class="num">146</td><td class="num">57</td><td class="num">75</td><td class="num">84</td><td class="num">—</td><td class="num">—</td>
+      <td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num ftcell">362</td></tr>
+    <tr class="budget"><td class="row-type">Budget</td>
+      <td class="num">146</td><td class="num">57</td><td class="num">75</td><td class="num">52</td><td class="num">67</td><td class="num">75</td>
+      <td class="num">79</td><td class="num">134</td><td class="num">144</td><td class="num">166</td><td class="num">185</td><td class="num">201</td><td class="num ftcell">1,381</td></tr>
+    <tr class="revised"><td class="row-type">%Ach</td>
+      <td class="num">100%</td><td class="num">100%</td><td class="num">100%</td><td class="num pos">162%</td><td class="num">—</td><td class="num">—</td>
+      <td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num ftcell">110%</td></tr>
+
+    <!-- PBT -->
+    <tr class="actual"><td class="label" rowspan="3"><strong>PBT</strong></td><td class="row-type">Actual</td>
+      <td class="num">126</td><td class="num">34</td><td class="num">52</td><td class="num">60</td><td class="num">—</td><td class="num">—</td>
+      <td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num ftcell">272</td></tr>
+    <tr class="budget"><td class="row-type">Budget</td>
+      <td class="num">126</td><td class="num">34</td><td class="num">52</td><td class="num">17</td><td class="num">30</td><td class="num">37</td>
+      <td class="num">39</td><td class="num">93</td><td class="num">101</td><td class="num">122</td><td class="num">140</td><td class="num">114</td><td class="num ftcell">905</td></tr>
+    <tr class="revised"><td class="row-type">%Ach</td>
+      <td class="num">100%</td><td class="num">100%</td><td class="num">100%</td><td class="num pos">353%</td><td class="num">—</td><td class="num">—</td>
+      <td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num ftcell">119%</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="note">
+  <strong>Notes:</strong>
+  <ul style="margin:6px 0 0 18px;font-size:.9em">
+    <li>Jan-Mar Budget = Actual do P&amp;L data master practice (Budget rolling forward để match closed periods). Chỉ Apr trở đi mới phản ánh original plan vs delivery.</li>
+    <li><strong>Apr là tháng inflection</strong>: TOI match (100%), Provision thấp hơn budget 15% (good), PBO vượt 62%, PBT vượt 253% (60 vs 17). Đây là minh chứng yield-first strategy đang work.</li>
+    <li>FY Budget assumed PBO ramp mạnh H2 (Jul 79 → Dec 201) reflect volume ramp. Nếu margins YTD hold thì Revised PBO FY ≈ Disb 32,978 × 4.4% = 1,452 Bil → PBT ≈ 977 Bil (vượt cả budget 905).</li>
+  </ul>
+</div>
+
+<h2>2.4 · Channel × Product P&amp;L Detail (YTD Jan→Apr)</h2>
+
+<div style="overflow-x:auto">
+<table class="data" style="font-size:.85em;">
+  <thead>
+    <tr>
+      <th class="label" style="text-align:left" rowspan="2">Channel</th>
+      <th class="label" style="text-align:left" rowspan="2">Product</th>
+      <th colspan="2" style="background:#FF2D71">Disbursement</th>
+      <th colspan="2" style="background:#7B2FBE">TOI</th>
+      <th colspan="2" style="background:#FF7A2F">Provision</th>
+      <th colspan="2" style="background:#0BC76A">PBO</th>
+      <th rowspan="2">%Yield<br><small>(TOI/Disb)</small></th>
+      <th rowspan="2">%CoR<br><small>(Prov/Disb)</small></th>
+      <th rowspan="2">%PBO<br><small>(PBO/Disb)</small></th>
+    </tr>
+    <tr>
+      <th>Act</th><th>Bud</th>
+      <th>Act</th><th>Bud</th>
+      <th>Act</th><th>Bud</th>
+      <th>Act</th><th>Bud</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td class="label" rowspan="3">VDS</td><td class="text">Cashloan</td><td class="num">1,897</td><td class="num">1,963</td><td class="num">441</td><td class="num">445</td><td class="num">218</td><td class="num">229</td><td class="num">66</td><td class="num">67</td><td class="num">23.2%</td><td class="num">11.5%</td><td class="num">3.5%</td></tr>
+    <tr><td class="text">Payday</td><td class="num">1,324</td><td class="num">1,401</td><td class="num">125</td><td class="num">135</td><td class="num">61</td><td class="num">67</td><td class="num">31</td><td class="num">29</td><td class="num">9.4%</td><td class="num">4.6%</td><td class="num">2.4%</td></tr>
+    <tr class="subtotal"><td class="text"><strong>VDS subtotal</strong></td><td class="num">3,221</td><td class="num">3,364</td><td class="num">566</td><td class="num">580</td><td class="num">280</td><td class="num">296</td><td class="num">98</td><td class="num">96</td><td class="num">17.6%</td><td class="num">8.7%</td><td class="num">3.0%</td></tr>
+
+    <tr><td class="label" rowspan="4">CAKE</td><td class="text">Cashloan</td><td class="num">1,628</td><td class="num">1,624</td><td class="num">374</td><td class="num">373</td><td class="num breach">242</td><td class="num">249</td><td class="num">100</td><td class="num">88</td><td class="num">22.9%</td><td class="num breach">14.9%</td><td class="num">6.1%</td></tr>
+    <tr><td class="text">Payday</td><td class="num pos">1,625</td><td class="num">1,539</td><td class="num pos">150</td><td class="num">145</td><td class="num">49</td><td class="num">51</td><td class="num pos">91</td><td class="num">82</td><td class="num">9.2%</td><td class="num pos">3.0%</td><td class="num pos">5.6%</td></tr>
+    <tr><td class="text">Overdraft</td><td class="num">222</td><td class="num">217</td><td class="num">11</td><td class="num">11</td><td class="num">17</td><td class="num">20</td><td class="num breach">−7</td><td class="num breach">−9</td><td class="num">5.0%</td><td class="num">7.8%</td><td class="num breach">−2.9%</td></tr>
+    <tr class="subtotal"><td class="text"><strong>CAKE subtotal</strong></td><td class="num">3,475</td><td class="num">3,380</td><td class="num">535</td><td class="num">530</td><td class="num">308</td><td class="num">320</td><td class="num pos">184</td><td class="num">162</td><td class="num">15.4%</td><td class="num">8.9%</td><td class="num">5.3%</td></tr>
+
+    <tr><td class="label" rowspan="2">MWG</td><td class="text">Cashloan</td><td class="num">503</td><td class="num">—</td><td class="num">103</td><td class="num">—</td><td class="num">42</td><td class="num">—</td><td class="num">36</td><td class="num">—</td><td class="num">20.4%</td><td class="num">8.4%</td><td class="num pos">7.1%</td></tr>
+    <tr class="subtotal"><td class="text"><strong>MWG subtotal</strong></td><td class="num">503</td><td class="num">—</td><td class="num">103</td><td class="num">—</td><td class="num">42</td><td class="num">—</td><td class="num">36</td><td class="num">—</td><td class="num">20.4%</td><td class="num">8.4%</td><td class="num pos">7.1%</td></tr>
+
+    <tr><td class="label" rowspan="3">ZLP</td><td class="text">Cashloan</td><td class="num">458</td><td class="num">—</td><td class="num">88</td><td class="num">—</td><td class="num">33</td><td class="num">—</td><td class="num">41</td><td class="num">—</td><td class="num">19.3%</td><td class="num">7.2%</td><td class="num pos">8.9%</td></tr>
+    <tr><td class="text">Payday</td><td class="num">32</td><td class="num">—</td><td class="num">2</td><td class="num">—</td><td class="num">0</td><td class="num">—</td><td class="num">1</td><td class="num">—</td><td class="num">7.2%</td><td class="num">0.4%</td><td class="num">4.0%</td></tr>
+    <tr class="subtotal"><td class="text"><strong>ZLP subtotal</strong></td><td class="num">490</td><td class="num">—</td><td class="num">91</td><td class="num">—</td><td class="num">33</td><td class="num">—</td><td class="num">42</td><td class="num">—</td><td class="num">18.5%</td><td class="num">6.7%</td><td class="num pos">8.6%</td></tr>
+
+    <tr><td class="label" rowspan="2">OTHERS</td><td class="text">PL BAU + Other CL/PD + Ecom PL</td><td class="num">~518</td><td class="num">1,467</td><td class="num">~62</td><td class="num">~245</td><td class="num">~44</td><td class="num">~123</td><td class="num">~2</td><td class="num">~72</td><td class="num">~12%</td><td class="num">~8.5%</td><td class="num">~0.4%</td></tr>
+    <tr class="subtotal"><td class="text"><strong>OTHERS subtotal</strong></td><td class="num">~518</td><td class="num">1,467</td><td class="num">~62</td><td class="num">~245</td><td class="num">~44</td><td class="num">~123</td><td class="num">~2</td><td class="num">~72</td><td class="num">~12%</td><td class="num">~8.5%</td><td class="num">~0.4%</td></tr>
+
+    <tr class="total"><td class="text" colspan="2"><strong>GRAND TOTAL</strong></td><td class="num">8,207</td><td class="num">8,211</td><td class="num">1,356</td><td class="num">1,354</td><td class="num">707</td><td class="num">739</td><td class="num">362</td><td class="num">330</td><td class="num">16.5%</td><td class="num">8.6%</td><td class="num">4.4%</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="note">
+  <strong>Notes:</strong>
+  <ul style="margin:6px 0 0 18px;font-size:.9em">
+    <li>Budget breakdown chỉ có cho <strong>Cake + VDS</strong> (theo P&amp;L data master). MWG / ZLP Budget cells = "—". OTHERS Budget được derived = Total Budget − (Cake + VDS) Budget.</li>
+    <li>%Yield, %CoR, %PBO tính trên YTD-Apr Actual (4 tháng, không annualized). Để annualize × 3.</li>
+    <li>Cake OD PBO âm reflect cost cao hơn TOI — Mass closed Jul'25, sản phẩm chỉ duy trì base. OD-TD UW launch 25-Jun sẽ unlock segment mới.</li>
+    <li>Grand Total Disbursement YTD-Apr 8,207 (section_1 P&amp;L) > 7,913 (section_6 channel breakdown) do section_6 không capture đủ BE CL, VNPAY CL/PD, VNPOST etc.</li>
+  </ul>
+</div>
+
+<h2>2.5 · PBT Target Simulation — How much Disbursement do we need?</h2>
+
+<div class="note">
+  <strong>Model assumptions:</strong>
+  <ul style="margin:6px 0 0 18px;font-size:.9em">
+    <li><strong>Target PBT 700</strong> = FY KPI target (mini-CEO mandate). <strong>Target PBT 906</strong> = sum monthly Budget PBT = 905 Bil (round 906).</li>
+    <li><strong>Overhead FY estimate = 475 Bil</strong> (= Budget PBO 1,381 − Budget PBT 906).</li>
+    <li>Required PBO = Target PBT + Overhead → cho 700: <strong>1,175 Bil</strong>; cho 906: <strong>1,381 Bil</strong>.</li>
+    <li>Required Disb per line = (target PBO × current line PBO share) ÷ current line PBO margin. <strong>Giữ current portfolio mix YTD-Apr</strong>.</li>
+    <li>Cake OD margin âm (−2.9%) — skip required Disb calc, treat as fixed sink. ZLP PD margin từ low base nên required Disb chỉ là math placeholder.</li>
+  </ul>
+</div>
+
+<style>
+  table.sim td.req-700{background:rgba(255,122,47,.10);color:var(--amber-500);font-weight:600;}
+  table.sim td.req-906{background:rgba(184,21,79,.10);color:var(--pink-700);font-weight:600;}
+  table.sim td.verdict{font-weight:600;}
+  table.sim td.verdict.ok{color:var(--mint-700);}
+  table.sim td.verdict.short{color:var(--amber-500);}
+  table.sim td.verdict.miss{color:var(--pink-700);}
+</style>
+
+<div style="overflow-x:auto">
+<table class="data sim">
+  <thead>
+    <tr>
+      <th class="label" style="text-align:left">Channel</th>
+      <th class="label" style="text-align:left">Product</th>
+      <th>YTD Disb</th>
+      <th>YTD PBO</th>
+      <th>PBO Margin</th>
+      <th>PBO Share</th>
+      <th class="label" style="background:#FF7A2F">Disb cho PBT 700</th>
+      <th class="label" style="background:#B8154F">Disb cho PBT 906</th>
+      <th>Revised FY (Tab 1)</th>
+      <th>Verdict vs PBT 700</th>
+      <th>Verdict vs PBT 906</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td class="label" rowspan="3">VDS</td><td class="text">Cashloan</td><td class="num">1,897</td><td class="num">66</td><td class="num">3.5%</td><td class="num">18.2%</td><td class="num req-700">6,118</td><td class="num req-906">7,193</td><td class="num">7,258</td><td class="num verdict ok">✓ +1,140</td><td class="num verdict ok">✓ +65</td></tr>
+    <tr><td class="text">Payday</td><td class="num">1,324</td><td class="num">31</td><td class="num">2.4%</td><td class="num">8.6%</td><td class="num req-700">4,266</td><td class="num req-906">5,015</td><td class="num">4,818</td><td class="num verdict ok">✓ +552</td><td class="num verdict short">−197</td></tr>
+    <tr class="subtotal"><td class="text"><strong>VDS subtotal</strong></td><td class="num">3,221</td><td class="num">98</td><td class="num">3.0%</td><td class="num">26.9%</td><td class="num req-700">10,384</td><td class="num req-906">12,208</td><td class="num">12,076</td><td class="num verdict ok">✓ +1,692</td><td class="num verdict short">−132</td></tr>
+
+    <tr><td class="label" rowspan="4">CAKE</td><td class="text">Cashloan</td><td class="num">1,628</td><td class="num">100</td><td class="num">6.1%</td><td class="num">27.6%</td><td class="num req-700">5,313</td><td class="num req-906">6,247</td><td class="num">6,640</td><td class="num verdict ok">✓ +1,327</td><td class="num verdict ok">✓ +393</td></tr>
+    <tr><td class="text">Payday</td><td class="num">1,625</td><td class="num">91</td><td class="num">5.6%</td><td class="num">25.1%</td><td class="num req-700">5,294</td><td class="num req-906">6,224</td><td class="num">6,343</td><td class="num verdict ok">✓ +1,049</td><td class="num verdict ok">✓ +119</td></tr>
+    <tr><td class="text">Overdraft <small>(margin âm)</small></td><td class="num">222</td><td class="num">−7</td><td class="num breach">−2.9%</td><td class="num">−1.9%</td><td class="num">N/A</td><td class="num">N/A</td><td class="num">562</td><td class="num verdict miss">drag</td><td class="num verdict miss">drag</td></tr>
+    <tr class="subtotal"><td class="text"><strong>CAKE subtotal</strong></td><td class="num">3,475</td><td class="num">184</td><td class="num">5.3%</td><td class="num">50.8%</td><td class="num req-700">10,607</td><td class="num req-906">12,471</td><td class="num">13,545</td><td class="num verdict ok">✓ +2,938</td><td class="num verdict ok">✓ +1,074</td></tr>
+
+    <tr><td class="label" rowspan="2">MWG</td><td class="text">Cashloan</td><td class="num">503</td><td class="num">36</td><td class="num pos">7.1%</td><td class="num">9.9%</td><td class="num req-700">1,632</td><td class="num req-906">1,918</td><td class="num">2,130</td><td class="num verdict ok">✓ +498</td><td class="num verdict ok">✓ +212</td></tr>
+    <tr class="subtotal"><td class="text"><strong>MWG subtotal</strong></td><td class="num">503</td><td class="num">36</td><td class="num pos">7.1%</td><td class="num">9.9%</td><td class="num req-700">1,632</td><td class="num req-906">1,918</td><td class="num">2,130</td><td class="num verdict ok">✓ +498</td><td class="num verdict ok">✓ +212</td></tr>
+
+    <tr><td class="label" rowspan="3">ZLP</td><td class="text">Cashloan</td><td class="num">458</td><td class="num">41</td><td class="num pos">8.9%</td><td class="num">11.3%</td><td class="num req-700">1,488</td><td class="num req-906">1,749</td><td class="num">2,259</td><td class="num verdict ok">✓ +771</td><td class="num verdict ok">✓ +510</td></tr>
+    <tr><td class="text">Payday <small>(small base)</small></td><td class="num">32</td><td class="num">1</td><td class="num">4.0%</td><td class="num">0.3%</td><td class="num req-700">104</td><td class="num req-906">122</td><td class="num">100</td><td class="num verdict short">−4</td><td class="num verdict short">−22</td></tr>
+    <tr class="subtotal"><td class="text"><strong>ZLP subtotal</strong></td><td class="num">490</td><td class="num">42</td><td class="num">8.6%</td><td class="num">11.7%</td><td class="num req-700">1,592</td><td class="num req-906">1,871</td><td class="num">2,359</td><td class="num verdict ok">✓ +767</td><td class="num verdict ok">✓ +488</td></tr>
+
+    <tr><td class="label" rowspan="2">OTHERS</td><td class="text">PL BAU + Other CL/PD + Ecom PL</td><td class="num">518</td><td class="num">2</td><td class="num breach">0.4%</td><td class="num">0.6%</td><td class="num req-700">1,683</td><td class="num req-906">1,978</td><td class="num">764</td><td class="num verdict miss">−919</td><td class="num verdict miss">−1,214</td></tr>
+    <tr class="subtotal"><td class="text"><strong>OTHERS subtotal</strong></td><td class="num">518</td><td class="num">2</td><td class="num breach">0.4%</td><td class="num">0.6%</td><td class="num req-700">1,683</td><td class="num req-906">1,978</td><td class="num">764</td><td class="num verdict miss">−919</td><td class="num verdict miss">−1,214</td></tr>
+
+    <tr class="total"><td class="text" colspan="2"><strong>GRAND TOTAL</strong></td><td class="num">8,207</td><td class="num">362</td><td class="num">4.4%</td><td class="num">100%</td><td class="num">25,898</td><td class="num">30,446</td><td class="num">32,978</td><td class="num pos">✓ +7,080</td><td class="num pos">✓ +2,532</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="insight-grid" style="margin-top:14px">
+  <div class="insight-card win">
+    <h4>✓ Verdict tổng — Cả 2 target ĐỀU đạt được</h4>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Revised Disb 32,978 → PBT projected ≈ <strong>977 Bil</strong></div>
+        <div class="reason">Tại current portfolio mix + current margins, Revised FY (Road3k Q2 + H2 recalib) đủ cover cả PBT 906 budget với buffer 70 Bil.</div>
+      </div>
+      <div class="nums"><span class="pct">+977</span><span class="gap-label">PBT projected</span></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Lý do bottom line OK mặc dù volume miss</div>
+        <div class="reason">Current portfolio PBO margin 4.4% &gt; Budget assumed 3.4%. Mix shift sang Cake PD (5.6%) và MWG/ZLP CL (7-9%) bù được volume gap. PBT-first strategy validated.</div>
+      </div>
+      <div class="nums"><span class="pct">4.4%</span><span class="gap-label">vs 3.4% bud</span></div>
+    </div>
+  </div>
+
+  <div class="insight-card lose">
+    <h4>✗ Caveats / Risks model</h4>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Margin compression risk</div>
+        <div class="reason">Khi scale (Cake CL volume push, ZLP CL ticket bump), CoR tăng, PBO margin có thể rớt từ 4.4% về gần Budget 3.4%. Tại 3.4% → PBT projected = 32,978 × 3.4% − 475 = 646 Bil (dưới 700).</div>
+      </div>
+      <div class="nums"><span class="pct">−330</span><span class="gap-label">PBT downside</span></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Provision lag effect</div>
+        <div class="reason">H2 disb (Sep-Dec) sẽ generate provision chủ yếu 2027 chứ không phải 2026. Nghĩa là FY26 PBO appearing artificially high vì provision không match new disb. 2027 PBT sẽ ăn ngược.</div>
+      </div>
+      <div class="nums"><span class="pct">2027</span><span class="gap-label">drag forward</span></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Cake OD + OTHERS đang drag</div>
+        <div class="reason">Cake OD margin −2.9% (lỗ PBO). OTHERS margin 0.4% — gần như 0 PBO contribution. Cần fix 2 cluster này để khỏi ăn vào buffer.</div>
+      </div>
+      <div class="nums"><span class="pct">−9 Bil</span><span class="gap-label">YTD drag</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="note win" style="margin-top:14px">
+  <strong>Strategic takeaway:</strong> Theo simulation, không cần chạm 40k Bil disbursement để hit PBT 906 Bil budget. <strong>~30,500 Bil Disb là đủ</strong> nếu giữ current margin mix. Implication:
+  <ol style="margin:6px 0 0 18px">
+    <li>Không cần chase Ecom PL +4,000 Bil aggressive nếu margin chỉ ~1-2% — drag PBT.</li>
+    <li>Push channels có PBO margin &gt;5%: <strong>ZLP CL (8.9%), MWG CL (7.1%), Cake CL (6.1%), Cake PD (5.6%)</strong>.</li>
+    <li>Giảm tỷ trọng Cake OD (lỗ) và Others (gần 0% margin) nếu không có path to scale.</li>
+    <li>VDS (CL 3.5% + PD 2.4%) đang ở mức borderline — không tăng risk, giữ ổn định là OK.</li>
+  </ol>
+</div>
+
+</div>
+<!-- END TAB 2 -->
+
+<!-- ============================================= -->
+<!-- TAB 3: Unit Economics                         -->
+<!-- ============================================= -->
+<div id="tab-3" class="tab-content">
+
+<h2>3.1 · Q1.26 Snapshot + QoQ Full Picture</h2>
+
+<div class="note">
+  <strong>Công thức Net Yield đang dùng:</strong>
+  <ul style="margin:6px 0 0 18px;font-size:.92em;line-height:1.55">
+    <li><strong>Net Yield = TOI − Provision</strong> (net revenue sau risk cost, trước opex/overhead)</li>
+    <li><strong>NY / Disb</strong> = (TOI − Prov) ÷ Disbursement của period — đo "net revenue per Bil giải ngân"</li>
+    <li><strong>NY / ANR</strong> = (TOI − Prov) ÷ Average Net Receivables (Balance EOP làm proxy) — đo "net return on portfolio balance"</li>
+    <li><strong>%CoR = Provision ÷ Disbursement</strong> · <strong>%NPL Cake/CIC = nợ xấu trên balance theo metric Cake/CIC</strong></li>
+    <li>Tất cả số trong tab này <strong>không annualized</strong> — giá trị là period ratio (Q3.25/Q4.25/Q1.26 quarterly, hoặc YTD Jan→Apr 4-month)</li>
+  </ul>
+</div>
+
+<div class="kpi-grid">
+  <div class="kpi beat">
+    <div class="label">Net Yield / ANR (Q1.26 quarterly)</div>
+    <div class="value">6.1%</div>
+    <div class="target">CL 5.4% · PD 15.5% · OD <strong>−6.4%</strong> · PL <strong>−1.8%</strong></div>
+  </div>
+  <div class="kpi neutral">
+    <div class="label">Avg CL IR (annual rate)</div>
+    <div class="value">48.5%</div>
+    <div class="target">PD IR <strong>58.2%</strong> · CoF ~7.8%</div>
+  </div>
+  <div class="kpi miss">
+    <div class="label">CL Approval Rate</div>
+    <div class="value">27.2%</div>
+    <div class="target">PD AR <strong>27.2%</strong> · Signed rate <strong>82%</strong></div>
+    <span class="delta delta-neg">CAKE CL chỉ 18.2% — Risk siết</span>
+  </div>
+  <div class="kpi neutral">
+    <div class="label">Avg Ticket (CL)</div>
+    <div class="value">16.0 M</div>
+    <div class="target">PD ticket <strong>4.1M</strong> · Tenor CL <strong>17 tháng</strong></div>
+  </div>
+</div>
+
+<div class="note">
+  <strong>Đọc nhanh:</strong> Q1.26 aggregate NY/ANR <strong>6.1% quarterly</strong> chủ yếu nhờ <strong>Payday product (15.5%)</strong> — tenor 1 tháng + IR 58% cho phép roll capital liên tục. CL ổn ở 5.4% (IR 48.5% nhưng CoR rising). <strong>OD (−6.4%) và PL (−1.8%)</strong> đang lỗ ròng sau risk — chiếm <strong>~7% disb portfolio Q1.26</strong> nhưng drag PBT. <em>IR/CoF là annual rate vì là pricing input vốn dĩ annual; NY ratios là period ratio.</em>
+</div>
+
+<h3 style="margin-top:24px">QoQ Trend by Product (Q3.25 → Q4.25 → Q1.26)</h3>
+
+<div class="chart-grid">
+  <div class="chart-card">
+    <h4>NY/ANR — Quarterly Ratio (%)</h4>
+    <div class="chart-wrap"><canvas id="chartNYTrend"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <h4>%CoR (Prov/Disb)</h4>
+    <div class="chart-wrap"><canvas id="chartCoRTrend"></canvas></div>
+  </div>
+</div>
+
+<div class="chart-grid">
+  <div class="chart-card">
+    <h4>%NPL Cake (internal metric)</h4>
+    <div class="chart-wrap"><canvas id="chartNPLCake"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <h4>%NPL CIC (external bureau)</h4>
+    <div class="chart-wrap"><canvas id="chartNPLCIC"></canvas></div>
+  </div>
+</div>
+
+<h3 style="margin-top:24px">Detail Table — Filter by Channel</h3>
+
+<style>
+  #qoq-table-container table.data{font-size:.85em;margin-top:8px;}
+  #qoq-table-container table.data td{padding:7px 10px;}
+</style>
+
+<div class="filter-bar">
+  <label for="qoq-channel-filter">Channel:</label>
+  <select id="qoq-channel-filter" onchange="renderQoQTable()">
+    <option value="All" selected>All (Product Aggregate · Q3.25→Q1.26)</option>
+    <option value="VDS">VDS (2025 FY + 2026 YTD-Apr)</option>
+    <option value="CAKE">CAKE</option>
+    <option value="MWG">MWG</option>
+    <option value="ZLP">ZLP</option>
+  </select>
+</div>
+
+<div id="qoq-table-container"></div>
+
+<div class="note warn">
+  <strong>QoQ trend insights:</strong>
+  <ul style="margin:6px 0 0 18px">
+    <li><strong>CL NY trượt 7.3% → 5.4% per quarter</strong>: CoR rising fast 6.2% → 11.8%. NPL Cake/CIC tăng Q1 (4.6%/6.1%), LG2 chạm 11.7%. Risk siết H1.</li>
+    <li><strong>PD NY vẫn cao 15.5% quarterly</strong> nhưng provision tăng nhanh — CoR 2.4% → 3.7%. NPL CIC nhảy 5.5% → 9% Q1. VDS PD chạm ngưỡng lỗ (Risk Committee flag).</li>
+    <li><strong>OD shrinking + lỗ nặng</strong>: Disb 302 → 228 → 172 Bil (shrink 43%). NY −6.4% quarterly. NPL CIC 12.9% → 15.7%.</li>
+    <li><strong>PL launched Q1.26</strong> — đã lỗ ngay (−1.8% NY/ANR), NPL CIC 12.7% — chủ yếu MWG kéo TOI.</li>
+    <li><strong>NPL CIC luôn cao hơn NPL Cake</strong> ~2x — KH có hồ sơ vay bên TCTD khác trùng nhiều hơn. Đáng watch khi NPL CIC tăng nhanh hơn (CL Q1 +1.2pp vs Cake +1.0pp).</li>
+  </ul>
+</div>
+
+<h2>3.2 · Net Yield Ranking by Channel</h2>
+
+<h3 style="margin-top:14px">3.2.1 Cash Loan Ranking</h3>
+<div class="chart-grid">
+  <div class="chart-card">
+    <h4>CL · NY/ANR (4-month YTD %) — sorted</h4>
+    <div class="chart-wrap"><canvas id="chartCLNYAnr"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <h4>CL · NY/Disb (4-month YTD %) — sorted</h4>
+    <div class="chart-wrap"><canvas id="chartCLNYDisb"></canvas></div>
+  </div>
+</div>
+<div class="note">
+  CL ranking NY/ANR: <strong>ZLP 8.4%</strong> > VDS 8.3% > MWG 7.6% > CAKE 5.0%. ZLP CL có Net Yield cao nhất port — confirm push Road3k Q2. CAKE CL thấp nhất vì balance cao (lifetime ~17 tháng) — yield/Disb 8.1% OK nhưng spread over time.
+</div>
+
+<h3 style="margin-top:14px">3.2.2 Payday Ranking</h3>
+<div class="chart-grid">
+  <div class="chart-card">
+    <h4>PD · NY/ANR (4-month YTD %) — sorted</h4>
+    <div class="chart-wrap"><canvas id="chartPDNYAnr"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <h4>PD · NY/Disb (4-month YTD %) — sorted</h4>
+    <div class="chart-wrap"><canvas id="chartPDNYDisb"></canvas></div>
+  </div>
+</div>
+<div class="note">
+  PD ranking: <strong>CAKE PD 22.4%</strong> > VDS PD 17.9%. (ZLP PD excluded vì small base distort — 135% là math artifact, không meaningful). PD product family overall là cash cow — tenor 1 tháng + IR 55-60% cho phép roll capital liên tục.
+</div>
+
+<h3 style="margin-top:14px">3.2.3 Paylater Ranking</h3>
+<div class="chart-grid">
+  <div class="chart-card">
+    <h4>PL · NY/ANR (4-month YTD %) — sorted</h4>
+    <div class="chart-wrap tall"><canvas id="chartPLNYAnr"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <h4>PL · NY/Disb (4-month YTD %) — sorted</h4>
+    <div class="chart-wrap tall"><canvas id="chartPLNYDisb"></canvas></div>
+  </div>
+</div>
+<div class="note warn">
+  PL ranking — toàn port âm trừ VDS-EPASS:
+  <ul style="margin:6px 0 0 18px">
+    <li><strong>VDS-EPASS 16.4%</strong> NY/ANR — pilot working concept nhưng base nhỏ (68 account)</li>
+    <li><strong>MWG +0.5%</strong> — best volume PL channel, đang gánh portfolio</li>
+    <li><strong>BE −1.5%, VDS −2.3%</strong> — mild loss, có thể fix</li>
+    <li><strong>VNPAY −6.9%, FPT −21.7%</strong> — deep loss, cần overhaul hoặc shutdown</li>
+  </ul>
+</div>
+
+<h2>3.3 · Channel × Product UE Inputs · Filter by Product</h2>
+
+<div class="filter-bar">
+  <label for="ue-product-filter">Product:</label>
+  <select id="ue-product-filter" onchange="renderUETable()">
+    <option value="CL" selected>Cash Loan</option>
+    <option value="PD">Payday</option>
+    <option value="PL">Paylater</option>
+  </select>
+  <label for="ue-quarter-filter">Quarter:</label>
+  <select id="ue-quarter-filter" onchange="renderUETable()">
+    <option value="Q1.26" selected>Q1.26</option>
+  </select>
+  <span style="font-size:.82em;color:#6b6478">Note: Channel-level pricing inputs (IR/AR/Ticket) chỉ có cho Q1.26. Q3.25/Q4.25 channel-level chưa lưu trong P&amp;L master.</span>
+</div>
+
+<div id="ue-table-container"></div>
+
+<div class="note">
+  <strong>QoQ insights — Product aggregate (channel breakdown chỉ Q1.26):</strong>
+  <ul style="margin:6px 0 0 18px">
+    <li><strong>CL Approval Rate trượt theo quý</strong> dù product-level data không lưu, channel-level Q1.26 cho thấy CAKE CL chỉ 18% — Risk siết để control LG2. Daily app vẫn tăng nên reject volume thực ra cao hơn quý trước.</li>
+    <li><strong>PD AR ổn định 55-61%</strong> Q1 — tenor 1 tháng cho phép pricing aggressive. VDS PD AR 61.2% (highest), CAKE PD 55.9%.</li>
+    <li><strong>PL active rate vary mạnh theo channel</strong> — BE 32% (cao nhất, tài xế xài nhiều), VNPAY 23%, VDS chỉ 9.1%. Cần engagement strategy per channel.</li>
+    <li><strong>Insurance penetration CL ~80%</strong> nhưng MWG chỉ 58% (POS có discount), MISA 0% (B2B). PD Insurance ~100% (default bundle).</li>
+  </ul>
+</div>
+
+</div>
+<!-- END TAB 3 -->
+
+<!-- ============================================= -->
+<!-- TAB 4: Risk Tracking                          -->
+<!-- ============================================= -->
+<div id="tab-4" class="tab-content">
+
+<h2>4.1 · NPL Cake & NPL CIC — Actual vs KPI Threshold (LG2 by product)</h2>
+
+<div class="note">
+  <strong>LG2 KPI Rule 2026 (from KPI doc — phân loại NHNN, sau CIC, theo báo cáo VPBank):</strong>
+  <table style="margin:8px 0;width:100%;font-size:.9em;border-collapse:collapse">
+    <thead><tr style="background:#7B2FBE;color:#fff"><th style="padding:6px 10px;text-align:left">Product family</th><th style="padding:6px 10px">Stretch (90%)</th><th style="padding:6px 10px;background:#FF2D71">Base 100%</th><th style="padding:6px 10px;background:#B8154F">Threshold (worst)</th></tr></thead>
+    <tbody>
+      <tr><td style="padding:6px 10px"><strong>Payday</strong></td><td class="num" style="padding:6px 10px;text-align:center">13.95%</td><td class="num" style="padding:6px 10px;text-align:center;background:rgba(255,45,113,.08)"><strong>15.50%</strong></td><td class="num" style="padding:6px 10px;text-align:center;background:rgba(184,21,79,.08)"><strong>18.60%</strong></td></tr>
+      <tr><td style="padding:6px 10px"><strong>Other products (CL/OD/PL)</strong></td><td class="num" style="padding:6px 10px;text-align:center">9.01%</td><td class="num" style="padding:6px 10px;text-align:center;background:rgba(255,45,113,.08)"><strong>10.01%</strong></td><td class="num" style="padding:6px 10px;text-align:center;background:rgba(184,21,79,.08)"><strong>11.01%</strong></td></tr>
+    </tbody>
+  </table>
+  <strong>Knockout rule:</strong> Nếu LG2 vượt <strong>Threshold</strong> (PD 18.60% / Others 11.01%) <strong>quá 5 tháng bất kỳ trong năm</strong> → KPI không đạt dù 31/12 đạt. <strong>KPI weight:</strong> 5% mỗi product family. <strong>Measurement:</strong> "Theo báo cáo phân loại nợ của VPBank" (không phải Cake internal).
+</div>
+
+<div class="kpi-grid">
+  <div class="kpi miss">
+    <div class="label">NPL Cake Q1.26 (port)</div>
+    <div class="value">4.8%</div>
+    <div class="target">Q3.25 4.6% · Q4.25 3.6% · Q1.26 <strong>↑4.8%</strong></div>
+    <span class="delta delta-neg">+1.2pp QoQ</span>
+  </div>
+  <div class="kpi miss">
+    <div class="label">NPL CIC Q1.26 (port)</div>
+    <div class="value">6.5%</div>
+    <div class="target">Q3.25 6.4% · Q4.25 5.4% · Q1.26 <strong>↑6.5%</strong></div>
+    <span class="delta delta-neg">+1.1pp QoQ</span>
+  </div>
+  <div class="kpi breach">
+    <div class="label">LG2 Lines Breach Threshold</div>
+    <div class="value">1/8</div>
+    <div class="target">MWG CL 11.13% &gt; 11.01% threshold</div>
+    <span class="delta delta-breach">Knockout watch</span>
+  </div>
+  <div class="kpi miss">
+    <div class="label">LG2 Lines Above Base</div>
+    <div class="value">4/8</div>
+    <div class="target">VDS CL · Cake CL · Cake OD · MWG CL</div>
+    <span class="delta delta-neg">Trên 10.01% base (Others)</span>
+  </div>
+</div>
+
+<div class="chart-grid">
+  <div class="chart-card">
+    <h4>%NPL Cake Trend by Product (Q3.25→Q1.26)</h4>
+    <div class="chart-wrap"><canvas id="chartNPLCakeTab4"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <h4>%NPL CIC Trend by Product (Q3.25→Q1.26)</h4>
+    <div class="chart-wrap"><canvas id="chartNPLCICTab4"></canvas></div>
+  </div>
+</div>
+
+<h3>NPL & LG2 by Channel × Product (YTD Jan→Apr) — vs KPI Threshold theo product</h3>
+<table class="data" style="font-size:.85em">
+  <thead>
+    <tr>
+      <th class="label" style="text-align:left">Channel</th>
+      <th class="label" style="text-align:left">Product</th>
+      <th>NPL Cake</th>
+      <th>NPL CIC</th>
+      <th>LG2 (CIC)</th>
+      <th>Base (100%)</th>
+      <th>Threshold (worst)</th>
+      <th>Δ vs Base</th>
+      <th class="label" style="text-align:left">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td class="label" rowspan="2">VDS</td><td class="text">Cashloan</td><td class="num">4.84%</td><td class="num">5.75%</td><td class="num neg">10.29%</td><td class="num">10.01%</td><td class="num">11.01%</td><td class="num neg">+0.28pp</td><td class="text neg">⚠ Above base, under threshold</td></tr>
+    <tr><td class="text">Payday</td><td class="num">9.03%</td><td class="num">9.77%</td><td class="num pos">14.95%</td><td class="num">15.50%</td><td class="num">18.60%</td><td class="num pos">−0.55pp</td><td class="text pos">✓ Under base (PD tolerance cao)</td></tr>
+
+    <tr><td class="label" rowspan="3">CAKE</td><td class="text">Cashloan</td><td class="num">5.99%</td><td class="num">6.97%</td><td class="num neg">11.00%</td><td class="num">10.01%</td><td class="num">11.01%</td><td class="num neg">+0.99pp</td><td class="text neg">⚠ At threshold (11.00% vs 11.01%)</td></tr>
+    <tr><td class="text">Payday</td><td class="num">7.11%</td><td class="num">8.00%</td><td class="num pos">12.80%</td><td class="num">15.50%</td><td class="num">18.60%</td><td class="num pos">−2.70pp</td><td class="text pos">✓ Well under base</td></tr>
+    <tr><td class="text">Overdraft</td><td class="num">7.85%</td><td class="num breach">14.80%</td><td class="num neg">10.15%</td><td class="num">10.01%</td><td class="num">11.01%</td><td class="num neg">+0.14pp</td><td class="text neg">⚠ Slight above base</td></tr>
+
+    <tr><td class="label" rowspan="2">ZLP</td><td class="text">Cashloan</td><td class="num pos">3.28%</td><td class="num">—</td><td class="num pos">8.03%</td><td class="num">10.01%</td><td class="num">11.01%</td><td class="num pos">−1.98pp</td><td class="text pos">✓ Best CL (stretch zone)</td></tr>
+    <tr><td class="text">Payday <small>(small base)</small></td><td class="num pos">0%</td><td class="num">3.70%</td><td class="num">91.40%</td><td class="num">15.50%</td><td class="num">18.60%</td><td class="num">N/A</td><td class="text">— Small base distortion</td></tr>
+
+    <tr><td class="label">MWG</td><td class="text">Cashloan</td><td class="num pos">3.22%</td><td class="num">—</td><td class="num breach">11.13%</td><td class="num">10.01%</td><td class="num breach">11.01%</td><td class="num breach">+1.12pp</td><td class="text breach">✗ ABOVE THRESHOLD — knockout risk</td></tr>
+  </tbody>
+</table>
+
+<div class="note warn">
+  <strong>LG2 (CIC) tổng port — Risk Committee T4.2026 PDF (slide 3-4):</strong>
+  <ul style="margin:6px 0 0 18px">
+    <li><strong>LG2 (CIC) portfolio aggregate</strong>: Nov-25 10.44% → Dec-25 10.59% → Jan-26 10.58% → <strong>Feb-26 11.15% (1st breach)</strong> → <strong>Mar-26 11.57% (2nd breach)</strong></li>
+    <li><strong>2/12 tháng đã breach 11.01% Others threshold</strong> — Còn buffer 3 tháng nữa trước khi knockout (5 tháng/năm)</li>
+    <li><strong>LG2% Only Cake</strong> (internal): Mar-26 = 8.39% — Cake-only tracking đỡ stress hơn nhưng KPI scoring dùng CIC</li>
+    <li><strong>A/B ratio</strong> (CIC vs Cake): Mar-26 = 1.38x — KH có hồ sơ trùng bên TCTD khác chiếm 38% extra</li>
+  </ul>
+</div>
+
+<div class="note warn">
+  <strong>Key reads (line-level):</strong>
+  <ul style="margin:6px 0 0 18px">
+    <li><strong>1 line BREACH threshold</strong>: MWG CL 11.13% (above 11.01%). Cake CL 11.00% at threshold (sát biên).</li>
+    <li><strong>Payday family OK</strong> với threshold 18.60% — cả Cake PD (12.80%) và VDS PD (14.95%) đều well under base 15.50%. Trước đây tôi đã misread vì dùng generic 11% mandate.</li>
+    <li><strong>4/8 lines above base 10.01% (Others)</strong>: VDS CL +0.28pp, Cake CL +0.99pp, Cake OD +0.14pp, MWG CL +1.12pp. Cả 4 phải bring back về base trước khi tích lũy 5 tháng breach threshold.</li>
+    <li><strong>ZLP CL best-in-class</strong>: 8.03% — trong stretch zone (under 9.01% stretch). Confirm push.</li>
+  </ul>
+</div>
+
+<h2>4.2 · Roll Rate Tracking — B0→B1 vs B0→B4 (Actual vs Target)</h2>
+
+<div class="note">
+  <strong>2 bucket metrics theo Risk Committee T4-2026 charts:</strong>
+  <ul style="margin:6px 0 0 18px;font-size:.92em">
+    <li><strong>B0→B1</strong> (Early Roll Rate): % balance chuyển từ Current sang Bucket 1 (DPD 1-30). <span style="color:#FF2D71;font-weight:600">━━ solid pink</span> · target <span style="color:#FF2D71">┄┄ dotted pink</span></li>
+    <li><strong>B0→B4</strong> (Real Net Flow Rate): % balance chuyển sâu đến Bucket 4 (DPD 90+). <span style="color:#1A1033;font-weight:600">━━ solid navy</span> · target <span style="color:#1A1033">┄┄ dotted navy</span></li>
+    <li><strong>Sources:</strong> Risk Committee T4-2026 PDF slides 11-25 (per-partner RFR charts có cả 4 lines), MoM Apr 2026 docx (VDS PD target 7.5%, MWG PL target B0 −0.5% Q2), Portfolio Review May'26 pptx slide 69 (PL B0-B1 specifics)</li>
+  </ul>
+</div>
+
+<style>
+  table.rr td.b1-act{color:#FF2D71;font-weight:700;}
+  table.rr td.b4-act{color:#1A1033;font-weight:700;}
+  table.rr td.b1-tgt{color:#FF2D71;font-style:italic;background:rgba(255,45,113,.05);}
+  table.rr td.b4-tgt{color:#1A1033;font-style:italic;background:rgba(26,16,51,.05);}
+  table.rr th.b1{background:#FF2D71;}
+  table.rr th.b4{background:#1A1033;}
+</style>
+
+<h3 style="margin-top:18px">Partner × Product · B0-B1 vs B0-B4 Actual + Target (Mar-26)</h3>
+<div style="overflow-x:auto">
+<table class="data rr" style="font-size:.86em">
+  <thead>
+    <tr>
+      <th class="label" style="text-align:left" rowspan="2">Partner</th>
+      <th class="label" style="text-align:left" rowspan="2">Product</th>
+      <th class="b1" colspan="3">B0→B1 (Early Roll Rate)</th>
+      <th class="b4" colspan="3">B0→B4 (Real Net Flow Rate)</th>
+      <th class="label" style="text-align:left" rowspan="2">Status</th>
+    </tr>
+    <tr>
+      <th>Actual</th>
+      <th>Target</th>
+      <th>Δ</th>
+      <th>Actual</th>
+      <th>Target</th>
+      <th>Δ</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td class="label" rowspan="4">VDS</td><td class="text">Cashloan</td><td class="num b1-act">5.3%</td><td class="num b1-tgt">within plan</td><td class="num">—</td><td class="num b4-act">3.3%</td><td class="num b4-tgt">within plan</td><td class="num">—</td><td class="text pos">✓ Cải thiện về plan</td></tr>
+    <tr><td class="text">Payday</td><td class="num b1-act breach">10.43%</td><td class="num b1-tgt">7.5%</td><td class="num breach">+2.93pp</td><td class="num b4-act">4.9%</td><td class="num b4-tgt">within plan</td><td class="num">—</td><td class="text breach">✗ B0-B1 vượt target, chạm ngưỡng lỗ −0.1% PBT%ticket</td></tr>
+    <tr><td class="text">Paylater</td><td class="num b1-act neg">7.4%</td><td class="num b1-tgt">~7%</td><td class="num neg">+0.4pp</td><td class="num b4-act">6.0%</td><td class="num b4-tgt">within plan</td><td class="num">—</td><td class="text neg">⚠ B0-B1 slight above, B0-B4 OK</td></tr>
+    <tr><td class="text">Credit Card</td><td class="num b1-act breach">2.9%</td><td class="num b1-tgt breach">All bands above tgt</td><td class="num breach">All breach</td><td class="num b4-act">2.3%</td><td class="num b4-tgt">within plan</td><td class="num">—</td><td class="text breach">✗ CC RFR all score band above target</td></tr>
+
+    <tr><td class="label" rowspan="4">CAKE</td><td class="text">Cashloan</td><td class="num b1-act pos">4.8%</td><td class="num b1-tgt">within plan</td><td class="num pos">on plan</td><td class="num b4-act pos">2.9%</td><td class="num b4-tgt">within plan</td><td class="num">—</td><td class="text pos">✓ All within target T3</td></tr>
+    <tr><td class="text">Payday</td><td class="num b1-act neg">8.0%</td><td class="num b1-tgt">~8% (at target)</td><td class="num">at target</td><td class="num b4-act">5.5%</td><td class="num b4-tgt">within plan</td><td class="num">—</td><td class="text neg">⚠ At target. Repeat policy chưa impact</td></tr>
+    <tr><td class="text">Overdraft</td><td class="num b1-act">4.4%</td><td class="num b1-tgt">within plan</td><td class="num">—</td><td class="num b4-act">3.3%</td><td class="num b4-tgt">within plan</td><td class="num">—</td><td class="text pos">✓ Trend giảm steady</td></tr>
+    <tr><td class="text">Credit Card</td><td class="num b1-act pos">2.0%</td><td class="num b1-tgt">within plan</td><td class="num pos">—</td><td class="num b4-act pos">2.0%</td><td class="num b4-tgt">within plan</td><td class="num">—</td><td class="text pos">✓ NTB CC V2 plan T5</td></tr>
+
+    <tr><td class="label" rowspan="3">BE</td><td class="text">Cashloan</td><td class="num b1-act">5.3%</td><td class="num b1-tgt">within plan</td><td class="num">—</td><td class="num b4-act">3.3%</td><td class="num b4-tgt">within plan</td><td class="num">—</td><td class="text pos">✓ OK. Convert score v2 +7% AR T4</td></tr>
+    <tr><td class="text">Paylater</td><td class="num b1-act neg">7.4%</td><td class="num b1-tgt">within plan (overall)</td><td class="num breach">BE_NO_SCORE 2-3x</td><td class="num b4-act">6.0%</td><td class="num b4-tgt">within plan</td><td class="num">—</td><td class="text breach">✗ BE_NO_SCORE subgroup 2-3x baseline</td></tr>
+    <tr><td class="text">Credit Card</td><td class="num b1-act pos">2.9%</td><td class="num b1-tgt">within plan</td><td class="num pos">—</td><td class="num b4-act pos">2.3%</td><td class="num b4-tgt">within plan</td><td class="num">—</td><td class="text pos">✓ OK</td></tr>
+
+    <tr><td class="label" rowspan="2">VNPAY</td><td class="text">Cashloan</td><td class="num b1-act neg">6.0%</td><td class="num b1-tgt">within plan</td><td class="num neg">↑ rising</td><td class="num b4-act">~3.4%</td><td class="num b4-tgt">within plan</td><td class="num">—</td><td class="text neg">⚠ Low risk overall — push được</td></tr>
+    <tr><td class="text">Paylater</td><td class="num b1-act neg">7.4%</td><td class="num b1-tgt">within plan</td><td class="num neg">không giảm</td><td class="num b4-act">6.0%</td><td class="num b4-tgt">within plan</td><td class="num">—</td><td class="text neg">⚠ VNP_PL stalled</td></tr>
+
+    <tr><td class="label">ZLP</td><td class="text">Cashloan</td><td class="num b1-act pos">4.9%</td><td class="num b1-tgt">under plan</td><td class="num pos">under plan</td><td class="num b4-act pos">2.9%</td><td class="num b4-tgt">under plan</td><td class="num pos">under plan</td><td class="text pos">✓ Best — %RFR thấp hơn kế hoạch</td></tr>
+
+    <tr><td class="label" rowspan="2">MWG</td><td class="text">Cashloan</td><td class="num b1-act">5.3%</td><td class="num b1-tgt">within plan</td><td class="num">—</td><td class="num b4-act">3.3%</td><td class="num b4-tgt">within plan</td><td class="num">—</td><td class="text pos">✓ OK. Optimize matrix score T4</td></tr>
+    <tr><td class="text">Paylater</td><td class="num b1-act pos">7.4% (T3) → 4.7% (T4 MTD)</td><td class="num b1-tgt pos">Q2 target: B0 −0.5%</td><td class="num pos">on track ↓</td><td class="num b4-act pos">6.0%</td><td class="num b4-tgt">within plan</td><td class="num">—</td><td class="text pos">✓ Best PL — convert sang instalment</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 style="margin-top:18px">Portfolio Aggregate Trend — B0-B4 by Product (Risk Committee PDF slide 8)</h3>
+<div class="chart-grid">
+  <div class="chart-card">
+    <h4>B0-B4 Aggregate · 2025-05 → 2026-03</h4>
+    <div class="chart-wrap"><canvas id="chartRFRPortfolio"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <h4>Paylater B0-B1 by Channel (Mar-26 latest)</h4>
+    <div class="chart-wrap"><canvas id="chartPLRR"></canvas></div>
+  </div>
+</div>
+
+<div class="note warn">
+  <strong>Knockout watch — kết hợp B0-B1 + B0-B4:</strong>
+  <ul style="margin:6px 0 0 18px">
+    <li><strong>VDS Payday B0-B4 RR 10.43% vs target 7.5%</strong> (Mar-26) — chạm ngưỡng lỗ −0.1% PBT%ticket. Cắt VDS Cake&lt;700 + DTN&lt;700 trong T3, impact sale volume −3%. Action Apr: Optimize matrix score → expect −1% roll rate.</li>
+    <li><strong>VDS Credit Card B0-B4 RFR cao hơn target tất cả score band</strong> — cần Q2 action thêm.</li>
+    <li><strong>BE_NO_SCORE PL (B0-B1)</strong> cao hơn target 2-3 lần — cần specific action cho subgroup này.</li>
+    <li><strong>FPT PL B0-B1 &gt;9%</strong> — critical, đề xuất shutdown vì NPL Cake 17.2% / CIC 29.6%.</li>
+    <li><strong>Payday Cake Repeat policy</strong> chưa effective — ticket size repeat tăng chỉ 200K. Phải push thêm action T4.</li>
+  </ul>
+  <strong>Plan T4-T5 actions (Risk Committee PDF slide 26):</strong>
+  <ul style="margin:6px 0 0 18px;font-size:.92em">
+    <li>Cashloan VDS/Cake/ZLP/MWG/VNPay/BE: Maximize segment Approve=Request → +3-6 Tỷ daily disburse</li>
+    <li>VDS Payday: Optimize matrix score → expect −1% roll rate T4</li>
+    <li>MWG Paylater: Transaction scoring + matrix score → AR 70% + roll rate B0 −0.5% Q2</li>
+    <li>Credit Card Mass/BE/VDS: Convert score v2 → +AR luồng new 5-7% T5</li>
+  </ul>
+</div>
+
+<h3 style="margin-top:24px">Risk Committee April 2026 — Strategic Priorities</h3>
+
+<div class="insight-grid">
+  <div class="insight-card win">
+    <h4>✓ Đang OK — push được</h4>
+    <div class="item">
+      <div class="meta">
+        <div class="name">VNPay (CL + PD + PL)</div>
+        <div class="reason">"Rủi ro thấp, cần mở rộng chính sách để tăng trưởng" — CRO Vinh Hà mandate Apr 2026. Cake CL VNPay đang fit risk envelope, opportunity scale</div>
+      </div>
+      <div class="nums"><span class="pct">Expand</span></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">MWG Paylater (ngoại trừ airtime)</div>
+        <div class="reason">MWG PL "kéo giảm rủi ro chung Paylater portfolio". RR ~5% under target. Transaction score build T5 sẽ tăng AR lên 70%</div>
+      </div>
+      <div class="nums"><span class="pct">~5% RR</span></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Cake Cashloan Approve=Request</div>
+        <div class="reason">NTB12 100% rollout, NTB3 10% pilot. Impact sale 1.2x uplift, risk expect không đổi</div>
+      </div>
+      <div class="nums"><span class="pct">1.2x</span></div>
+    </div>
+  </div>
+
+  <div class="insight-card lose">
+    <h4>✗ Risk Hot Spots — cần action gấp</h4>
+    <div class="item">
+      <div class="meta">
+        <div class="name">VDS Payday &lt;700 score</div>
+        <div class="reason">RR cao hơn target 7.5%, chạm ngưỡng lỗ −0.1% PBT%ticket T3. Cần cut nhóm 450-700 telco score (CRO Vinh Hà + Đạm Hồ discuss)</div>
+      </div>
+      <div class="nums"><span class="pct">Cut</span></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">FPT Paylater</div>
+        <div class="reason">RR &gt;9%, NPL Cake 17.2% / CIC 29.6%. Lỗ −0.4 Bil. Cân nhắc shutdown</div>
+      </div>
+      <div class="nums"><span class="pct">Shutdown?</span></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">MWG Paylater nhóm airtime</div>
+        <div class="reason">Fraud cash out rất nhiều. Đã có chốt kiểm soát OB flow. Risk đang làm với Khoa Nguyễn về action cụ thể</div>
+      </div>
+      <div class="nums"><span class="pct">Fraud</span></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">VNPost Paylater</div>
+        <div class="reason">Fraud cao, Risk đang làm việc với anh Khoa Nguyễn để impose action cụ thể. Mới 3 Bil/m disb không phải đòn bẩy</div>
+      </div>
+      <div class="nums"><span class="pct">Fix first</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="note">
+  <strong>Risk Committee context — quy định mới impact 2026:</strong>
+  <ul style="margin:6px 0 0 18px;font-size:.92em">
+    <li><strong>Thông tư 31 phân loại nhóm nợ</strong> sẽ làm tăng Loan Group 2 (LG2). Đã được CEO yêu cầu CRO chuẩn bị plan migrate.</li>
+    <li><strong>Fraud management:</strong> Đã giảm thiệt hại từ lừa đảo xuống 0.7 tỷ/tháng nhờ hệ thống mới. Cần nâng cấp detect.</li>
+    <li><strong>Collection:</strong> Virtual agents call pre-due + nhóm thể hiện trách nhiệm cao. AI agent vs human agent hiệu quả tương đương. Lumi scoring PTP launched 21/04.</li>
+    <li><strong>Tố tụng:</strong> Review hợp đồng + ủy quyền đang chạy, Yên Vy expect T6.2026 mới start service.</li>
+    <li><strong>QC kiểm soát:</strong> CRO Vinh Hà đề xuất centralize laptop công ty cho collection agents để control communication risk.</li>
+  </ul>
+</div>
+
+</div>
+<!-- END TAB 4 -->
+
+<footer>
+  Generated 2026-05-20 · <code>damcake-work-wiki / Projects / Finance-Tracking / team-hub / lending-portfolio-tracking.html</code>
+</footer>
+
+<script>
+const grape='#7B2FBE',pink='#FF2D71',mint='#0BC76A',amber='#FF7A2F',pink700='#B8154F',grape900='#1A1033',grey='#B8B0CC';
+Chart.defaults.font.family="'Be Vietnam Pro',sans-serif";
+Chart.defaults.color='#4a4458';
+
+function showTab(e,id){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  e.currentTarget.classList.add('active');
+}
+
+// 1.2 Left: YTD Actual vs Budget by channel
+new Chart(document.getElementById('chartYtdAvB'),{
+  type:'bar',
+  data:{
+    labels:['VDS','CAKE','MWG','ZLP','OTHERS'],
+    datasets:[
+      {label:'YTD Apr Actual',data:[3221,3475,628,490,200],backgroundColor:pink,borderRadius:5},
+      {label:'YTD Apr Budget',data:[3698,3754,851,576,334],backgroundColor:grey,borderRadius:5}
+    ]
+  },
+  options:{
+    plugins:{
+      legend:{position:'top',labels:{boxWidth:14,padding:10,font:{size:11}}},
+      tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw+' Bil'}}
+    },
+    scales:{
+      y:{title:{display:true,text:'Bil VND'},grid:{color:'#EEEAF6'},beginAtZero:true},
+      x:{grid:{display:false}}
+    }
+  }
+});
+
+// 1.2 Right: FY Budget vs Revised
+new Chart(document.getElementById('chartFyAvB'),{
+  type:'bar',
+  data:{
+    labels:['VDS','CAKE','MWG','ZLP','OTHERS'],
+    datasets:[
+      {label:'FY26 Budget',data:[13349,14069,6131,2063,4540],backgroundColor:grape,borderRadius:5},
+      {label:'Revised FY (Road3k Q2 + H2 recalib)',data:[12076,13545,4234,2359,764],backgroundColor:mint,borderRadius:5}
+    ]
+  },
+  options:{
+    plugins:{
+      legend:{position:'top',labels:{boxWidth:14,padding:10,font:{size:11}}},
+      tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw+' Bil'}}
+    },
+    scales:{
+      y:{title:{display:true,text:'Bil VND'},grid:{color:'#EEEAF6'},beginAtZero:true},
+      x:{grid:{display:false}}
+    }
+  }
+});
+
+// 1.3 Monthly trajectory
+new Chart(document.getElementById('chartMonthly'),{
+  type:'line',
+  data:{
+    labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+    datasets:[
+      {label:'FY26 Budget',
+        data:[2235,2023,2407,2546,2766,3084,3365,3650,3976,4289,4692,5118],
+        borderColor:grape,backgroundColor:'rgba(123,47,190,.08)',
+        borderWidth:2.5,tension:.25,fill:false,pointRadius:4},
+      {label:'Actual + May Forecast',
+        data:[1920,1720,2130,2144,2400,null,null,null,null,null,null,null],
+        borderColor:pink,backgroundColor:'rgba(255,45,113,.15)',
+        borderWidth:3,tension:.25,fill:true,pointRadius:5,pointBackgroundColor:pink},
+      {label:'Revised (Road3k Q2 + H2 recalib)',
+        data:[null,null,null,2148,2411,2861,2751,2923,3128,3333,3587,3936],
+        borderColor:mint,borderDash:[6,4],borderWidth:2.5,tension:.25,fill:false,pointRadius:4,pointBackgroundColor:mint}
+    ]
+  },
+  options:{
+    plugins:{
+      legend:{position:'bottom',labels:{boxWidth:14,padding:10,font:{size:11}}},
+      tooltip:{callbacks:{label:c=>c.dataset.label+': '+(c.raw===null?'—':c.raw+' Bil')}}
+    },
+    scales:{
+      y:{title:{display:true,text:'Bil VND'},grid:{color:'#EEEAF6'},beginAtZero:false,suggestedMin:1500},
+      x:{grid:{display:false}}
+    }
+  }
+});
+
+// ====================== TAB 2: P&L Monthly Chart ======================
+const pnlData = {
+  toi: {
+    title:'TOI — Monthly Actual vs Budget (Bil VND)',
+    actual:[342,307,348,358,null,null,null,null,null,null,null,null],
+    budget:[342,307,348,357,399,432,468,504,542,582,628,683]
+  },
+  prov: {
+    title:'Provision — Monthly Actual vs Budget (Bil VND)',
+    actual:[126,184,212,185,null,null,null,null,null,null,null,null],
+    budget:[126,184,212,217,234,253,279,253,267,280,295,317]
+  },
+  pbo: {
+    title:'PBO — Monthly Actual vs Budget (Bil VND)',
+    actual:[146,57,75,84,null,null,null,null,null,null,null,null],
+    budget:[146,57,75,52,67,75,79,134,144,166,185,201]
+  },
+  pbt: {
+    title:'PBT — Monthly Actual vs Budget (Bil VND)',
+    actual:[126,34,52,60,null,null,null,null,null,null,null,null],
+    budget:[126,34,52,17,30,37,39,93,101,122,140,114]
+  },
+  disb: {
+    title:'Disbursement — Monthly Actual vs Budget (Bil VND)',
+    actual:[2270,1723,2070,2144,null,null,null,null,null,null,null,null],
+    budget:[2270,1723,2070,2148,2536,2663,2824,2979,3160,3335,3585,3928]
+  }
+};
+
+const pnlChart = new Chart(document.getElementById('chartPnlMonthly'),{
+  type:'line',
+  data:{
+    labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+    datasets:[
+      {label:'Actual',data:pnlData.pbt.actual,borderColor:pink,backgroundColor:'rgba(255,45,113,.15)',
+       borderWidth:3,tension:.25,fill:true,pointRadius:5,pointBackgroundColor:pink},
+      {label:'Budget',data:pnlData.pbt.budget,borderColor:grape,borderDash:[5,4],
+       borderWidth:2.5,tension:.25,fill:false,pointRadius:4,pointBackgroundColor:grape}
+    ]
+  },
+  options:{
+    plugins:{
+      legend:{position:'bottom',labels:{boxWidth:14,padding:10,font:{size:11}}},
+      tooltip:{callbacks:{label:c=>c.dataset.label+': '+(c.raw===null?'—':c.raw+' Bil')}}
+    },
+    scales:{
+      y:{title:{display:true,text:'Bil VND'},grid:{color:'#EEEAF6'}},
+      x:{grid:{display:false}}
+    }
+  }
+});
+
+function updatePnlChart(){
+  const m = document.getElementById('pnl-metric').value;
+  pnlChart.data.datasets[0].data = pnlData[m].actual;
+  pnlChart.data.datasets[1].data = pnlData[m].budget;
+  pnlChart.update();
+  document.getElementById('pnl-chart-title').textContent = pnlData[m].title;
+}
+
+// ====================== TAB 3: Unit Economics ======================
+// Product color map
+const prodColor = {CL:pink, PD:grape, OD:amber, PL:pink700};
+
+function trendChart(canvasId, yLabel, datasets){
+  return new Chart(document.getElementById(canvasId),{
+    type:'line',
+    data:{labels:['Q3.25','Q4.25','Q1.26'],datasets:datasets},
+    options:{
+      plugins:{
+        legend:{position:'bottom',labels:{boxWidth:14,padding:10,font:{size:11}}},
+        tooltip:{callbacks:{label:c=>c.dataset.label+': '+(c.raw===null?'—':c.raw.toFixed(1)+'%')}}
+      },
+      scales:{
+        y:{title:{display:true,text:yLabel},grid:{color:'#EEEAF6'}},
+        x:{grid:{display:false}}
+      }
+    }
+  });
+}
+
+function lineDS(label, data, color, dash){
+  const ds={label:label, data:data, borderColor:color, backgroundColor:color+'18',
+    borderWidth:2.5, tension:.25, pointRadius:5, pointBackgroundColor:color, fill:false};
+  if(dash) ds.borderDash=[5,4];
+  return ds;
+}
+
+// 3.1 four trend charts
+trendChart('chartNYTrend','NY/ANR (%, quarterly)',[
+  lineDS('CL',[7.3,6.8,5.4],pink),
+  lineDS('PD',[15.6,20.1,15.5],grape),
+  lineDS('OD',[-1.4,-7.0,-6.4],amber),
+  lineDS('PL',[null,null,-1.8],pink700,true)
+]);
+
+trendChart('chartCoRTrend','%CoR (Prov/Disb)',[
+  lineDS('CL',[6.2,7.6,11.8],pink),
+  lineDS('PD',[2.4,2.1,3.7],grape),
+  lineDS('OD',[6.9,10.0,8.6],amber),
+  lineDS('PL',[null,null,9.5],pink700,true)
+]);
+
+trendChart('chartNPLCake','%NPL Cake',[
+  lineDS('CL',[4.6,3.6,4.6],pink),
+  lineDS('PD',[5.0,4.3,7.4],grape),
+  lineDS('OD',[5.6,5.7,6.8],amber),
+  lineDS('PL',[null,null,6.2],pink700,true)
+]);
+
+trendChart('chartNPLCIC','%NPL CIC',[
+  lineDS('CL',[5.9,4.9,6.1],pink),
+  lineDS('PD',[5.5,5.8,9.0],grape),
+  lineDS('OD',[12.9,15.3,15.7],amber),
+  lineDS('PL',[null,null,12.7],pink700,true)
+]);
+
+// 3.1 Filterable QoQ table
+const qoqTableData = {
+  All: {
+    cols:['Product','Period','Disb','Balance','TOI','Prov','PBO','NPL Cake','NPL CIC','LG2','%CoR','NY/ANR (qtr)'],
+    rows:[
+      ['CL','Q3.25',2921,4049,474,180,178,'4.6%','5.9%','9.3%','6.2%','7.3%'],
+      ['CL','Q4.25',3938,5801,691,299,236,'3.6%','4.9%','10.2%','7.6%','6.8%'],
+      ['CL','Q1.26',3418,6694,763,403,198,'4.6%','6.1%','11.7%','11.8%','5.4%'],
+      ['PD','Q3.25',1019,430,91,24,44,'5.0%','5.5%','10.0%','2.4%','15.6%'],
+      ['PD','Q4.25',1864,660,171,38,96,'4.3%','5.8%','15.6%','2.1%','20.1%'],
+      ['PD','Q1.26',2248,808,208,83,97,'7.4%','9.0%','15.7%','3.7%','15.5%'],
+      ['OD','Q3.25',302,207,18,21,-3,'5.6%','12.9%','13.3%','6.9%','−1.4%'],
+      ['OD','Q4.25',228,143,13,23,-10,'5.7%','15.3%','13.1%','10.0%','−7.0%'],
+      ['OD','Q1.26',172,94,9,15,-6,'6.8%','15.7%','10.0%','8.6%','−6.4%'],
+      ['PL','Q1.26',224,225,17,21,-10,'6.2%','12.7%','0%','9.5%','−1.8%']
+    ]
+  },
+  VDS: {
+    cols:['Product','Period','Disb','TOI','Prov','PBO','NPL Cake','NPL CIC','LG2','%CoR','NY/Disb'],
+    rows:[
+      ['CL','2025 FY',4016,781,390,132,'3.8%','—','10.1%','9.7%','9.7%'],
+      ['CL','2026 YTD-Apr',1897,441,218,66,'4.8%','—','10.3%','11.5%','11.7%'],
+      ['Payday','2025 FY',2492,242,84,71,'6.1%','—','18.6%','3.4%','6.3%'],
+      ['Payday','2026 YTD-Apr',1324,125,61,31,'9.0%','—','14.9%','4.6%','4.8%']
+    ]
+  },
+  CAKE: {
+    cols:['Product','Period','Disb','TOI','Prov','PBO','NPL Cake','NPL CIC','LG2','%CoR','NY/Disb'],
+    rows:[
+      ['CL','2025 FY',3984,670,268,337,'4.0%','—','11.1%','6.7%','10.1%'],
+      ['CL','2026 YTD-Apr',1628,374,242,100,'6.0%','—','11.0%','14.9%','8.1%'],
+      ['OD','2025 FY',1199,69,76,-11,'5.7%','—','13.1%','6.4%','−0.6%'],
+      ['OD','2026 YTD-Apr',222,11,17,-7,'7.9%','—','10.2%','7.8%','−2.8%'],
+      ['Payday','2025 FY',1299,113,12,95,'2.8%','—','13.1%','0.9%','7.8%'],
+      ['Payday','2026 YTD-Apr',1625,150,49,91,'7.1%','—','12.8%','3.0%','6.2%']
+    ]
+  },
+  MWG: {
+    cols:['Product','Period','Disb','TOI','Prov','PBO','NPL Cake','NPL CIC','LG2','%CoR','NY/Disb'],
+    rows:[
+      ['CL','2025 FY',692,98,26,42,'2.2%','—','9.2%','3.7%','10.5%'],
+      ['CL','2026 YTD-Apr',503,103,42,36,'3.2%','—','11.1%','8.4%','12.1%']
+    ]
+  },
+  ZLP: {
+    cols:['Product','Period','Disb','TOI','Prov','PBO','NPL Cake','NPL CIC','LG2','%CoR','NY/Disb'],
+    rows:[
+      ['CL','2025 FY',674,84,13,52,'1.9%','—','8.2%','1.9%','10.5%'],
+      ['CL','2026 YTD-Apr',458,88,33,41,'3.3%','—','8.0%','7.2%','12.1%'],
+      ['Payday','2025 FY',0.01,0.001,0.0,0.001,'0%','—','0%','—','—'],
+      ['Payday','2026 YTD-Apr',32,2,0.1,1,'0%','—','91.4%','0.4%','6.8%']
+    ]
+  }
+};
+
+function renderQoQTable(){
+  const ch = document.getElementById('qoq-channel-filter').value;
+  const d = qoqTableData[ch];
+  const fmt = v => typeof v==='number' ? v.toFixed(v<10?1:0) : v;
+  let html = '<div style="overflow-x:auto"><table class="data"><thead><tr>';
+  d.cols.forEach((c,i)=>html += `<th class="${i<2?'label':''}" style="${i<2?'text-align:left':''}">${c}</th>`);
+  html += '</tr></thead><tbody>';
+  d.rows.forEach(r=>{
+    html += '<tr>';
+    r.forEach((v,i)=>{
+      const cls = i<2 ? (i===0?'label':'text') : 'num';
+      html += `<td class="${cls}">${i<2?v:fmt(v)}</td>`;
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table></div>';
+  document.getElementById('qoq-table-container').innerHTML = html;
+}
+renderQoQTable();
+
+// 3.2 Ranking charts per product
+function rankChart(canvasId, data, color){
+  new Chart(document.getElementById(canvasId),{
+    type:'bar',
+    data:{
+      labels:data.map(r=>r[0]),
+      datasets:[{
+        data:data.map(r=>r[1]),
+        backgroundColor:data.map(r=>r[1]>=0?color:'#FF7A2F'),
+        borderRadius:5
+      }]
+    },
+    options:{
+      indexAxis:'y',
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw.toFixed(1)+'%'}}},
+      scales:{x:{grid:{color:'#EEEAF6'}},y:{grid:{display:false}}}
+    }
+  });
+}
+
+// 3.2.1 CL
+rankChart('chartCLNYAnr',[['ZLP',8.4],['VDS',8.3],['MWG',7.6],['CAKE',5.0]],pink);
+rankChart('chartCLNYDisb',[['ZLP',12.1],['MWG',12.1],['VDS',11.7],['CAKE',8.1]],pink);
+
+// 3.2.2 PD
+rankChart('chartPDNYAnr',[['CAKE',22.4],['VDS',17.9]],grape);
+rankChart('chartPDNYDisb',[['ZLP',6.8],['CAKE',6.2],['VDS',4.8]],grape);
+
+// 3.2.3 PL
+rankChart('chartPLNYAnr',[['VDS-EPASS',16.4],['MWG',0.5],['BE',-1.5],['VDS',-2.3],['VNPAY',-6.9],['FPT',-21.7]],pink700);
+rankChart('chartPLNYDisb',[['VDS-EPASS',4.9],['MWG',0.5],['BE',-1.5],['VDS',-2.3],['VNPAY',-7.2],['FPT',-26.9]],pink700);
+
+// 3.3 UE Inputs table filter
+const ueTableData = {
+  CL: {
+    title:'Cash Loan — Pricing & Funnel (Q1.26)',
+    cols:['Channel','IR (annual)','CoF','NIM','Approval Rate','Signed Rate','Insurance Pen','Avg Ticket (M VND)','Avg Tenor (mo)'],
+    rows:[
+      ['VDS','50.8%','7.8%','43.0%','40.9%','85.0%','83.7%','15.5','18'],
+      ['CAKE','45.5%','7.8%','37.7%','18.2%','75.5%','85.0%','15.5','17'],
+      ['MWG','49.2%','7.9%','41.3%','48.4%','90.7%','57.9%','22.9','17'],
+      ['ZALOPAY','50.9%','7.9%','43.0%','43.0%','94.8%','67.6%','14.6','14'],
+      ['VNPAY','45.3%','7.7%','37.6%','36.6%','76.7%','75.6%','19.5','17'],
+      ['BE','46.2%','8.0%','38.2%','17.0%','82.4%','85.3%','12.7','15'],
+      ['VNPOST','47.1%','8.2%','38.9%','35.9%','77.3%','74.6%','18.7','24'],
+      ['MISA','46.6%','8.2%','38.5%','62.9%','84.1%','0%','80.5','21'],
+      ['All CL','48.5%','7.8%','40.7%','27.2%','82.3%','79.6%','16.0','17']
+    ],
+    subtotalIdx: 8
+  },
+  PD: {
+    title:'Payday — Pricing & Funnel (Q1.26)',
+    cols:['Channel','IR (annual)','CoF','NIM','Approval Rate','Signed Rate','Insurance Pen','Avg Ticket (M VND)','Avg Tenor (mo)'],
+    rows:[
+      ['VDS','59.8%','7.4%','52.4%','61.2%','93.7%','100%','4.8','1'],
+      ['CAKE','55.0%','7.2%','47.8%','55.9%','93.1%','100%','3.4','1'],
+      ['VNPAY','60.0%','7.2%','52.8%','60.7%','91.5%','100%','4.1','1'],
+      ['ZALOPAY','60.0%','7.0%','53.0%','55.1%','96.0%','74.7%','2.9','1'],
+      ['All PD','58.2%','7.3%','50.9%','27.2%','82.3%','99.6%','4.1','1']
+    ],
+    subtotalIdx: 4
+  },
+  PL: {
+    title:'Paylater — Account & Spending (Q1.26)',
+    cols:['Channel','Accumulated','Active','Active Rate','Avg Bal/Active (M)','Spending Q1 (Bil)','Spending/Active Mar (M)','TOI Q1 (Bil)','Prov Q1 (Bil)','PBO Q1 (Bil)','NPL Cake','NPL CIC'],
+    rows:[
+      ['MWG','46,848','7,611','16.2%','16.3','124.5','4.76','9.3','8.7','−3.1','4.6%','8.7%'],
+      ['VNPAY','34,614','7,927','22.9%','5.9','44.8','1.90','2.7','6.0','−4.0','8.4%','17.6%'],
+      ['BE','36,852','11,883','32.2%','2.5','30.7','0.89','2.4','2.9','−1.7','6.2%','13.0%'],
+      ['VDS','77,228','7,053','9.1%','3.2','22.4','1.07','2.9','3.4','−1.1','9.6%','22.5%'],
+      ['FPT','1,276','237','18.6%','6.8','1.3','1.58','0.0','0.4','−0.4','17.2%','29.6%'],
+      ['VDS-EPASS','68','42','61.8%','0.5','0.07','0.61','0.004','0.001','+0.0004','0%','12.3%'],
+      ['Total PL','196,886','34,753','17.7%','6.5','223.8','2.01','17.3','21.3','−10.3','6.2%','12.7%']
+    ],
+    subtotalIdx: 6
+  }
+};
+
+function renderUETable(){
+  const p = document.getElementById('ue-product-filter').value;
+  const d = ueTableData[p];
+  let html = `<h3>${d.title}</h3><div style="overflow-x:auto"><table class="data" style="font-size:.87em"><thead><tr>`;
+  d.cols.forEach((c,i)=>html += `<th class="${i===0?'label':''}" style="${i===0?'text-align:left':''}">${c}</th>`);
+  html += '</tr></thead><tbody>';
+  d.rows.forEach((r,ri)=>{
+    const isTotal = ri===d.subtotalIdx;
+    html += `<tr class="${isTotal?'subtotal':''}">`;
+    r.forEach((v,i)=>{
+      const cls = i===0 ? 'label' : 'num';
+      html += `<td class="${cls}">${v}</td>`;
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table></div>';
+  document.getElementById('ue-table-container').innerHTML = html;
+}
+renderUETable();
+
+// ====================== TAB 4: Risk Tracking ======================
+// NPL Cake trend by product (Tab 4 — separate canvas)
+new Chart(document.getElementById('chartNPLCakeTab4'),{
+  type:'line',
+  data:{
+    labels:['Q3.25','Q4.25','Q1.26'],
+    datasets:[
+      lineDS('CL',[4.6,3.6,4.6],pink),
+      lineDS('PD',[5.0,4.3,7.4],grape),
+      lineDS('OD',[5.6,5.7,6.8],amber),
+      lineDS('PL',[null,null,6.2],pink700,true)
+    ]
+  },
+  options:{
+    plugins:{
+      legend:{position:'bottom',labels:{boxWidth:14,padding:10,font:{size:11}}},
+      tooltip:{callbacks:{label:c=>c.dataset.label+': '+(c.raw===null?'—':c.raw.toFixed(1)+'%')}}
+    },
+    scales:{
+      y:{title:{display:true,text:'%NPL Cake'},grid:{color:'#EEEAF6'},beginAtZero:true},
+      x:{grid:{display:false}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chartNPLCICTab4'),{
+  type:'line',
+  data:{
+    labels:['Q3.25','Q4.25','Q1.26'],
+    datasets:[
+      lineDS('CL',[5.9,4.9,6.1],pink),
+      lineDS('PD',[5.5,5.8,9.0],grape),
+      lineDS('OD',[12.9,15.3,15.7],amber),
+      lineDS('PL',[null,null,12.7],pink700,true)
+    ]
+  },
+  options:{
+    plugins:{
+      legend:{position:'bottom',labels:{boxWidth:14,padding:10,font:{size:11}}},
+      tooltip:{callbacks:{label:c=>c.dataset.label+': '+(c.raw===null?'—':c.raw.toFixed(1)+'%')}}
+    },
+    scales:{
+      y:{title:{display:true,text:'%NPL CIC'},grid:{color:'#EEEAF6'},beginAtZero:true},
+      x:{grid:{display:false}}
+    }
+  }
+});
+
+// 4.2 Portfolio RFR B0-B4 trend (PDF slide 8)
+new Chart(document.getElementById('chartRFRPortfolio'),{
+  type:'line',
+  data:{
+    labels:['2025-05','2025-06','2025-07','2025-08','2025-09','2025-10','2025-11','2025-12','2026-01','2026-02','2026-03'],
+    datasets:[
+      {label:'Cashloan',data:[2.2,2.6,2.3,2.7,3.1,2.6,2.9,2.8,3.2,3.2,2.4],borderColor:pink,backgroundColor:'rgba(255,45,113,.06)',borderWidth:2.5,tension:.25,pointRadius:3,pointBackgroundColor:pink,fill:false},
+      {label:'Credit Card',data:[2.0,2.0,2.3,1.6,2.4,2.1,2.2,1.8,1.9,2.2,2.2],borderColor:grape,borderWidth:2.5,tension:.25,pointRadius:3,pointBackgroundColor:grape,fill:false},
+      {label:'Payday',data:[null,null,4.9,4.6,5.2,5.6,7.0,5.9,5.9,6.6,6.2],borderColor:'#1A1033',borderWidth:3,tension:.25,pointRadius:4,pointBackgroundColor:'#1A1033',fill:false},
+      {label:'OD',data:[null,null,2.8,2.5,2.5,2.3,2.5,2.3,2.6,2.0,3.3],borderColor:amber,borderWidth:2.5,tension:.25,pointRadius:3,pointBackgroundColor:amber,fill:false},
+      {label:'Paylater',data:[null,null,7.0,7.0,6.4,6.3,5.8,5.5,5.3,4.8,6.0],borderColor:pink700,borderWidth:2.5,tension:.25,pointRadius:3,pointBackgroundColor:pink700,fill:false}
+    ]
+  },
+  options:{
+    plugins:{
+      legend:{position:'bottom',labels:{boxWidth:14,padding:8,font:{size:11}}},
+      tooltip:{callbacks:{label:c=>c.dataset.label+': '+(c.raw===null?'—':c.raw.toFixed(1)+'%')}}
+    },
+    scales:{
+      y:{title:{display:true,text:'B0-B4 (%)'},grid:{color:'#EEEAF6'},beginAtZero:true},
+      x:{grid:{display:false},ticks:{font:{size:9}}}
+    }
+  }
+});
+
+// 4.2 Paylater B0-B1 by channel
+new Chart(document.getElementById('chartPLRR'),{
+  type:'bar',
+  data:{
+    labels:['MWG (T4 MTD)','MWG (Mar)','PL Overall','VNPAY','BE','VDS','FPT'],
+    datasets:[
+      {label:'B0-B1 Actual Mar-26',data:[4.7,7.4,6.4,7.4,7.4,7.5,9.0],
+       backgroundColor:[mint,'#FF2D71','#FF2D71','#FF2D71','#FF7A2F','#FF7A2F','#B8154F'],borderRadius:5},
+      {label:'B0-B1 Target ~6%',data:[6,6,6,6,6,6,6],type:'line',
+       borderColor:'#1A1033',borderDash:[5,4],borderWidth:2,pointRadius:0,fill:false}
+    ]
+  },
+  options:{
+    plugins:{
+      legend:{position:'bottom',labels:{boxWidth:14,padding:8,font:{size:11}}},
+      tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw.toFixed(1)+'%'}}
+    },
+    scales:{
+      y:{title:{display:true,text:'B0-B1 (%)'},grid:{color:'#EEEAF6'},beginAtZero:true,suggestedMax:10},
+      x:{grid:{display:false},ticks:{font:{size:10}}}
+    }
+  }
+});
+</script>
+
+</body>
+</html>
