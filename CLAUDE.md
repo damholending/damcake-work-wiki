@@ -68,9 +68,37 @@ Personal canonical sống ở `~/Desktop/Personal/Dam-Wiki/Wiki/` (filesystem mo
 | **MEMORY.md** | Running notes / cache | AI | Auto, mỗi conversation |
 | **Raw/** | Disk | mixed | Khi cần source data |
 | **virtual-dam-work skill** | Compiler | Đạm | Khi skill được invoke |
+| **Subagent** | Subprocess (isolated RAM) | built-in | Khi spawn — xem §6 |
 
 Conflict resolution: **Wiki > CLAUDE.md > MEMORY** (Wiki canonical, Memory có thể stale).
 
 ---
 
-*Update file này khi: (a) thêm tripwire mới phải fire trước Wiki, (b) thêm repo kernel patch. KHÔNG update khi Wiki rule đổi — pointer tự catch.*
+## 6. Process model — khi nào spawn subagent
+
+> Subagent = subprocess với context window riêng. Spawn để (a) tránh blow main RAM, (b) parallel độc lập, (c) focus output. Return value = IPC về parent.
+
+**Built-in active (light-touch, không tạo custom agent file):**
+
+| Trigger | Spawn | Prompt template |
+|---|---|---|
+| Search 3+ file Wiki/Raw để tìm "ai/where/which" | `Explore` | "Tìm <X> trong Wiki/ + Raw/. Trả về file path + 1-2 dòng context." |
+| Design implementation cho task non-trivial (≥3 file edit) | `Plan` | "Plan: <goal>. Load `Wiki/way-of-working.md` + relevant `domains/*`. Return step-by-step + critical files." |
+| Multi-task song song (independent) | `general-purpose` ×N parallel | Tách prompt rõ scope mỗi agent. Spawn 1 message, multiple tool calls. |
+
+**KHÔNG spawn khi:**
+- Read 1-2 file đã biết path → direct `Read`
+- Edit nhỏ / fix / format → direct
+- Conversation / clarify với Đạm
+
+**Observation rule (tự AI flag):**
+> Nếu 3+ lần spawn cùng pattern (cùng file load + cùng output style) → flag với Đạm: *"Lặp lại pattern X — đáng promote thành custom agent ở `.claude/agents/`?"*
+
+Pattern candidates đang theo dõi (chưa đủ ngưỡng):
+- Voice drafting (load `voice/<cat>.md` + draft) — 0 lần
+- Lending decision check (load `domains/lending.md` + `finance.md`) — 0 lần
+- Brand pre-flight (load `brand-guidelines.md` + apply) — 0 lần
+
+---
+
+*Update file này khi: (a) thêm tripwire mới phải fire trước Wiki, (b) thêm repo kernel patch, (c) observation §6 đạt ngưỡng 3+ → promote custom agent. KHÔNG update khi Wiki rule đổi — pointer tự catch.*
