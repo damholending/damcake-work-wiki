@@ -19,7 +19,9 @@ topic: risk, credit-risk, sbv, compliance
 - **Cadence:** Monthly
 - **Host:** CRO
 - **Vai trò Đạm:** Input/proposal khi cần — đặc biệt khi mảng Lending có exposure mới, policy mới, hoặc thay đổi underwriting
-- **Output gần nhất:** [`Raw/Risk/Risk Committee T4-2026.pdf`](../../Raw/Risk/Risk%20Committee%20T4-2026.pdf)
+- **Output gần nhất:**
+  - T5/2026: [`Risk Committee T5-2026.pdf`](../../Raw/Risk/Risk%20Committee%20T5-2026.pdf) — [Summary](../../Raw/Risk/Risk-Committee-T5-2026-summary.md)
+  - T4/2026: [`Risk Committee T4-2026.pdf`](../../Raw/Risk/Risk%20Committee%20T4-2026.pdf) — [Summary](../../Raw/Risk/Risk-Committee-T4-2026-summary.md)
 
 ## Risk Framework cho Lending
 

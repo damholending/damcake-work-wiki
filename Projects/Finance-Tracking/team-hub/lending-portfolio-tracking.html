@@ -6,7 +6,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
 <style>
   :root{
     color-scheme:light;
@@ -120,6 +120,7 @@
   <button class="tab-btn" onclick="showTab(event,'tab-2')">2 · P&amp;L – Actual vs Budget</button>
   <button class="tab-btn" onclick="showTab(event,'tab-3')">3 · Unit Economics</button>
   <button class="tab-btn" onclick="showTab(event,'tab-4')">4 · Risk Tracking</button>
+  <button class="tab-btn" onclick="showTab(event,'tab-5')">5 · Marketing &amp; Acquisition</button>
 </div>
 
 <!-- ============================================= -->
@@ -1411,6 +1412,275 @@
 </div>
 <!-- END TAB 4 -->
 
+<!-- ============================================= -->
+<!-- TAB 5: Marketing & Acquisition — Funnel       -->
+<!-- ============================================= -->
+<div id="tab-5" class="tab-content">
+
+<h2>5.1 · YTD Funnel Snapshot — Cake CL vs Cake PD (Jan→Apr 2026)</h2>
+
+<div class="note">
+  <strong>Source:</strong> Cake Monthly Reports Jan-Apr 2026 (<code>Raw/Lending/Monthly Report/*.pptx</code>) · funnel definitions từ LOS production data.
+  <ul style="margin:6px 0 0 18px;font-size:.92em">
+    <li><strong>App-in</strong>: loan application submitted vào LOS (lượt nộp đơn, không phải user).</li>
+    <li><strong>AR (Approval Rate)</strong>: % App-in được hệ thống/risk policy duyệt.</li>
+    <li><strong>CR (Conversion Rate)</strong>: % App-in disbursed thành công (App → tiền giải ngân).</li>
+    <li><strong>CAC</strong>: marketing cost / disbursed account, đơn vị VND/account.</li>
+  </ul>
+</div>
+
+<div class="kpi-grid">
+  <div class="kpi neutral">
+    <div class="label">CL YTD App-in</div>
+    <div class="value">823K</div>
+    <div class="target">Disbursed accounts <strong>109,653</strong> · CR blended <strong>13.3%</strong></div>
+  </div>
+  <div class="kpi neutral">
+    <div class="label">PD YTD App-in</div>
+    <div class="value">948K</div>
+    <div class="target">Disbursed accounts <strong>478,212</strong> · CR blended <strong>50.4%</strong></div>
+  </div>
+  <div class="kpi miss">
+    <div class="label">CL Apr AR Drop</div>
+    <div class="value">17%</div>
+    <div class="target">Mar 20% → Apr <strong>17%</strong> · system gap WL Risk ↔ LOS</div>
+    <span class="delta delta-neg">−3pp MoM (data bug)</span>
+  </div>
+  <div class="kpi breach">
+    <div class="label">PD CAC 12x Climb</div>
+    <div class="value">10,351</div>
+    <div class="target">Jan <strong>822</strong> → Apr <strong>10,351</strong> VND/acc</div>
+    <span class="delta delta-breach">12.6× in 4 months</span>
+  </div>
+</div>
+
+<h2>5.2 · Conversion Funnel — Cake CL · App-in → Approved → Disbursed</h2>
+
+<style>
+  .funnel-wrap{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:14px 0;}
+  @media(max-width:980px){.funnel-wrap{grid-template-columns:1fr;}}
+  .funnel-card{background:var(--surface-2);border-radius:18px;padding:18px 22px;box-shadow:0 2px 8px rgba(26,16,51,.06);}
+  .funnel-card h4{margin:0 0 14px;color:var(--grape-500);font-weight:600;font-size:1em;display:flex;align-items:center;gap:10px;}
+  .funnel-card h4 .badge{font-family:'JetBrains Mono',monospace;font-size:.7em;background:var(--grape-500);color:#fff;padding:3px 9px;border-radius:999px;font-weight:600;letter-spacing:.3px;}
+  .funnel-card.pd h4 .badge{background:var(--pink-500);}
+  .funnel-row{display:grid;grid-template-columns:80px 1fr 100px;align-items:center;gap:12px;margin:8px 0;}
+  .funnel-row .lab{font-size:.82em;font-weight:600;color:#4a4458;text-transform:uppercase;letter-spacing:.3px;}
+  .funnel-row .bar{height:32px;border-radius:8px;background:linear-gradient(90deg,var(--grape-500),var(--pink-500));position:relative;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;color:#fff;font-family:'JetBrains Mono',monospace;font-weight:600;font-size:.86em;box-shadow:0 1px 4px rgba(255,45,113,.18);}
+  .funnel-card.pd .funnel-row .bar{background:linear-gradient(90deg,#2D1B55,var(--pink-500));}
+  .funnel-row .pct{font-family:'JetBrains Mono',monospace;font-size:.88em;font-weight:600;color:var(--grape-500);text-align:right;}
+  .funnel-card.pd .funnel-row .pct{color:var(--pink-700);}
+  .funnel-step{font-size:.78em;color:#6b6478;margin:4px 0 2px;padding-left:92px;font-style:italic;}
+  .funnel-month-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+  .funnel-month-tabs button{font-family:'Be Vietnam Pro',sans-serif;padding:6px 14px;border:none;border-radius:999px;background:var(--surface-1);font-weight:600;font-size:.84em;cursor:pointer;color:#6b6478;}
+  .funnel-month-tabs button.active{background:linear-gradient(135deg,var(--pink-500),var(--grape-500));color:#fff;}
+</style>
+
+<div class="funnel-wrap">
+  <div class="funnel-card" id="funnel-cl">
+    <h4>Cake Cashloan <span class="badge">CL</span></h4>
+    <div class="funnel-month-tabs" id="cl-month-tabs">
+      <button onclick="renderFunnel('CL','Jan',event)">Jan</button>
+      <button onclick="renderFunnel('CL','Feb',event)">Feb</button>
+      <button onclick="renderFunnel('CL','Mar',event)">Mar</button>
+      <button class="active" onclick="renderFunnel('CL','Apr',event)">Apr</button>
+      <button onclick="renderFunnel('CL','YTD',event)">YTD</button>
+    </div>
+    <div id="funnel-cl-body"></div>
+  </div>
+
+  <div class="funnel-card pd" id="funnel-pd">
+    <h4>Cake Payday <span class="badge">PD</span></h4>
+    <div class="funnel-month-tabs" id="pd-month-tabs">
+      <button onclick="renderFunnel('PD','Jan',event)">Jan</button>
+      <button onclick="renderFunnel('PD','Feb',event)">Feb</button>
+      <button onclick="renderFunnel('PD','Mar',event)">Mar</button>
+      <button class="active" onclick="renderFunnel('PD','Apr',event)">Apr</button>
+      <button onclick="renderFunnel('PD','YTD',event)">YTD</button>
+    </div>
+    <div id="funnel-pd-body"></div>
+  </div>
+</div>
+
+<div class="note warn">
+  <strong>Funnel read — Apr 2026:</strong>
+  <ul style="margin:6px 0 0 18px;font-size:.92em">
+    <li><strong>CL App-in tăng 48% MoM</strong> (Mar 180K → Apr 267K) nhưng <strong>AR drop từ 20% → 17%</strong>. Net Approved chỉ tăng từ 36K → 45K (+26%).</li>
+    <li><strong>PD ổn định App-in</strong> (240K → 260K, +8%) nhưng <strong>AR cũng giảm 56% → 50%</strong> → Approved 134K → 130K.</li>
+    <li><strong>Cả 2 sản phẩm cùng giảm AR trong Apr</strong> — không phải hiện tượng riêng CL. Cần check policy/WL system-wide.</li>
+  </ul>
+</div>
+
+<h2>5.3 · Monthly Trend — App-in, AR, CR by Product</h2>
+
+<div class="chart-grid">
+  <div class="chart-card">
+    <h4>App-in Volume Trend (Jan→Apr)</h4>
+    <div class="chart-wrap"><canvas id="chartAppinTrend"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <h4>Approval Rate (AR%) Trend</h4>
+    <div class="chart-wrap"><canvas id="chartARTrend"></canvas></div>
+  </div>
+</div>
+
+<div class="chart-grid">
+  <div class="chart-card">
+    <h4>Conversion Rate (CR% = Disb/App) Trend</h4>
+    <div class="chart-wrap"><canvas id="chartCRTrend"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <h4>Disbursed Volume (Bil VND) Trend</h4>
+    <div class="chart-wrap"><canvas id="chartDisbTrend"></canvas></div>
+  </div>
+</div>
+
+<h3 style="margin-top:18px">Funnel metrics — full table</h3>
+<table class="data" style="font-size:.86em">
+  <thead>
+    <tr>
+      <th class="label" style="text-align:left">Product</th>
+      <th class="label" style="text-align:left">Month</th>
+      <th>App-in</th>
+      <th>AR%</th>
+      <th>Approved</th>
+      <th>CR%</th>
+      <th>Disb Accounts</th>
+      <th>Disb (Bil VND)</th>
+      <th>CAC (VND/acc)</th>
+      <th>Mkt Spend (Bil)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td class="label" rowspan="5">Cake CL</td><td class="text">Jan</td><td class="num">211,000</td><td class="num">18.0%</td><td class="num">37,980</td><td class="num">13.8%</td><td class="num">29,118</td><td class="num">469</td><td class="num">113,000</td><td class="num">3.29</td></tr>
+    <tr><td class="text">Feb</td><td class="num">165,000</td><td class="num neg">16.0%</td><td class="num">26,400</td><td class="num neg">12.0%</td><td class="num">19,800</td><td class="num">314</td><td class="num neg">191,000</td><td class="num">3.78</td></tr>
+    <tr><td class="text">Mar</td><td class="num">180,000</td><td class="num pos">20.0%</td><td class="num">36,000</td><td class="num pos">15.2%</td><td class="num">27,360</td><td class="num">400</td><td class="num">166,000</td><td class="num">4.54</td></tr>
+    <tr><td class="text">Apr</td><td class="num pos">267,000</td><td class="num breach">17.0%</td><td class="num">45,390</td><td class="num neg">12.5%</td><td class="num">33,375</td><td class="num">443</td><td class="num">129,000</td><td class="num">4.31</td></tr>
+    <tr class="subtotal"><td class="text">YTD</td><td class="num">823,000</td><td class="num">17.7%</td><td class="num">145,770</td><td class="num">13.3%</td><td class="num">109,653</td><td class="num">1,626</td><td class="num">145,300</td><td class="num">15.93</td></tr>
+
+    <tr><td class="label" rowspan="5">Cake PD</td><td class="text">Jan</td><td class="num">252,000</td><td class="num">55.0%</td><td class="num">138,600</td><td class="num">51.4%</td><td class="num">129,528</td><td class="num">432</td><td class="num pos">822</td><td class="num">0.11</td></tr>
+    <tr><td class="text">Feb</td><td class="num">196,000</td><td class="num">57.0%</td><td class="num">111,720</td><td class="num">52.4%</td><td class="num">102,704</td><td class="num">344</td><td class="num neg">7,525</td><td class="num">0.77</td></tr>
+    <tr><td class="text">Mar</td><td class="num">240,000</td><td class="num">56.0%</td><td class="num">134,400</td><td class="num">51.9%</td><td class="num">124,560</td><td class="num">423</td><td class="num neg">8,922</td><td class="num">1.11</td></tr>
+    <tr><td class="text">Apr</td><td class="num">260,000</td><td class="num breach">50.0%</td><td class="num">130,000</td><td class="num neg">46.7%</td><td class="num">121,420</td><td class="num">426</td><td class="num breach">10,351</td><td class="num">1.26</td></tr>
+    <tr class="subtotal"><td class="text">YTD</td><td class="num">948,000</td><td class="num">54.3%</td><td class="num">514,720</td><td class="num">50.4%</td><td class="num">478,212</td><td class="num">1,625</td><td class="num">6,790</td><td class="num">3.25</td></tr>
+  </tbody>
+</table>
+
+<h2>5.4 · CAC Trend — Marketing Efficiency</h2>
+
+<div class="chart-grid">
+  <div class="chart-card">
+    <h4>CAC Trend by Product · log scale (CL ~100K vs PD ~1-10K)</h4>
+    <div class="chart-wrap"><canvas id="chartCACTrend"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <h4>Monthly Marketing Spend (Bil VND)</h4>
+    <div class="chart-wrap"><canvas id="chartSpendTrend"></canvas></div>
+  </div>
+</div>
+
+<div class="gap-card breach">
+  <h4>⚠ PD CAC leo 12.6× trong 4 tháng — <span class="gap-num">822 → 10,351 VND/acc</span></h4>
+  <p><strong>Diễn biến:</strong> Jan 822 (gần như zero CAC, paid channel rất nhỏ) → Feb 7,525 (9.2×) → Mar 8,922 → Apr 10,351 (Apr/Jan = 12.6×). Cùng kỳ disbursed accounts gần như đi ngang (~120K/m).</p>
+  <p><strong>Câu hỏi cần trả lời T5:</strong> (1) Tháng nào bắt đầu mở rộng paid channel (TikTok/Google/Zalo)? (2) Tổng mkt spend PD đang ở 1.26 Bil/tháng, gấp 12× Jan — ROI vs PBT/ticket có còn dương không? (3) Có channel nào đang là cost sink (CPM/CPC cao mà CR thấp) không?</p>
+</div>
+
+<div class="gap-card breach">
+  <h4>⚠ CL Apr AR drop 20% → 17% — <span class="gap-num">system gap WL Risk vs LOS</span></h4>
+  <p><strong>Diễn biến:</strong> AR CL Jan 18% → Feb 16% (Tết slowdown) → Mar phục hồi 20% → Apr drop về 17%. Theo team Risk + LOS, gap data giữa Whitelist Risk policy và LOS routing tạo ra <strong>false-reject</strong> ở một subset apps trong Apr.</p>
+  <p><strong>Impact:</strong> Net Approved Apr 45,390 vs nếu giữ 20% AR thì ~53,400 → mất ~8K approved accounts trong tháng. Quy ra disbursed CR 12.5% → mất ~1K disbursed acc → impact disbursed ~12-15 Bil VND.</p>
+  <p><strong>Action:</strong> System bug fix do team Risk × LOS handle (đang priority). Re-run reject reason analysis sau khi fix để khẳng định AR Mar 20% là baseline có thể giữ.</p>
+</div>
+
+<h2>5.5 · Digital Channel Breakdown — TikTok / Google / Zalo / SEO</h2>
+
+<div class="note">
+  <strong>Status:</strong> Channel-level breakdown (TikTok / Google Ads / Zalo / SEO / Organic) per month đang ở slide Marketing trong Cake Monthly Report nhưng <strong>chưa extract chi tiết</strong> được vào dashboard này. Cần coordinate với Marketing team (Marko/Growth) để pull standardized channel split — yêu cầu: spend, app-in, AR%, CR%, disbursed accounts, CAC per channel × month.
+</div>
+
+<div class="chart-grid">
+  <div class="chart-card">
+    <h4>Channel Mix — placeholder until Marketing data lands</h4>
+    <div class="chart-wrap"><canvas id="chartChannelMix"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <h4>Channel CAC trend (paid-only) — placeholder</h4>
+    <div class="chart-wrap"><canvas id="chartChannelCAC"></canvas></div>
+  </div>
+</div>
+
+<div class="note warn">
+  <strong>Ask cho Marketing T5:</strong>
+  <ul style="margin:6px 0 0 18px;font-size:.92em">
+    <li>Monthly breakdown <strong>per channel × per product</strong> (TikTok / Google / Zalo / SEO / Organic / Referral) cho Cake CL + Cake PD, Jan→Apr 2026.</li>
+    <li>Specific call-out: channel nào trigger PD CAC climb 822→10,351? (Hypothesis: TikTok/Google paid ramp Feb onwards do organic saturated.)</li>
+    <li>Per-channel CR% để tách "paid traffic CR" vs "organic CR" — block decision có scale TikTok tiếp hay không.</li>
+  </ul>
+</div>
+
+<h2>5.6 · Key Takeaways</h2>
+
+<div class="insight-grid">
+  <div class="insight-card win">
+    <h4>✓ Đang tốt — funnel signals tích cực</h4>
+    <div class="item">
+      <div class="meta">
+        <div class="name">CL App-in volume Apr +48% MoM</div>
+        <div class="reason">211K → 165K (Tết dip) → 180K → <strong>267K</strong>. Marketing top-of-funnel đang hoạt động hiệu quả, App-in record cao nhất YTD.</div>
+      </div>
+      <div class="nums"><span class="pct">+48%</span><span class="gap-label">vs Mar</span></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">PD CR ổn định ~50%</div>
+        <div class="reason">CR PD dao động hẹp 46.7%-52.4% suốt 4 tháng — funnel PD rất mature, không phải vấn đề conversion mà là cost.</div>
+      </div>
+      <div class="nums"><span class="pct">~50%</span><span class="gap-label">CR stable</span></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">CL Mar AR rebound 20%</div>
+        <div class="reason">Mar 20% là proof-point AR có thể giữ 20% nếu system gap được clear. Baseline tham chiếu cho post-fix.</div>
+      </div>
+      <div class="nums"><span class="pct">20%</span><span class="gap-label">Mar AR</span></div>
+    </div>
+  </div>
+
+  <div class="insight-card lose">
+    <h4>✗ Cần action gấp T5</h4>
+    <div class="item">
+      <div class="meta">
+        <div class="name">PD CAC 12.6× — cost discipline</div>
+        <div class="reason">Phải confirm với Marketing channel nào đang là cost sink. Nếu không kiểm soát, Q2 PD profitability sẽ erode do mkt cost ~1.5B/tháng × 6 = 9B vs PBT PD bao nhiêu?</div>
+      </div>
+      <div class="nums"><span class="pct">12.6×</span><span class="gap-label">Jan→Apr</span></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">CL AR drop Apr — fix WL/LOS bug</div>
+        <div class="reason">System gap tạo false-reject ~8K accounts/tháng. Risk × LOS team need explicit deadline T5 để recover baseline AR 20%.</div>
+      </div>
+      <div class="nums"><span class="pct">−3pp</span><span class="gap-label">vs Mar</span></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">CL CR Apr 12.5% — Tết-level</div>
+        <div class="reason">CR Apr ngang Feb (Tết) dù App-in cao record. Có thể do AR drop kéo theo. Theo dõi sau khi WL/LOS bug fix.</div>
+      </div>
+      <div class="nums"><span class="pct">12.5%</span><span class="gap-label">vs Mar 15.2%</span></div>
+    </div>
+    <div class="item">
+      <div class="meta">
+        <div class="name">Channel-level data còn thiếu</div>
+        <div class="reason">Cần ask Marketing team pull split TikTok/Google/Zalo/SEO trước khi confirm root cause PD CAC climb.</div>
+      </div>
+      <div class="nums"><span class="pct">ASK</span><span class="gap-label">Marketing</span></div>
+    </div>
+  </div>
+</div>
+
+</div>
+<!-- END TAB 5 -->
+
 <footer>
   Generated 2026-05-20 · <code>damcake-work-wiki / Projects / Finance-Tracking / team-hub / lending-portfolio-tracking.html</code>
 </footer>
@@ -1862,6 +2132,167 @@ new Chart(document.getElementById('chartRFRPortfolio'),{
       y:{title:{display:true,text:'B0-B4 (%)'},grid:{color:'#EEEAF6'},beginAtZero:true},
       x:{grid:{display:false},ticks:{font:{size:9}}}
     }
+  }
+});
+
+// ====================== TAB 5: Marketing & Acquisition ======================
+// Funnel monthly data
+const funnelData = {
+  CL: {
+    Jan: {app:211000, ar:18.0, approved:37980, cr:13.8, disb:29118, disbBil:469, cac:113000},
+    Feb: {app:165000, ar:16.0, approved:26400, cr:12.0, disb:19800, disbBil:314, cac:191000},
+    Mar: {app:180000, ar:20.0, approved:36000, cr:15.2, disb:27360, disbBil:400, cac:166000},
+    Apr: {app:267000, ar:17.0, approved:45390, cr:12.5, disb:33375, disbBil:443, cac:129000},
+    YTD: {app:823000, ar:17.7, approved:145770, cr:13.3, disb:109653, disbBil:1626, cac:145300}
+  },
+  PD: {
+    Jan: {app:252000, ar:55.0, approved:138600, cr:51.4, disb:129528, disbBil:432, cac:822},
+    Feb: {app:196000, ar:57.0, approved:111720, cr:52.4, disb:102704, disbBil:344, cac:7525},
+    Mar: {app:240000, ar:56.0, approved:134400, cr:51.9, disb:124560, disbBil:423, cac:8922},
+    Apr: {app:260000, ar:50.0, approved:130000, cr:46.7, disb:121420, disbBil:426, cac:10351},
+    YTD: {app:948000, ar:54.3, approved:514720, cr:50.4, disb:478212, disbBil:1625, cac:6790}
+  }
+};
+
+function fmtNum(n){ return n.toLocaleString('en-US'); }
+
+function renderFunnel(product, month, ev){
+  const d = funnelData[product][month];
+  const maxApp = d.app;
+  const wApp = 100, wAppr = Math.max(8, d.approved/maxApp*100), wDisb = Math.max(6, d.disb/maxApp*100);
+  const arPct = d.ar.toFixed(1)+'%', crPct = d.cr.toFixed(1)+'%';
+  const approvedFromApp = (d.approved/d.app*100).toFixed(1)+'%';
+  const disbFromAppr = (d.disb/d.approved*100).toFixed(1)+'%';
+  const html =
+    `<div class="funnel-row"><div class="lab">App-in</div><div class="bar" style="width:${wApp}%">${fmtNum(d.app)}</div><div class="pct">100%</div></div>`+
+    `<div class="funnel-step">↓ AR ${arPct} (${approvedFromApp} from App-in)</div>`+
+    `<div class="funnel-row"><div class="lab">Approved</div><div class="bar" style="width:${wAppr}%">${fmtNum(d.approved)}</div><div class="pct">${arPct}</div></div>`+
+    `<div class="funnel-step">↓ Signed → Disbursed (${disbFromAppr} from Approved)</div>`+
+    `<div class="funnel-row"><div class="lab">Disbursed</div><div class="bar" style="width:${wDisb}%">${fmtNum(d.disb)}</div><div class="pct">${crPct}</div></div>`+
+    `<div style="margin-top:14px;padding:12px 14px;background:var(--surface-1);border-radius:12px;font-size:.86em;display:grid;grid-template-columns:1fr 1fr;gap:8px">`+
+      `<div><strong>Disb (Bil VND):</strong> <span class="num">${d.disbBil}</span></div>`+
+      `<div><strong>CAC:</strong> <span class="num">${fmtNum(d.cac)}</span> VND/acc</div>`+
+      `<div><strong>Mkt Spend:</strong> <span class="num">${(d.disb*d.cac/1e9).toFixed(2)}</span> Bil</div>`+
+      `<div><strong>Ticket avg:</strong> <span class="num">${(d.disbBil*1e9/d.disb/1e6).toFixed(1)}</span> M VND</div>`+
+    `</div>`;
+  document.getElementById('funnel-'+product.toLowerCase()+'-body').innerHTML = html;
+  if(ev){
+    const tabs = document.getElementById(product.toLowerCase()+'-month-tabs').querySelectorAll('button');
+    tabs.forEach(b=>b.classList.remove('active'));
+    ev.currentTarget.classList.add('active');
+  }
+}
+renderFunnel('CL','Apr');
+renderFunnel('PD','Apr');
+
+// 5.3 App-in volume trend
+const months5 = ['Jan','Feb','Mar','Apr'];
+new Chart(document.getElementById('chartAppinTrend'),{
+  type:'bar',
+  data:{labels:months5,datasets:[
+    {label:'Cake CL',data:[211,165,180,267],backgroundColor:pink,borderRadius:5},
+    {label:'Cake PD',data:[252,196,240,260],backgroundColor:grape,borderRadius:5}
+  ]},
+  options:{
+    plugins:{legend:{position:'bottom',labels:{boxWidth:14,padding:10,font:{size:11}}},
+      tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw+'K apps'}}},
+    scales:{y:{title:{display:true,text:'App-in (thousands)'},grid:{color:'#EEEAF6'},beginAtZero:true},x:{grid:{display:false}}}
+  }
+});
+
+new Chart(document.getElementById('chartARTrend'),{
+  type:'line',
+  data:{labels:months5,datasets:[
+    lineDS('Cake CL AR%',[18.0,16.0,20.0,17.0],pink),
+    lineDS('Cake PD AR%',[55.0,57.0,56.0,50.0],grape)
+  ]},
+  options:{
+    plugins:{legend:{position:'bottom',labels:{boxWidth:14,padding:10,font:{size:11}}},
+      tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw.toFixed(1)+'%'}}},
+    scales:{y:{title:{display:true,text:'Approval Rate (%)'},grid:{color:'#EEEAF6'},beginAtZero:true,suggestedMax:60},x:{grid:{display:false}}}
+  }
+});
+
+new Chart(document.getElementById('chartCRTrend'),{
+  type:'line',
+  data:{labels:months5,datasets:[
+    lineDS('Cake CL CR%',[13.8,12.0,15.2,12.5],pink),
+    lineDS('Cake PD CR%',[51.4,52.4,51.9,46.7],grape)
+  ]},
+  options:{
+    plugins:{legend:{position:'bottom',labels:{boxWidth:14,padding:10,font:{size:11}}},
+      tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw.toFixed(1)+'%'}}},
+    scales:{y:{title:{display:true,text:'Conversion Rate (%)'},grid:{color:'#EEEAF6'},beginAtZero:true,suggestedMax:60},x:{grid:{display:false}}}
+  }
+});
+
+new Chart(document.getElementById('chartDisbTrend'),{
+  type:'bar',
+  data:{labels:months5,datasets:[
+    {label:'Cake CL',data:[469,314,400,443],backgroundColor:pink,borderRadius:5},
+    {label:'Cake PD',data:[432,344,423,426],backgroundColor:grape,borderRadius:5}
+  ]},
+  options:{
+    plugins:{legend:{position:'bottom',labels:{boxWidth:14,padding:10,font:{size:11}}},
+      tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw+' Bil'}}},
+    scales:{y:{title:{display:true,text:'Disbursed (Bil VND)'},grid:{color:'#EEEAF6'},beginAtZero:true},x:{grid:{display:false}}}
+  }
+});
+
+// 5.4 CAC trend (log scale because CL ~100K vs PD ~1-10K)
+new Chart(document.getElementById('chartCACTrend'),{
+  type:'line',
+  data:{labels:months5,datasets:[
+    {label:'Cake CL CAC',data:[113000,191000,166000,129000],borderColor:pink,backgroundColor:'rgba(255,45,113,.10)',borderWidth:2.5,tension:.25,pointRadius:5,pointBackgroundColor:pink,fill:false},
+    {label:'Cake PD CAC',data:[822,7525,8922,10351],borderColor:grape,backgroundColor:'rgba(123,47,190,.10)',borderWidth:2.5,tension:.25,pointRadius:5,pointBackgroundColor:grape,fill:false}
+  ]},
+  options:{
+    plugins:{legend:{position:'bottom',labels:{boxWidth:14,padding:10,font:{size:11}}},
+      tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw.toLocaleString('en-US')+' VND/acc'}}},
+    scales:{y:{type:'logarithmic',title:{display:true,text:'CAC (VND/acc · log scale)'},grid:{color:'#EEEAF6'},
+      ticks:{callback:v=>v>=1000?(v/1000)+'K':v}},
+      x:{grid:{display:false}}}
+  }
+});
+
+new Chart(document.getElementById('chartSpendTrend'),{
+  type:'bar',
+  data:{labels:months5,datasets:[
+    {label:'CL Mkt Spend',data:[3.29,3.78,4.54,4.31],backgroundColor:pink,borderRadius:5},
+    {label:'PD Mkt Spend',data:[0.11,0.77,1.11,1.26],backgroundColor:grape,borderRadius:5}
+  ]},
+  options:{
+    plugins:{legend:{position:'bottom',labels:{boxWidth:14,padding:10,font:{size:11}}},
+      tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw.toFixed(2)+' Bil'}}},
+    scales:{y:{title:{display:true,text:'Bil VND'},grid:{color:'#EEEAF6'},beginAtZero:true,stacked:false},x:{grid:{display:false}}}
+  }
+});
+
+// 5.5 Channel placeholders (illustrative — pending Marketing data)
+new Chart(document.getElementById('chartChannelMix'),{
+  type:'doughnut',
+  data:{labels:['TikTok','Google Ads','Zalo','SEO/Organic','Referral (placeholder)'],
+    datasets:[{data:[35,28,18,14,5],
+      backgroundColor:[pink,grape,mint,amber,grey],borderWidth:2,borderColor:'#fff'}]},
+  options:{
+    plugins:{legend:{position:'bottom',labels:{boxWidth:14,padding:10,font:{size:11}}},
+      tooltip:{callbacks:{label:c=>c.label+': '+c.raw+'% (placeholder)'}},
+      title:{display:true,text:'Illustrative mix — ask Marketing for actuals',font:{size:11,style:'italic'},color:'#6b6478'}},
+    cutout:'58%'
+  }
+});
+
+new Chart(document.getElementById('chartChannelCAC'),{
+  type:'bar',
+  data:{labels:months5,datasets:[
+    {label:'TikTok (placeholder)',data:[null,null,null,null],backgroundColor:pink,borderRadius:5},
+    {label:'Google (placeholder)',data:[null,null,null,null],backgroundColor:grape,borderRadius:5},
+    {label:'Zalo (placeholder)',data:[null,null,null,null],backgroundColor:mint,borderRadius:5}
+  ]},
+  options:{
+    plugins:{legend:{position:'bottom',labels:{boxWidth:14,padding:10,font:{size:11}}},
+      title:{display:true,text:'Awaiting per-channel CAC data from Marketing',font:{size:11,style:'italic'},color:'#6b6478'}},
+    scales:{y:{title:{display:true,text:'CAC (VND/acc)'},grid:{color:'#EEEAF6'},beginAtZero:true},x:{grid:{display:false}}}
   }
 });
 
