@@ -54,10 +54,8 @@ Facts không có ở Wiki/Personal-wiki, cũng không phải running facts (MEMO
 - Monthly reports: `Raw/Lending/Monthly Report/{Mon}-Cake Monthly Report 2026.pptx` (Jan/Feb/Mar). Không suffix `_1` / `_v2`.
 - Risk Committee: `Raw/Risk/Risk Committee T{N}-2026.pdf` + sibling `Risk-Committee-T{N}-2026-summary.md`.
 
-### Canonical split (Personal vs Work)
-- Personal canonical (`~/Desktop/Personal/Dam-Wiki/Wiki/`): `identity.md`, `principles.md`, `stakeholders.md`, `work-context.md`, `finance.md`, `personal-life.md`.
-- Work canonical (this repo): `Wiki/aboutme.md`, `Wiki/way-of-working.md`, `Wiki/domains/*.md`, `Wiki/brand-guidelines.md`.
-- Conflict → Personal trước, sync Work sau.
+### Personal wiki mount point
+Personal canonical sống ở `~/Desktop/Personal/Dam-Wiki/Wiki/` (filesystem mount khác repo này). Map Personal ↔ Work + conflict rule → `Wiki/way-of-working.md` §13.
 
 ---
 
