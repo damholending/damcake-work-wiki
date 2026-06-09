@@ -41,3 +41,8 @@ staging/test-sample.md
 # Bỏ comment dưới nếu muốn skip Raw/_archive
 # Raw/_archive/
 Raw/Finance/Archive.zip
+
+# Skill runtime artifacts (local-only state)
+.agents/skills/*/LAST-FIRED.txt
+.agents/skills/*/REVIEW-PENDING.txt
+.agents/skills/*/daily-cache/

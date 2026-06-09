@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payday Loan Simulator — Breakeven Analysis</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--p5:#FF2D71;--p7:#B8154F;--g5:#7B2FBE;--g9:#1A1033;--mint:#0BC76A;--amb:#FF7A2F;--neu:#F7F7F9;--bg:#E8E8EF;--txt:#1A1033;--mid:#4A4060;--lt:#8B7FA8;--glow:0 8px 24px rgba(255,45,113,.28)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+.hdr{background:linear-gradient(160deg,#1A1033,#2D1B55);padding:24px 36px;display:flex;align-items:center;gap:14px}
+.hlogo{width:38px;height:38px;background:linear-gradient(135deg,#FF7A2F,#FF2D71);border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;color:#fff;box-shadow:var(--glow)}
+.htitle{font-size:20px;font-weight:700;color:#fff}
+.hsub{font-size:12px;color:rgba(255,255,255,.5);margin-top:2px}
+.hbadge{margin-left:auto;background:rgba(255,122,47,.18);border:1px solid rgba(255,122,47,.4);color:#FF7A2F;font-size:10px;font-weight:700;padding:3px 12px;border-radius:999px;text-transform:uppercase;letter-spacing:.07em}
+.wrap{max-width:1300px;margin:0 auto;padding:28px 20px;display:grid;grid-template-columns:330px 1fr;gap:20px}
+@media(max-width:900px){.wrap{grid-template-columns:1fr}}
+.card{background:#fff;border-radius:18px;padding:20px;box-shadow:0 2px 14px rgba(26,16,51,.07)}
+.card+.card{margin-top:14px}
+.ct{font-size:11px;font-weight:700;color:var(--lt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;display:flex;align-items:center;gap:7px}
+.ct::before{content:'';width:3px;height:13px;background:linear-gradient(135deg,#FF2D71,#7B2FBE);border-radius:2px}
+.bh-card .ct::before{background:linear-gradient(135deg,#0BC76A,#FF7A2F)}
+.pg{margin-bottom:16px}.pg:last-child{margin-bottom:0}
+.pl{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.pn{font-size:12px;font-weight:600;color:var(--txt)}
+.pv{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--p5);background:rgba(255,45,113,.09);padding:2px 10px;border-radius:999px;min-width:58px;text-align:center}
+.pv.amb{color:var(--amb);background:rgba(255,122,47,.09)}
+input[type=range]{-webkit-appearance:none;width:100%;height:5px;background:var(--bg);border-radius:999px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#FF2D71,#7B2FBE);cursor:pointer;box-shadow:var(--glow)}
+.ph{font-size:10px;color:var(--lt);margin-top:3px}
+.sdiv{height:1px;background:var(--bg);margin:14px 0}
+.scbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.sbtn{padding:5px 13px;border-radius:999px;border:1.5px solid var(--bg);background:#fff;font-family:'Be Vietnam Pro',sans-serif;font-size:11px;font-weight:600;color:var(--mid);cursor:pointer;transition:all .15s}
+.sbtn.active{background:linear-gradient(135deg,#FF7A2F,#FF2D71);border-color:transparent;color:#fff;box-shadow:var(--glow)}
+.method-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.mbtn{padding:6px 13px;border-radius:999px;border:1.5px solid var(--bg);background:var(--neu);font-family:'Be Vietnam Pro',sans-serif;font-size:11px;font-weight:600;color:var(--mid);cursor:pointer;transition:all .15s}
+.mbtn.active{background:linear-gradient(135deg,#7B2FBE,#1A1033);border-color:transparent;color:#fff}
+.sinfo{background:rgba(123,47,190,.06);border:1px solid rgba(123,47,190,.18);border-radius:12px;padding:12px 14px;margin-top:8px;font-size:11px;color:var(--mid);line-height:1.6}
+.sinfo strong{color:var(--g5)}
+.kgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+@media(max-width:600px){.kgrid{grid-template-columns:repeat(2,1fr)}}
+.kc{background:#fff;border-radius:14px;padding:15px 13px;position:relative;overflow:hidden;box-shadow:0 2px 10px rgba(26,16,51,.06)}
+.kc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px}
+.k1::after{background:linear-gradient(135deg,#FF2D71,#7B2FBE)}
+.k2::after{background:linear-gradient(135deg,#7B2FBE,#1A1033)}
+.k3::after{background:linear-gradient(135deg,#FF7A2F,#e04)}
+.k4::after{background:linear-gradient(135deg,#0BC76A,#059952)}
+.kl{font-size:10px;font-weight:700;color:var(--lt);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
+.kv{font-size:24px;font-weight:700;font-family:'JetBrains Mono',monospace;line-height:1}
+.k1 .kv{color:var(--p5)}.k2 .kv{color:var(--g5)}.k3 .kv{color:var(--amb)}.k4 .kv{color:var(--mint)}
+.ks{font-size:10px;color:var(--lt);margin-top:5px}
+.ka{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--mid);margin-top:3px}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;margin-top:8px}
+.pill.pos{background:rgba(11,199,106,.1);color:var(--mint)}
+.pill.neg{background:rgba(255,122,47,.1);color:var(--amb)}
+.pill.low{background:rgba(123,47,190,.1);color:var(--g5)}
+.dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.rcol{display:flex;flex-direction:column;gap:14px}
+.pt{width:100%;border-collapse:collapse;font-size:12px}
+.pt td{padding:9px 11px;border-bottom:1px solid var(--bg)}
+.pt tr:last-child td{border-bottom:none}
+.pt .sec td{background:var(--bg);font-size:10px;font-weight:700;color:var(--lt);text-transform:uppercase;letter-spacing:.07em;padding:6px 11px}
+.pt .tot td{background:linear-gradient(135deg,rgba(255,45,113,.05),rgba(123,47,190,.05));font-weight:700}
+.pt .sharing-row td{background:rgba(123,47,190,.05);border-left:3px solid var(--g5)}
+.pt .bh-row td{background:rgba(11,199,106,.05);border-left:3px solid var(--mint)}
+.rv{text-align:right;font-family:'JetBrains Mono',monospace;font-weight:600}
+.ra{text-align:right;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--lt)}
+.pos2{color:var(--mint)}.neg2{color:var(--amb)}.loss{color:#e44}
+.bh-stat{background:rgba(11,199,106,.07);border:1px solid rgba(11,199,106,.2);border-radius:10px;padding:10px 12px;margin-top:10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.bh-stat-item{text-align:center}
+.bh-stat-label{font-size:10px;color:var(--lt);font-weight:600}
+.bh-stat-value{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--mint);margin-top:2px}
+/* BEP banner */
+.bep-banner{border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;font-size:12px;font-weight:600}
+.bep-banner.profitable{background:rgba(11,199,106,.1);border:1px solid rgba(11,199,106,.3);color:#057a40}
+.bep-banner.loss{background:rgba(255,122,47,.1);border:1px solid rgba(255,122,47,.3);color:#b84a00}
+.bep-banner .bep-icon{font-size:18px}
+/* heatmap */
+.hmap{width:100%;border-collapse:collapse;font-size:10px}
+.hmap th{padding:5px 7px;font-size:9px;font-weight:700;color:var(--lt);text-align:center;border-bottom:2px solid var(--bg)}
+.hmap td{padding:5px 6px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;border-radius:4px;cursor:default}
+.hmap .row-hdr{font-size:9px;font-weight:700;color:var(--mid);text-align:right;padding-right:8px;white-space:nowrap}
+.hmap-label{font-size:10px;font-weight:700;color:var(--lt);text-align:center;margin-bottom:6px}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="hlogo">P</div>
+  <div><div class="htitle">Payday Loan Simulator</div><div class="hsub">Breakeven Analysis · Cake by VPBank</div></div>
+  <div class="hbadge">Breakeven Finder</div>
+</div>
+
+<div class="wrap">
+<!-- LEFT -->
+<div>
+  <div class="card">
+    <div class="ct">Preset Scenarios</div>
+    <div class="scbar">
+      <button class="sbtn active" onclick="applyS('base',this)">Base</button>
+      <button class="sbtn" onclick="applyS('highbh',this)">High BH</button>
+      <button class="sbtn" onclick="applyS('lowpen',this)">Low Pen</button>
+      <button class="sbtn" onclick="applyS('stress',this)">Stress Risk</button>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <div class="ct">Sản phẩm Payday</div>
+    <div class="pg"><div class="pl"><span class="pn">Lãi suất/năm</span><span class="pv" id="vls">60%</span></div><input type="range" id="ls" min="20" max="150" step="1" value="60" oninput="upd()"><div class="ph">Dư nợ giảm dần · Payday thường 60–120%</div></div>
+    <div class="pg"><div class="pl"><span class="pn">Tenor (tháng)</span><span class="pv" id="vkh">1</span></div><input type="range" id="kh" min="1" max="6" step="1" value="1" oninput="upd()"><div class="ph">Payday = 1 tháng</div></div>
+    <div class="pg"><div class="pl"><span class="pn">Hạn mức TB (triệu ₫)</span><span class="pv" id="vhm">4M</span></div><input type="range" id="hm" min="1" max="30" step="1" value="4" oninput="upd()"></div>
+  </div>
+
+  <div class="card bh-card" style="margin-top:14px">
+    <div class="ct">Phí Bảo Hiểm (BH) — Đòn bẩy chính</div>
+    <div class="pg"><div class="pl"><span class="pn">Penetration rate</span><span class="pv" id="vbhpen">65%</span></div><input type="range" id="bhpen" min="0" max="100" step="1" value="65" oninput="upd()"><div class="ph">% KH mua BH kèm khoản vay</div></div>
+    <div class="pg"><div class="pl"><span class="pn">Premium (% gốc)</span><span class="pv" id="vbhprem">9%</span></div><input type="range" id="bhprem" min="0" max="20" step=".5" value="9" oninput="upd()"></div>
+    <div class="pg"><div class="pl"><span class="pn">Cake revenue share</span><span class="pv" id="vbhshare">86%</span></div><input type="range" id="bhshare" min="0" max="100" step="1" value="86" oninput="upd()"></div>
+    <div class="bh-stat">
+      <div class="bh-stat-item"><div class="bh-stat-label">BH Revenue</div><div class="bh-stat-value" id="bh_rev">—</div></div>
+      <div class="bh-stat-item"><div class="bh-stat-label">% of (Lãi+Phí)</div><div class="bh-stat-value" id="bh_pct">—</div></div>
+      <div class="bh-stat-item"><div class="bh-stat-label">₫/khoản</div><div class="bh-stat-value" id="bh_abs">—</div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <div class="ct">Vốn & Rủi ro</div>
+    <div class="pg"><div class="pl"><span class="pn">CoF/năm</span><span class="pv" id="vcof">7.5%</span></div><input type="range" id="cof" min="3" max="20" step=".25" value="7.5" oninput="upd()"></div>
+    <div class="pg"><div class="pl"><span class="pn">Credit Cost (% disbursement)</span><span class="pv amb" id="vrisk">4.5%</span></div><input type="range" id="risk" min="1" max="40" step=".5" value="4.5" oninput="upd()"><div class="ph">Tạm fix 4.5% trên gốc</div></div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <div class="ct">Chi phí & Sharing</div>
+    <div class="pg" style="margin-bottom:10px">
+      <div class="pn" style="font-size:12px;margin-bottom:6px">Phương thức sharing</div>
+      <div class="method-row">
+        <button class="mbtn" onclick="setMethod('toi_risk',this)">% TOI−RISK</button>
+        <button class="mbtn active" onclick="setMethod('disbursement',this)">% Disb.</button>
+        <button class="mbtn" onclick="setMethod('toi_gross',this)">% TOI Gross</button>
+      </div>
+      <div class="sinfo" id="sinfo"></div>
+    </div>
+    <div class="sdiv"></div>
+    <div class="pg"><div class="pl"><span class="pn">% Partner</span><span class="pv" id="vpart">3%</span></div><input type="range" id="part" min="0" max="60" step="1" value="3" oninput="upd()"><div class="ph" id="shareHint">% of (TOI−RISK)</div></div>
+    <div class="pg"><div class="pl"><span class="pn">UW + Collection</span><span class="pv" id="vuw">0.3%</span></div><input type="range" id="uw" min="0" max="10" step=".1" value="0.3" oninput="upd()"></div>
+    <div class="pg"><div class="pl"><span class="pn">Fixed Cost</span><span class="pv" id="vfix">1%</span></div><input type="range" id="fix" min="0" max="10" step=".1" value="1" oninput="upd()"></div>
+  </div>
+</div>
+
+<!-- RIGHT -->
+<div class="rcol">
+  <div class="kgrid">
+    <div class="kc k1"><div class="kl">% Lợi nhuận</div><div class="kv" id="kp">—</div><div class="ka" id="kpa">—</div><div id="ind"></div></div>
+    <div class="kc k2"><div class="kl">TOI</div><div class="kv" id="ktoi">—</div><div class="ks">Int+Fee−CoF−Risk(i)</div></div>
+    <div class="kc k3"><div class="kl">Credit Cost</div><div class="kv" id="kcc">—</div><div class="ka" id="kcca">—</div></div>
+    <div class="kc k4"><div class="kl">BH Revenue</div><div class="kv" id="kbh">—</div><div class="ks">pen × prem × share</div></div>
+  </div>
+
+  <!-- BEP banner -->
+  <div class="bep-banner" id="bepbanner">
+    <span class="bep-icon">⚖</span>
+    <span id="beptext">—</span>
+  </div>
+
+  <!-- BEP Chart -->
+  <div class="card">
+    <div class="ct">Breakeven — Profit vs Penetration Rate (tại risk hiện tại)</div>
+    <svg id="bepChart" width="100%" viewBox="0 0 700 200" style="display:block;margin-top:4px"></svg>
+    <div style="font-size:10px;color:var(--lt);margin-top:6px;text-align:center">Đường cam = risk ± 5%. Điểm tròn = setting hiện tại. Dashed = breakeven line.</div>
+  </div>
+
+  <!-- Heatmap: Penetration × Credit Cost -->
+  <div class="card">
+    <div class="ct">Heatmap — Profit% theo Penetration × Credit Cost</div>
+    <div class="hmap-label" id="hmaplabel"></div>
+    <div style="overflow-x:auto"><table class="hmap" id="heatmap"></table></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-top:12px;font-size:10px;color:var(--mid)">
+      <span style="display:inline-flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:#0BC76A;border-radius:3px;display:inline-block"></span>Có lãi</span>
+      <span style="display:inline-flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:#FF7A2F;border-radius:3px;display:inline-block"></span>Hòa vốn ±1%</span>
+      <span style="display:inline-flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:#e44444;border-radius:3px;display:inline-block"></span>Lỗ</span>
+      <span style="margin-left:auto;font-style:italic">★ = setting hiện tại</span>
+    </div>
+  </div>
+
+  <!-- Waterfall -->
+  <div class="card">
+    <div class="ct">P&L Waterfall (% dư nợ gốc)</div>
+    <svg id="wf" width="100%" viewBox="0 0 700 220" style="margin-top:8px;display:block"></svg>
+  </div>
+
+  <!-- P&L Breakdown -->
+  <div class="card">
+    <div class="ct">P&L Breakdown — % dư nợ gốc</div>
+    <table class="pt" id="ptbl"></table>
+  </div>
+</div>
+</div>
+
+<script>
+const SC={
+  base:    {ls:60,kh:1,hm:4,cof:7.5,risk:4.5,part:3,uw:0.3,fix:1,bhpen:65,bhprem:9,bhshare:86},
+  highbh:  {ls:60,kh:1,hm:4,cof:7.5,risk:4.5,part:3,uw:0.3,fix:1,bhpen:85,bhprem:10,bhshare:86},
+  lowpen:  {ls:60,kh:1,hm:4,cof:7.5,risk:4.5,part:3,uw:0.3,fix:1,bhpen:40,bhprem:9, bhshare:86},
+  stress:  {ls:60,kh:1,hm:4,cof:7.5,risk:6,  part:3,uw:0.3,fix:1,bhpen:65,bhprem:9, bhshare:86},
+};
+function applyS(k,btn){const s=SC[k];Object.keys(s).forEach(id=>{const el=document.getElementById(id);if(el)el.value=s[id]});document.querySelectorAll('.sbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');upd()}
+
+let method='disbursement';
+const MI={
+  toi_risk:{hint:'% of (TOI−RISK)',info:'<strong>% of TOI−RISK:</strong> Sharing = Partner% × net trước opex. Cake chịu credit risk.'},
+  disbursement:{hint:'% trên tổng giải ngân',info:'<strong>% of Disbursement:</strong> Fixed per khoản. Không phụ thuộc performance.'},
+  toi_gross:{hint:'% trên (Interest + Fee BH)',info:'<strong>% of TOI Gross:</strong> Chia doanh thu trước CoF & Risk.'},
+};
+function setMethod(m,btn){method=m;document.querySelectorAll('.mbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('shareHint').textContent=MI[m].hint;document.getElementById('sinfo').innerHTML=MI[m].info;upd()}
+
+function af(r,n){const m=r/12;if(m===0)return 0;return m*n/(1-Math.pow(1+m,-n))-1}
+
+function calcWith(ls,kh,bhpen,risk,partPct,uw,fix,cof,bhprem,bhshare){
+  // hm = disbursement (đã bao gồm BH) — tất cả tính trên disbursement
+  const ii=af(ls,kh),cc=af(cof,kh),ri=risk*ii,rp=risk;
+  const dF=1+bhpen*bhprem;
+  const fi=bhpen*bhprem*bhshare/dF; // BH revenue % of disbursement (bhprem on ticket, not disbursement)
+  const toi=ii+fi-ri-cc,net=toi-rp;
+  let sharing;
+  if(method==='toi_risk')sharing=net*partPct;
+  else if(method==='disbursement')sharing=partPct;
+  else sharing=(ii+fi)*partPct;
+  const profit=net-sharing-uw-fix;
+  return{ii,fi,cc,ri,rp,toi,net,sharing,profit,dF};
+}
+
+function calc(){
+  const ls=+document.getElementById('ls').value/100,kh=+document.getElementById('kh').value,hm=+document.getElementById('hm').value*1e6;
+  const cof=+document.getElementById('cof').value/100,risk=+document.getElementById('risk').value/100;
+  const partPct=+document.getElementById('part').value/100,uw=+document.getElementById('uw').value/100,fix=+document.getElementById('fix').value/100;
+  const bhpen=+document.getElementById('bhpen').value/100,bhprem=+document.getElementById('bhprem').value/100,bhshare=+document.getElementById('bhshare').value/100;
+  const r=calcWith(ls,kh,bhpen,risk,partPct,uw,fix,cof,bhprem,bhshare);
+  return{...r,ls,kh,hm,cof,risk,partPct,uw,fix,bhpen,bhprem,bhshare};
+}
+
+const pct=v=>(v*100).toFixed(2)+'%';
+const pct1=v=>(v*100).toFixed(1)+'%';
+const vnd=v=>{const a=Math.abs(v),s=v<0?'−':'';return a>=1e6?s+(a/1e6).toFixed(2)+'M':a>=1e3?s+(a/1e3).toFixed(0)+'K':s+a.toFixed(0)};
+
+function upd(){
+  const m=calc();
+  document.getElementById('vls').textContent=document.getElementById('ls').value+'%';
+  document.getElementById('vkh').textContent=document.getElementById('kh').value+' th';
+  document.getElementById('vhm').textContent=document.getElementById('hm').value+'M';
+  document.getElementById('vcof').textContent=parseFloat(document.getElementById('cof').value).toFixed(2)+'%';
+  document.getElementById('vrisk').textContent=parseFloat(document.getElementById('risk').value).toFixed(1)+'%';
+  document.getElementById('vpart').textContent=document.getElementById('part').value+'%';
+  document.getElementById('vuw').textContent=parseFloat(document.getElementById('uw').value).toFixed(1)+'%';
+  document.getElementById('vfix').textContent=parseFloat(document.getElementById('fix').value).toFixed(1)+'%';
+  document.getElementById('vbhpen').textContent=document.getElementById('bhpen').value+'%';
+  document.getElementById('vbhprem').textContent=parseFloat(document.getElementById('bhprem').value).toFixed(1)+'%';
+  document.getElementById('vbhshare').textContent=document.getElementById('bhshare').value+'%';
+
+  document.getElementById('bh_rev').textContent=pct(m.fi);
+  // BH revenue as % of disbursement (correct denominator)
+  document.getElementById('bh_pct').textContent=(m.ii+m.fi>0?(m.fi/(m.ii+m.fi)*100).toFixed(1)+'%':'0%');
+  document.getElementById('bh_abs').textContent=vnd(m.fi*m.hm);
+
+  document.getElementById('kp').textContent=pct(m.profit);
+  document.getElementById('kpa').textContent=vnd(m.profit*m.hm)+'/khoản';
+  document.getElementById('ktoi').textContent=pct(m.toi);
+  document.getElementById('kcc').textContent=pct(m.rp);
+  document.getElementById('kcca').textContent=vnd(m.rp*m.hm)+'/khoản';
+  document.getElementById('kbh').textContent=pct(m.fi);
+
+  const ind=document.getElementById('ind');
+  if(m.profit>0.02)ind.innerHTML='<span class="pill pos"><span class="dot"></span>Có lãi</span>';
+  else if(m.profit>0)ind.innerHTML='<span class="pill low"><span class="dot"></span>Biên thấp</span>';
+  else ind.innerHTML='<span class="pill neg"><span class="dot"></span>Lỗ</span>';
+
+  // BEP banner
+  const banner=document.getElementById('bepbanner');
+  const bepText=document.getElementById('beptext');
+  if(m.profit>0){
+    banner.className='bep-banner profitable';
+    // find min penetration to break even
+    const bepPen=findBEPen(m);
+    bepText.innerHTML=`Profitable ✓ &nbsp;|&nbsp; Có lãi ${pct(m.profit)} · Cần tối thiểu penetration <strong>${(bepPen*100).toFixed(0)}%</strong> để hòa vốn tại risk=${pct1(m.risk)}`;
+  } else {
+    banner.className='bep-banner loss';
+    const bepPen=findBEPen(m);
+    if(bepPen<=1){
+      bepText.innerHTML=`Đang lỗ ${pct(Math.abs(m.profit))} &nbsp;|&nbsp; Cần tăng penetration lên <strong>${(bepPen*100).toFixed(0)}%</strong> để hòa vốn (giữ nguyên các param khác)`;
+    } else {
+      bepText.innerHTML=`Đang lỗ ${pct(Math.abs(m.profit))} &nbsp;|&nbsp; Không thể hòa vốn bằng penetration — cần giảm risk hoặc tăng premium`;
+    }
+  }
+
+  renderBEPChart(m);
+  renderHeatmap(m);
+  renderPnL(m);
+  renderWF(m);
+}
+
+function findBEPen(m){
+  // binary search for penetration that makes profit=0
+  let lo=0,hi=1;
+  for(let i=0;i<30;i++){
+    const mid=(lo+hi)/2;
+    const r=calcWith(m.ls,m.kh,mid,m.risk,m.partPct,m.uw,m.fix,m.cof,m.bhprem,m.bhshare);
+    if(r.profit>0)hi=mid;else lo=mid;
+  }
+  return (lo+hi)/2;
+}
+
+// BEP Chart: profit vs penetration from 0..100%
+function renderBEPChart(m){
+  const W=700,H=200,pL=44,pR=16,pT=20,pB=36,cW=W-pL-pR,cH=H-pT-pB;
+  const steps=101;
+  // compute profit series for base risk, risk-5%, risk+5%
+  const risks=[Math.max(0.01,m.risk-0.05),m.risk,Math.min(0.8,m.risk+0.05)];
+  const series=risks.map(rk=>{
+    const pts=[];
+    for(let i=0;i<steps;i++){const pen=i/100;const r=calcWith(m.ls,m.kh,pen,rk,m.partPct,m.uw,m.fix,m.cof,m.bhprem,m.bhshare);pts.push(r.profit);}
+    return pts;
+  });
+  // y range
+  const allV=series.flat();
+  const yMin=Math.min(...allV);const yMax=Math.max(...allV);
+  const pad=(yMax-yMin)*0.1;
+  const Y0=yMin-pad,Y1=yMax+pad;
+  const sx=i=>pL+i/100*cW;
+  const sy=v=>pT+cH-(v-Y0)/(Y1-Y0)*cH;
+  // y=0 line
+  const axY=sy(0);
+  const colors=['#FF7A2F','#FF2D71','#FF7A2F'];
+  const dashes=['4,4','none','4,4'];
+  let html='';
+  // grid
+  [-0.05,-0.02,0,0.02,0.05,0.1].forEach(gv=>{
+    if(gv<Y0||gv>Y1)return;
+    const gy=sy(gv);const cl=gv===0?'#C0B8D0':'#E0DCE8';const sw=gv===0?'1.5':'1';
+    html+=`<line x1="${pL}" y1="${gy}" x2="${W-pR}" y2="${gy}" stroke="${cl}" stroke-width="${sw}" stroke-dasharray="${gv===0?'none':'3,3'}"/>`;
+    html+=`<text x="${pL-4}" y="${gy+4}" font-size="8.5" fill="#8B7FA8" text-anchor="end">${(gv*100).toFixed(0)}%</text>`;
+  });
+  // x axis labels
+  [0,20,40,60,80,100].forEach(v=>{html+=`<text x="${sx(v)}" y="${H-pB+14}" font-size="8.5" fill="#8B7FA8" text-anchor="middle">${v}%</text>`});
+  html+=`<text x="${pL+cW/2}" y="${H-2}" font-size="9" fill="#8B7FA8" text-anchor="middle">Penetration rate</text>`;
+  // series lines
+  series.forEach((pts,si)=>{
+    let d='';
+    pts.forEach((v,i)=>{const x=sx(i);const y=sy(v);d+=(i===0?'M':'L')+x+' '+y});
+    const sw=si===1?'2.5':'1.5';const op=si===1?'1':'.5';
+    html+=`<path d="${d}" fill="none" stroke="${colors[si]}" stroke-width="${sw}" opacity="${op}" stroke-dasharray="${dashes[si]}" stroke-linejoin="round"/>`;
+  });
+  // BEP marker
+  const bepPen=findBEPen(m);
+  if(bepPen>=0&&bepPen<=1){
+    const bx=sx(bepPen*100);
+    html+=`<line x1="${bx}" y1="${pT}" x2="${bx}" y2="${pT+cH}" stroke="#7B2FBE" stroke-width="1.5" stroke-dasharray="4,3"/>`;
+    html+=`<text x="${bx}" y="${pT-5}" font-size="9" fill="#7B2FBE" text-anchor="middle" font-weight="700">BEP ${(bepPen*100).toFixed(0)}%</text>`;
+  }
+  // current point
+  const cx=sx(m.bhpen*100);const cy=sy(m.profit);
+  html+=`<circle cx="${cx}" cy="${cy}" r="5" fill="#FF2D71" stroke="#fff" stroke-width="2"/>`;
+  // legend
+  html+=`<circle cx="${pL+8}" cy="${pT+4}" r="4" fill="#FF2D71" stroke="#fff" stroke-width="1.5"/><text x="${pL+16}" y="${pT+8}" font-size="9" fill="#4A4060">Hiện tại</text>`;
+  html+=`<line x1="${pL+60}" y1="${pT+4}" x2="${pL+76}" y2="${pT+4}" stroke="#7B2FBE" stroke-width="1.5" stroke-dasharray="4,3"/><text x="${pL+80}" y="${pT+8}" font-size="9" fill="#4A4060">BEP</text>`;
+  html+=`<line x1="${pL+110}" y1="${pT+4}" x2="${pL+126}" y2="${pT+4}" stroke="#FF7A2F" stroke-width="1.5" stroke-dasharray="4,4"/><text x="${pL+130}" y="${pT+8}" font-size="9" fill="#4A4060">Risk ±5%</text>`;
+  document.getElementById('bepChart').innerHTML=html;
+}
+
+// Heatmap
+function renderHeatmap(m){
+  const pens=[20,30,40,50,60,70,80,90,100];
+  const risks=[2,3,4,4.5,5,6,8,10,15];
+  document.getElementById('hmaplabel').textContent=`premium=${(m.bhprem*100).toFixed(1)}% · share=${(m.bhshare*100).toFixed(0)}% · UW=${(m.uw*100).toFixed(1)}% · Fixed=${(m.fix*100).toFixed(1)}%`;
+  let html=`<thead><tr><th>Risk \\ Pen</th>${pens.map(p=>`<th>${p}%</th>`).join('')}</tr></thead><tbody>`;
+  const curRiskPct=Math.round(m.risk*100);
+  const curPenPct=Math.round(m.bhpen*100);
+  risks.forEach(rk=>{
+    const isRowCur=rk===curRiskPct||Math.abs(rk-curRiskPct)<=1;
+    html+=`<tr><td class="row-hdr" style="${isRowCur?'color:var(--p5);font-weight:700':''}">${rk}%</td>`;
+    pens.forEach(pen=>{
+      const r=calcWith(m.ls,m.kh,pen/100,rk/100,m.partPct,m.uw,m.fix,m.cof,m.bhprem,m.bhshare);
+      const pr=r.profit;
+      const isCur=Math.abs(pen-curPenPct)<=5&&Math.abs(rk-curRiskPct)<=1;
+      let bg,color;
+      if(pr>0.01){const int=Math.min(1,pr/0.08);bg=`rgba(11,199,106,${0.15+int*0.6})`;color='#057a40';}
+      else if(pr>-0.01){bg='rgba(255,122,47,.25)';color='#b84a00';}
+      else{const int=Math.min(1,Math.abs(pr)/0.1);bg=`rgba(228,68,68,${0.15+int*0.6})`;color='#8b0000';}
+      const star=isCur?'★ ':'';
+      const border=isCur?'outline:2px solid #FF2D71;outline-offset:-1px;':'';
+      html+=`<td style="background:${bg};color:${color};${border}">${star}${(pr*100).toFixed(1)}%</td>`;
+    });
+    html+='</tr>';
+  });
+  html+='</tbody>';
+  document.getElementById('heatmap').innerHTML=html;
+}
+
+// P&L table
+function renderPnL(m){
+  const shLabel=MI[method].hint;
+  const rows=[
+    {sec:'REVENUE — % disbursement'},
+    {l:'(+) Doanh thu lãi',v:m.ii,c:'pos2'},
+    {l:'(+) Doanh thu phí BH',v:m.fi,c:'pos2',bh:true},
+    {sec:'DEDUCTIONS'},
+    {l:'(−) CoF',v:m.cc,c:'neg2'},{l:'(−) Risk trên lãi',v:m.ri,c:'neg2'},
+    {tot:true,l:'TOI',v:m.toi,c:m.toi>=0?'pos2':'loss'},
+    {sec:'CREDIT COST'},
+    {l:'(−) Credit cost (gốc)',v:m.rp,c:'neg2'},
+    {tot:true,l:'TOI − RISK',v:m.net,c:m.net>=0?'pos2':'loss'},
+    {sec:'OPEX & SHARING'},
+    {shr:true,l:`(−) Sharing (${shLabel})`,v:m.sharing,c:'neg2'},
+    {l:'(−) UW + Collection',v:m.uw,c:'neg2'},{l:'(−) Fixed Cost',v:m.fix,c:'neg2'},
+    {tot:true,l:'% Lợi nhuận',v:m.profit,c:m.profit>=0?'pos2':'loss'},
+  ];
+  document.getElementById('ptbl').innerHTML=rows.map(r=>{
+    if(r.sec)return`<tr class="sec"><td colspan="3">${r.sec}</td></tr>`;
+    const rc=r.tot?'tot':r.shr?'sharing-row':r.bh?'bh-row':'';
+    return`<tr class="${rc}"><td style="color:var(--mid);font-weight:${r.tot?700:400};width:55%">${r.l}</td><td class="rv ${r.c}" style="width:25%">${pct(Math.abs(r.v))}</td><td class="ra" style="width:20%">${vnd(Math.abs(r.v)*m.hm)}</td></tr>`;
+  }).join('');
+}
+
+// Waterfall
+function renderWF(m){
+  const W=700,H=220,pL=32,pR=16,pT=28,pB=42,cW=W-pL-pR,cH=H-pT-pB;
+  const bars=[
+    {l:'Lãi',v:m.ii,t:'pos'},{l:'Phí BH',v:m.fi,t:'bh'},
+    {l:'CoF',v:-m.cc,t:'neg'},{l:'Risk(i)',v:-m.ri,t:'neg'},
+    {l:'TOI',v:m.toi,t:'total'},{l:'Risk(g)',v:-m.rp,t:'neg'},
+    {l:'T−R',v:m.net,t:'total'},{l:'Sharing',v:-m.sharing,t:'neg'},
+    {l:'UW',v:-m.uw,t:'neg'},{l:'Fixed',v:-m.fix,t:'neg'},
+    {l:'Profit',v:m.profit,t:'total'},
+  ];
+  let run=0,allV=[];
+  bars.forEach(b=>{b.t==='total'?allV.push(b.v,0):(allV.push(run,run+b.v),run+=b.v||0)});
+  const maxV=Math.max(...allV.map(Math.abs))*1.25||0.3;
+  const sy=v=>pT+cH/2-v/maxV*(cH/2);
+  const bW=cW/bars.length*0.6,gap=cW/bars.length;
+  let html=`<defs><linearGradient id="gp2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#7B2FBE"/><stop offset="100%" stop-color="#FF2D71"/></linearGradient><linearGradient id="gn2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FF7A2F"/><stop offset="100%" stop-color="#FF5050" stop-opacity=".75"/></linearGradient></defs>`;
+  const axY=sy(0);
+  html+=`<line x1="${pL}" y1="${axY}" x2="${W-pR}" y2="${axY}" stroke="#C0B8D0" stroke-width="1.5"/>`;
+  [.05,.1,.2,.3,-.05,-.1].forEach(gv=>{const gy=sy(gv);if(gy<pT||gy>pT+cH)return;html+=`<line x1="${pL}" y1="${gy}" x2="${W-pR}" y2="${gy}" stroke="#E0DCE8" stroke-width="1" stroke-dasharray="3,3"/><text x="${pL-4}" y="${gy+4}" font-size="9" fill="#8B7FA8" text-anchor="end">${(gv*100).toFixed(0)}%</text>`});
+  run=0;let prevX=null;
+  bars.forEach((b,i)=>{
+    const cx=pL+i*gap+gap/2,bx=cx-bW/2;
+    let y1,y2,fill;
+    if(b.t==='total'){y1=sy(Math.max(0,b.v));y2=sy(Math.min(0,b.v));fill=b.l==='Profit'?(b.v>=0?'#0BC76A':'#e44'):b.v>=0?'url(#gp2)':'#e44';}
+    else{y1=sy(Math.max(run,run+b.v));y2=sy(Math.min(run,run+b.v));fill=b.t==='bh'?'#0BC76A':b.v>=0?'url(#gp2)':b.l==='Sharing'?'#7B2FBE':'url(#gn2)'}
+    const bh=Math.max(Math.abs(y2-y1),2),by=Math.min(y1,y2);
+    if(b.t!=='total'&&prevX!==null){const cy=sy(run);html+=`<line x1="${prevX}" y1="${cy}" x2="${bx}" y2="${cy}" stroke="#C0B8D0" stroke-width="1" stroke-dasharray="3,3"/>`}
+    html+=`<rect x="${bx}" y="${by}" width="${bW}" height="${bh}" rx="3" fill="${fill}" opacity=".9"/>`;
+    const tv=pct(Math.abs(b.v)),ty=by-4<pT?by+bh+13:by-4;
+    html+=`<text x="${cx}" y="${ty}" text-anchor="middle" font-size="8.5" font-weight="600" fill="#4A4060">${tv}</text>`;
+    html+=`<text x="${cx}" y="${H-pB+15}" text-anchor="middle" font-size="9.5" font-weight="600" fill="#4A4060">${b.l}</text>`;
+    if(b.t==='total')prevX=bx+bW;else run+=b.v;
+  });
+  document.getElementById('wf').innerHTML=html;
+}
+
+document.getElementById('sinfo').innerHTML=MI['disbursement'].info;
+document.getElementById('shareHint').textContent=MI['disbursement'].hint;
+upd();
+</script>
+</body>
+</html>

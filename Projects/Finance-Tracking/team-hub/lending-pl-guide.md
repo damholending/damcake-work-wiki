@@ -45,6 +45,7 @@ Bundle này chứa số liệu **canonical** cho team Lending Cake query qua Cla
 | 2 | By Product (CL/OD/PD/PL) Disb-TOI-PBO |
 | 3 | Channel × Product matrix 2025 FY |
 | 4 | Channel Deep Dive — CAKE / VDS / ZLP / MWG / Others (4.1 channel split, 4.2 per-channel detail with Budget compare, 4.3 yield/margin, **4.3.5 Channel Risk Profile NPL CAKE + NPL CIC + LG2**, 4.3.6 Net Yield + Sharing, 4.4 insights) |
+| **4.1** | **Monthly Actual vs Budget by Channel × Product (CAKE + VDS)** — Disb/TOI/Prov/PBO monthly arrays, Actual 2026 (closed months) vs Budget 2026 (full 12). VDS-PR merged into VDS. |
 | 5.1 | UE Aggregate Lending trend Q3.25 → Q1.26 (Disb, ANR, TOI, Provision, OPEX, PBT, NPL, LG2 + ratios %ANR + %Disb) |
 | 5.2 | UE By Product trend (CL/PD/OD/PL) — flow metrics + risk metrics (NPL/LG2) per product per quarter |
 | 5.2.1 | CL Cohort per-loan UE by Channel (mVND/loan, Q3.25 vs Q4.25) |
@@ -164,6 +165,10 @@ Khi cần số liệu, hỏi Claude trong Finance Tracking project trực tiếp
 "Active rate Paylater các channel" → Section 5.2.4
 "AVG Ticket size CL aggregate Q1.26" → Section 5.2.2
 "New issued Paylater Q1.26" → Section 5.2.3
+"Disbursement CAKE CL tháng 4 actual vs budget" → Section 4.1
+"VDS Payday monthly pacing vs budget" → Section 4.1
+"Tháng nào CAKE CL miss budget nặng nhất?" → Section 4.1
+"TOI monthly CAKE vs VDS so sánh budget" → Section 4.1
 ```
 
 Claude sẽ tự pull đúng dữ liệu từ `lending-pl-data.json`.

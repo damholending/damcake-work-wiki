@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.dam.teams-decision-scan</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/dam.ho/Desktop/Work/damcake-work-wiki/.agents/skills/teams-decision-scan/cron-runner.sh</string>
+    </array>
+
+    <key>StartCalendarInterval</key>
+    <array>
+        <!-- Monday morning multi-slot — first awake fire wins (script dedupes via marker) -->
+        <dict>
+            <key>Weekday</key>
+            <integer>1</integer>
+            <key>Hour</key>
+            <integer>9</integer>
+            <key>Minute</key>
+            <integer>0</integer>
+        </dict>
+        <dict>
+            <key>Weekday</key>
+            <integer>1</integer>
+            <key>Hour</key>
+            <integer>10</integer>
+            <key>Minute</key>
+            <integer>0</integer>
+        </dict>
+        <dict>
+            <key>Weekday</key>
+            <integer>1</integer>
+            <key>Hour</key>
+            <integer>11</integer>
+            <key>Minute</key>
+            <integer>0</integer>
+        </dict>
+        <dict>
+            <key>Weekday</key>
+            <integer>1</integer>
+            <key>Hour</key>
+            <integer>12</integer>
+            <key>Minute</key>
+            <integer>0</integer>
+        </dict>
+        <dict>
+            <key>Weekday</key>
+            <integer>1</integer>
+            <key>Hour</key>
+            <integer>14</integer>
+            <key>Minute</key>
+            <integer>0</integer>
+        </dict>
+    </array>
+
+    <key>StandardOutPath</key>
+    <string>/Users/dam.ho/Desktop/Work/damcake-work-wiki/.agents/skills/teams-decision-scan/launchd-out.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/dam.ho/Desktop/Work/damcake-work-wiki/.agents/skills/teams-decision-scan/launchd-err.log</string>
+
+    <key>RunAtLoad</key>
+    <false/>
+</dict>
+</plist>

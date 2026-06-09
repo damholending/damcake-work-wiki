@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BE Cash Loan Funnel Analysis — T5/2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink-500: #FF2D71;
+    --pink-700: #B8154F;
+    --grape-500: #7B2FBE;
+    --grape-900: #1A1033;
+    --mint-500: #0BC76A;
+    --amber-500: #FF7A2F;
+    --neutral-light: #F7F7F9;
+    --neutral-white: #FFFFFF;
+    --page-bg: #E8E8EF;
+    --hero-gradient: linear-gradient(135deg, #FF2D71, #7B2FBE);
+    --night-gradient: linear-gradient(160deg, #1A1033, #2D1B55);
+    --deep-gradient: linear-gradient(135deg, #7B2FBE, #1A1033);
+    --growth-gradient: linear-gradient(135deg, #0BC76A, #059952);
+    --pink-glow: 0 8px 24px rgba(255, 45, 113, 0.28);
+    --radius-2xl: 28px;
+    --radius-xl: 20px;
+    --radius-lg: 16px;
+    --radius-md: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-weight: 400;
+    font-size: 15px;
+    color: #2a2a3a;
+    background: var(--page-bg);
+    line-height: 1.6;
+    padding: 40px 20px;
+  }
+
+  .container { max-width: 1000px; margin: 0 auto; }
+
+  /* Hero */
+  .hero {
+    background: var(--night-gradient);
+    border-radius: var(--radius-2xl);
+    padding: 48px 40px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(255,45,113,0.25), transparent 70%);
+    border-radius: 50%;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 30%;
+    width: 300px; height: 120px;
+    background: radial-gradient(ellipse, rgba(123,47,190,0.2), transparent 70%);
+  }
+  .hero h1 {
+    font-weight: 700;
+    font-size: 28px;
+    color: #fff;
+    margin-bottom: 6px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero .subtitle {
+    font-weight: 400;
+    font-size: 15px;
+    color: rgba(255,255,255,0.65);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Section cards */
+  .section {
+    background: var(--neutral-white);
+    border-radius: var(--radius-xl);
+    padding: 36px 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 12px rgba(26,16,51,0.06);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .section-number {
+    background: var(--hero-gradient);
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--grape-900);
+  }
+
+  /* KPI banner */
+  .kpi-banner {
+    background: var(--neutral-light);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    border-left: 4px solid var(--pink-500);
+  }
+  .kpi-banner .kpi-title {
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--grape-900);
+  }
+  .kpi-banner .kpi-sub {
+    font-size: 14px;
+    color: #555;
+    margin-top: 4px;
+    line-height: 1.7;
+  }
+
+  /* Conclusion box */
+  .conclusion {
+    background: var(--neutral-light);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    border-left: 4px solid var(--grape-500);
+  }
+  .conclusion.positive { border-left-color: var(--mint-500); }
+  .conclusion.warning { border-left-color: var(--amber-500); }
+  .conclusion p { font-size: 14px; color: #333; }
+  .conclusion strong { color: var(--grape-900); }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 20px;
+    font-size: 13.5px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(26,16,51,0.06);
+  }
+  thead th {
+    background: var(--grape-900);
+    color: #fff;
+    font-weight: 600;
+    padding: 12px 14px;
+    text-align: left;
+    font-size: 12.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  thead th:not(:first-child) { text-align: center; }
+  tbody td {
+    padding: 11px 14px;
+    border-bottom: 1px solid #eee;
+  }
+  tbody td:not(:first-child) {
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:nth-child(even) { background: var(--neutral-light); }
+  tbody tr:hover { background: rgba(123,47,190,0.04); }
+  tbody tr.highlight td {
+    background: rgba(255,45,113,0.06);
+    font-weight: 600;
+  }
+  tbody tr.total-row td {
+    background: var(--grape-900);
+    color: #fff;
+    font-weight: 700;
+  }
+
+  /* Badge */
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 600;
+  }
+  .badge-yes { background: rgba(11,199,106,0.12); color: #059952; }
+  .badge-no { background: rgba(0,0,0,0.06); color: #888; }
+  .badge-room { background: rgba(255,122,47,0.12); color: #cc5f1f; }
+
+  /* Notes */
+  .note {
+    font-size: 13.5px;
+    color: #555;
+    margin-bottom: 16px;
+    padding-left: 4px;
+  }
+  .note strong { color: var(--grape-900); }
+
+  .sub-heading {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--grape-900);
+    margin: 24px 0 10px 0;
+  }
+
+  /* Funnel bar viz */
+  .funnel-bar-container { margin-bottom: 24px; }
+  .funnel-step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .funnel-label {
+    width: 180px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--grape-900);
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .funnel-track {
+    flex: 1;
+    height: 28px;
+    background: var(--neutral-light);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .funnel-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: var(--hero-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 10px;
+    min-width: 60px;
+    transition: width 0.6s ease;
+  }
+  .funnel-fill span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: #fff;
+  }
+  .funnel-value {
+    width: 70px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    color: #555;
+    flex-shrink: 0;
+  }
+
+  /* Road to 3% */
+  .road-card {
+    background: var(--night-gradient);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-top: 20px;
+  }
+  .road-card h3 {
+    color: #fff;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+  .road-card table thead th { background: rgba(255,255,255,0.1); }
+  .road-card table tbody td {
+    color: rgba(255,255,255,0.9);
+    border-bottom-color: rgba(255,255,255,0.08);
+  }
+  .road-card table tbody tr:nth-child(even) { background: rgba(255,255,255,0.04); }
+  .road-card table tbody tr:hover { background: rgba(255,255,255,0.08); }
+  .road-card table tbody tr.total-row td {
+    background: rgba(255,45,113,0.3);
+    color: #fff;
+  }
+
+  /* Data backup */
+  .data-section {
+    background: var(--neutral-white);
+    border-radius: var(--radius-xl);
+    padding: 36px 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 12px rgba(26,16,51,0.06);
+  }
+  .data-section .section-title { font-size: 18px; }
+  .data-group-title {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--grape-500);
+    margin: 24px 0 10px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .data-group-title:first-of-type { margin-top: 8px; }
+
+  /* Compact data tables */
+  .data-section table {
+    font-size: 12.5px;
+    margin-bottom: 16px;
+  }
+  .data-section thead th {
+    padding: 10px 10px;
+    font-size: 11.5px;
+  }
+  .data-section tbody td {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+  .data-section tbody td:not(:first-child):not(:nth-child(2)) {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Segment comparison table — wider */
+  .segment-table { overflow-x: auto; }
+  .segment-table table { min-width: 900px; }
+  .segment-table thead th { font-size: 11px; padding: 10px 8px; white-space: nowrap; }
+  .segment-table tbody td { font-size: 11.5px; padding: 8px 8px; white-space: nowrap; }
+  .segment-table tbody td:first-child { font-weight: 600; }
+
+  .vs-header {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-left: 6px;
+  }
+  .vs-be { background: rgba(255,45,113,0.12); color: var(--pink-700); }
+  .vs-vnpay { background: rgba(11,199,106,0.12); color: #059952; }
+
+  .footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 12px;
+    color: #999;
+  }
+
+  @media print {
+    body { background: #fff; padding: 20px; }
+    .section, .data-section { box-shadow: none; border: 1px solid #eee; break-inside: avoid; }
+    .hero { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1>BE Cash Loan — Funnel Analysis</h1>
+    <div class="subtitle">T5/2026 &nbsp;·&nbsp; Channel: BE &nbsp;·&nbsp; Product: Cash Loan</div>
+  </div>
+
+  <!-- ===================== 1. EXECUTIVE SUMMARY ===================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <div class="section-title">Executive Summary</div>
+    </div>
+
+    <div class="kpi-banner">
+      <div class="kpi-title">TOTAL: Lead 56,243 → Signed 1,397 &nbsp;|&nbsp; CVR 2.4%</div>
+      <div class="kpi-sub">Tỷ lệ lead NTB:ETB ~50:50, tuy nhiên conversion chênh lệch lớn: NTB 1.3% vs ETB 3.4%, dẫn đến 70% danh mục đến từ upsell (vs các channel khác 40%). Do đó cần: <strong>(1) Tối ưu CVR cho tập NTB</strong>, <strong>(2) Tăng traffic new để cân bằng portfolio (60%:40% cho new:upsell)</strong>.</div>
+    </div>
+
+    <table>
+      <thead><tr><th>Step</th><th>#</th><th>Step CVR</th><th>Đánh giá</th></tr></thead>
+      <tbody>
+        <tr><td>Lead (Màn hình xác thực SĐT)</td><td>56,243</td><td>—</td><td style="text-align:left">—</td></tr>
+        <tr><td>Nhập mã OTP</td><td>46,443</td><td>83%</td><td style="text-align:left">Chủ yếu impact bởi NTB (NTB 64.55% vs ETB 96.07%)</td></tr>
+        <tr><td>Pass EKYC + Fulfill Form</td><td>24,451</td><td style="color:var(--pink-500);font-weight:700">53%</td><td style="text-align:left">Chủ yếu impact bởi NTB (NTB 12% vs ETB 67%). Benchmarking vs VNPAY 60%. Flow BE: khách vào app BE → web nhúng Cake làm full NFC + KYC (các channel khác đã làm NFC ở app partner trước)</td></tr>
+        <tr><td>Precheck pass</td><td>10,810</td><td>44%</td><td style="text-align:left">Chủ yếu Hard rule + fraud + age</td></tr>
+        <tr><td>LOS Approved</td><td>1,745</td><td style="color:var(--pink-500);font-weight:700">16%</td><td style="text-align:left">NTB 30% vs ETB 13%. ETB thấp do default nhóm upsell (active loan)</td></tr>
+        <tr><td>Signed</td><td>1,397</td><td>80%</td><td style="text-align:left">~ Tương đương các sản phẩm khác</td></tr>
+      </tbody>
+    </table>
+
+    <!-- NTB EKYC Step-by-Step -->
+    <div class="sub-heading">NTB — EKYC Step-by-Step (T5/2026)</div>
+
+    <div class="conclusion warning">
+      <p><strong>Drop 88% từ traffic → hoàn thành EKYC:</strong> Trong đó <strong>48.9% không có nhu cầu</strong> (drop trước đăng ký nhu cầu vay) và <strong>39.1% rớt vì full EKYC</strong> (có nhu cầu nhưng drop trong quá trình chụp CCCD/NFC/nhập info). Chỉ 12% hoàn thành.</p>
+    </div>
+
+    <table>
+      <thead><tr><th>Step</th><th>#</th><th>vs Previous</th><th>vs Initial</th></tr></thead>
+      <tbody>
+        <tr style="background:rgba(255,122,47,0.08)"><td>Xác thực số điện thoại</td><td>24,085</td><td></td><td></td></tr>
+        <tr style="background:rgba(255,122,47,0.08)"><td>Nhập mã OTP</td><td>15,548</td><td>64.55%</td><td>64.55%</td></tr>
+        <tr style="background:rgba(255,122,47,0.12)"><td>Đăng ký nhu cầu vay</td><td>12,315</td><td>79.21%</td><td style="color:var(--pink-500);font-weight:700">51.13%</td></tr>
+        <tr style="background:rgba(123,47,190,0.06)"><td>Chụp mặt trước</td><td>8,559</td><td style="color:var(--pink-500);font-weight:700">69.50%</td><td>35.54%</td></tr>
+        <tr style="background:rgba(123,47,190,0.06)"><td>Chụp mặt sau</td><td>5,839</td><td style="color:var(--pink-500);font-weight:700">68.22%</td><td>24.24%</td></tr>
+        <tr><td>Chụp selfie</td><td>5,701</td><td>97.64%</td><td>23.67%</td></tr>
+        <tr style="background:rgba(123,47,190,0.06)"><td>Scan NFC</td><td>5,014</td><td style="color:var(--pink-500);font-weight:700">87.95%</td><td>20.82%</td></tr>
+        <tr><td>Bổ sung thông tin cá nhân</td><td>4,061</td><td>80.99%</td><td>16.86%</td></tr>
+        <tr><td>Bổ sung thông tin thu nhập</td><td>3,184</td><td>78.40%</td><td>13.22%</td></tr>
+        <tr><td>Kiểm tra thông tin</td><td>2,898</td><td>91.02%</td><td style="color:var(--pink-500);font-weight:700">12.03%</td></tr>
+        <tr><td>Đang xử lý hồ sơ (pass precheck)</td><td>1,747</td><td>60.28%</td><td>7.25%</td></tr>
+        <tr><td>Khoản vay được duyệt (approved)</td><td>526</td><td>30.11%</td><td>2.18%</td></tr>
+        <tr class="highlight"><td>Ký hợp đồng (disbursed)</td><td>345</td><td>65.59%</td><td>1.43%</td></tr>
+      </tbody>
+    </table>
+
+    <!-- Road to 3% -->
+    <div class="road-card">
+      <h3>Road to 3% CVR (NTB)</h3>
+      <table>
+        <thead><tr><th>Action</th><th>Incremental Signed</th><th>Cumulative CVR</th><th>PIC</th><th>Dependency</th></tr></thead>
+        <tbody>
+          <tr><td>Baseline</td><td>345</td><td>1.3%</td><td>—</td><td style="text-align:left">—</td></tr>
+          <tr><td>+Age 18-20 relax</td><td>+84</td><td>1.8%</td><td>Risk/DS</td><td style="text-align:left">bescore v2/dtn validated on 18-20</td></tr>
+          <tr><td>+Relax f_risk_control</td><td>+20</td><td>1.9%</td><td>Risk/DS</td><td style="text-align:left">Save 20% các case đang bị reject vì fraud rules</td></tr>
+          <tr><td>+Relax score not met</td><td>+170</td><td>2.6%</td><td>Risk</td><td style="text-align:left">Relax NTB score 456 or apply DTN</td></tr>
+          <tr><td>+Score-based offer</td><td>+114</td><td>3.1%</td><td>Product/Risk</td><td style="text-align:left">Align score-based offer theo BE scorev2</td></tr>
+          <tr><td>+VNEID SSO (bỏ chụp CCCD + NFC)</td><td>+121</td><td>3.6%</td><td>Product/Tech/Risk</td><td style="text-align:left">Save 20% EKYC droppers — 7,163 drop tại chụp CCCD + NFC</td></tr>
+          <tr class="total-row"><td>Total</td><td>+509</td><td>~3.6%</td><td></td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===================== 2. NTB FUNNEL ===================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <div class="section-title">NTB Funnel</div>
+    </div>
+
+    <div class="kpi-banner">
+      <div class="kpi-title">NTB: Lead 24,085 → Signed 345 &nbsp;|&nbsp; CVR 1.3%</div>
+    </div>
+
+    <div class="conclusion warning">
+      <p><strong>Kết luận:</strong> Funnel cần improved. Bottleneck là tỷ lệ hoàn thành EKYC và fulfill application (10% vs 30% các channel khác). Flow BE khác các channel khác: khách vào app BE trước, sau đó mới chuyển sang web nhúng Cake để đi full NFC + KYC. Các channel khác thì khách hoàn thành NFC &amp; KYC ở app partner trước, vào web nhúng Cake không cần làm lại → friction thấp hơn. Cần improve UXUI và triển khai score-based offer.</p>
+    </div>
+
+    <div class="sub-heading">Funnel Overview</div>
+
+    <table>
+      <thead><tr><th>Step</th><th>#</th><th>Step CVR</th><th>Vs 1st</th></tr></thead>
+      <tbody>
+        <tr><td>Lead</td><td>24,085</td><td>—</td><td>100%</td></tr>
+        <tr><td>Pass EKYC + Fulfill Form</td><td>2,898</td><td style="color:var(--pink-500);font-weight:700">12%</td><td style="color:var(--pink-500);font-weight:700">10.6%</td></tr>
+        <tr><td>Precheck pass</td><td>1,747</td><td>60%</td><td>6.4%</td></tr>
+        <tr><td>LOS Approved</td><td>526</td><td style="color:var(--pink-500);font-weight:700">30%</td><td>1.9%</td></tr>
+        <tr><td>Signed</td><td>345</td><td>66%</td><td style="color:var(--pink-500);font-weight:700">1.3%</td></tr>
+      </tbody>
+    </table>
+
+    <p class="note"><strong>Lead → Submit to LOS 10% vs benchmarking 30%:</strong> Hiện tại đang có 2 điểm drop — (1) NTB phải đủ full NFC + KYC, (2) Khách hàng không có nhu cầu, vs tập ETB chủ yếu do upsell nên demand cao hơn.</p>
+
+    <div class="sub-heading">NTB — EKYC Step-by-Step (T4 vs T5)</div>
+    <table>
+      <thead><tr><th>Step</th><th>T4 #</th><th>vs Previous</th><th>vs Initial</th><th>T5 #</th><th>vs Previous</th><th>vs Initial</th></tr></thead>
+      <tbody>
+        <tr style="background:rgba(255,122,47,0.08)"><td>Xác thực số điện thoại</td><td>27,460</td><td></td><td></td><td>24,085</td><td></td><td></td></tr>
+        <tr style="background:rgba(255,122,47,0.08)"><td>Nhập mã OTP</td><td>15,476</td><td style="color:var(--pink-500);font-weight:700">56.36%</td><td>56.36%</td><td>15,548</td><td style="color:var(--mint-500);font-weight:700">64.55%</td><td>64.55%</td></tr>
+        <tr style="background:rgba(255,122,47,0.12)"><td>Đăng ký nhu cầu vay</td><td>12,144</td><td>78.47%</td><td style="color:var(--pink-500);font-weight:700">44.22%</td><td>12,315</td><td>79.21%</td><td style="color:var(--pink-500);font-weight:700">51.13%</td></tr>
+        <tr style="background:rgba(123,47,190,0.06)"><td>Chụp mặt trước</td><td>8,504</td><td style="color:var(--pink-500);font-weight:700">70.03%</td><td>30.97%</td><td>8,559</td><td style="color:var(--pink-500);font-weight:700">69.50%</td><td>35.54%</td></tr>
+        <tr style="background:rgba(123,47,190,0.06)"><td>Chụp mặt sau</td><td>5,471</td><td style="color:var(--pink-500);font-weight:700">64.33%</td><td>19.92%</td><td>5,839</td><td style="color:var(--pink-500);font-weight:700">68.22%</td><td>24.24%</td></tr>
+        <tr><td>Chụp selfie</td><td>5,318</td><td>97.20%</td><td>19.37%</td><td>5,701</td><td>97.64%</td><td>23.67%</td></tr>
+        <tr style="background:rgba(123,47,190,0.06)"><td>Scan NFC</td><td>4,720</td><td>88.76%</td><td>17.19%</td><td>5,014</td><td>87.95%</td><td>20.82%</td></tr>
+        <tr><td>Bổ sung thông tin cá nhân</td><td>3,852</td><td>81.61%</td><td style="color:var(--pink-500);font-weight:700">14.03%</td><td>4,061</td><td>80.99%</td><td style="color:var(--pink-500);font-weight:700">16.86%</td></tr>
+        <tr><td>Bổ sung thông tin thu nhập</td><td>2,608</td><td style="color:var(--pink-500);font-weight:700">67.71%</td><td>9.50%</td><td>3,184</td><td style="color:var(--mint-500);font-weight:700">78.40%</td><td>13.22%</td></tr>
+        <tr><td>Kiểm tra thông tin</td><td>2,344</td><td>89.88%</td><td>8.54%</td><td>2,898</td><td>91.02%</td><td>12.03%</td></tr>
+        <tr><td>Đang xử lý hồ sơ (pass precheck)</td><td>1,424</td><td>60.75%</td><td>5.19%</td><td>1,747</td><td>60.28%</td><td>7.25%</td></tr>
+        <tr><td>Khoản vay được duyệt (approved)</td><td>381</td><td style="color:var(--pink-500);font-weight:700">26.76%</td><td>1.39%</td><td>526</td><td style="color:var(--pink-500);font-weight:700">30.11%</td><td>2.18%</td></tr>
+        <tr class="highlight"><td>Ký hợp đồng (disbursed)</td><td>248</td><td>65.09%</td><td style="color:var(--pink-500);font-weight:700">0.90%</td><td>345</td><td>65.59%</td><td style="color:var(--mint-500);font-weight:700">1.43%</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-heading">Precheck Reject (1,234)</div>
+    <table>
+      <thead><tr><th>Reason</th><th>#</th><th>%</th><th>Actionable?</th></tr></thead>
+      <tbody>
+        <tr class="highlight"><td>age_invalid (&lt;20 tuổi)</td><td>507</td><td>41%</td><td><span class="badge badge-room">Room to improve</span></td></tr>
+        <tr><td>f_risk_control (fraud)</td><td>496</td><td>40%</td><td><span class="badge badge-no">Không</span></td></tr>
+        <tr><td>dup_product_found</td><td>94</td><td>8%</td><td><span class="badge badge-no">Không</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-heading">LOS Reject (4,845)</div>
+    <table>
+      <thead><tr><th>Reason</th><th>#</th><th>%</th><th>Actionable?</th></tr></thead>
+      <tbody>
+        <tr><td>Hard rule</td><td>2,092</td><td>43%</td><td><span class="badge badge-no">Không</span></td></tr>
+        <tr><td>Cake Active (cross-channel)</td><td>1,470</td><td>30%</td><td><span class="badge badge-no">Không — đã có loan channel khác</span></td></tr>
+        <tr class="highlight"><td>Score not met</td><td>1,283</td><td>26%</td><td><span class="badge badge-room">Relax band 4-5-6 / DTN score</span></td></tr>
+      </tbody>
+    </table>
+
+    <p class="note"><strong>Approved → Signed (66%):</strong> 181 người được duyệt không ký — cần investigate limit/pricing — score-based offer.</p>
+  </div>
+
+  <!-- ===================== 3. ETB FUNNEL ===================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <div class="section-title">ETB Funnel</div>
+    </div>
+
+    <div class="kpi-banner">
+      <div class="kpi-title">ETB: Lead 32,158 → Signed 1,052 &nbsp;|&nbsp; CVR 3.4%</div>
+    </div>
+
+    <div class="conclusion positive">
+      <p><strong>Kết luận:</strong> Funnel healthy. Bottleneck = eligible pool bị cạnh tranh bởi channel khác. Lever duy nhất: relax age (3,450) &amp; Score not meet.</p>
+    </div>
+
+    <div class="sub-heading">Funnel Overview</div>
+
+    <table>
+      <thead><tr><th>Step</th><th>#</th><th>Step CVR</th><th>Vs 1st</th></tr></thead>
+      <tbody>
+        <tr><td>Lead</td><td>32,158</td><td>—</td><td>100%</td></tr>
+        <tr><td>Pass EKYC + Fulfill Form</td><td>21,553</td><td>67%</td><td>69.5%</td></tr>
+        <tr><td>Precheck pass</td><td>9,063</td><td>42%</td><td>29.2%</td></tr>
+        <tr><td>LOS Approved</td><td>1,219</td><td>13%</td><td>3.9%</td></tr>
+        <tr><td>Signed</td><td>1,052</td><td>86%</td><td>3.4%</td></tr>
+      </tbody>
+    </table>
+
+    <p class="note"><strong>Lead → EKYC (67%):</strong> Healthy — ETB chỉ face match, friction thấp.</p>
+
+    <div class="sub-heading">ETB — EKYC Step-by-Step (T4 vs T5)</div>
+    <table>
+      <thead><tr><th>Step</th><th>T4 #</th><th>vs Previous</th><th>vs Initial</th><th>T5 #</th><th>vs Previous</th><th>vs Initial</th></tr></thead>
+      <tbody>
+        <tr><td>Xác thực số điện thoại</td><td>30,993</td><td></td><td></td><td>32,158</td><td></td><td></td></tr>
+        <tr><td>Nhập mã OTP</td><td>30,026</td><td>96.88%</td><td>96.88%</td><td>30,895</td><td>96.07%</td><td>96.07%</td></tr>
+        <tr><td>Chụp hình</td><td>29,691</td><td>98.88%</td><td>95.80%</td><td>30,467</td><td>98.61%</td><td>94.74%</td></tr>
+        <tr><td>Đăng ký nhu cầu vay (face authen)</td><td>23,722</td><td style="color:var(--pink-500);font-weight:700">79.90%</td><td>76.54%</td><td>24,941</td><td style="color:var(--pink-500);font-weight:700">81.86%</td><td>77.56%</td></tr>
+        <tr><td>Cung cấp thông tin cá nhân</td><td>21,770</td><td>91.77%</td><td>70.24%</td><td>22,914</td><td>91.87%</td><td>71.25%</td></tr>
+        <tr><td>Kiểm tra thông tin</td><td>20,697</td><td>95.07%</td><td>66.78%</td><td>21,553</td><td>94.06%</td><td>67.02%</td></tr>
+        <tr><td>Đang xử lý hồ sơ (pass precheck)</td><td>8,579</td><td style="color:var(--pink-500);font-weight:700">41.45%</td><td>27.68%</td><td>9,063</td><td style="color:var(--pink-500);font-weight:700">42.05%</td><td>28.18%</td></tr>
+        <tr><td>Khoản vay được duyệt (approved)</td><td>1,123</td><td style="color:var(--pink-500);font-weight:700">13.09%</td><td>3.62%</td><td>1,219</td><td style="color:var(--pink-500);font-weight:700">13.45%</td><td>3.79%</td></tr>
+        <tr class="highlight"><td>Ký hợp đồng (disbursed)</td><td>952</td><td>84.77%</td><td style="color:var(--pink-500);font-weight:700">3.07%</td><td>1,052</td><td>86.30%</td><td style="color:var(--mint-500);font-weight:700">3.27%</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-heading">Precheck Reject (13,655)</div>
+    <table>
+      <thead><tr><th>Reason</th><th>#</th><th>%</th><th>Actionable?</th></tr></thead>
+      <tbody>
+        <tr><td>f_risk_control (fraud)</td><td>7,161</td><td>52%</td><td><span class="badge badge-no">Không</span></td></tr>
+        <tr class="highlight"><td>age_invalid</td><td>3,450</td><td>25%</td><td><span class="badge badge-room">Room to improve</span></td></tr>
+        <tr><td>dup_product_found</td><td>3,033</td><td>22%</td><td><span class="badge badge-no">Không</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-heading">LOS Reject</div>
+    <table>
+      <thead><tr><th>Reason</th><th>#</th><th>%</th><th>Actionable?</th></tr></thead>
+      <tbody>
+        <tr><td>Cake Active (cross-channel)</td><td>4,441</td><td>52%</td><td><span class="badge badge-no">Không — đã nâng 2 active loan</span></td></tr>
+        <tr><td>Hard rule</td><td>2,801</td><td>33%</td><td><span class="badge badge-no">Không</span></td></tr>
+        <tr class="highlight"><td>Score not meet</td><td>1,240</td><td>15%</td><td><span class="badge badge-room">Relax band 4-5-6 / DTN score</span></td></tr>
+      </tbody>
+    </table>
+
+    <p class="note"><strong>Approved → Signed (86%):</strong> Healthy.</p>
+  </div>
+
+  <!-- ===================== 4. DATA BACKUP ===================== -->
+  <div class="data-section">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <div class="section-title">Data Backup</div>
+    </div>
+
+    <!-- 4a. Funnel raw data -->
+    <div class="data-group-title">Funnel — Total / NTB / ETB</div>
+
+    <div class="sub-heading">Total</div>
+    <table>
+      <thead><tr><th>Step</th><th># User</th><th>vs Previous</th><th>Vs 1st</th></tr></thead>
+      <tbody>
+        <tr><td>Lead</td><td>56,243</td><td>100%</td><td>100.0%</td></tr>
+        <tr><td>Pass EKYC + Fulfill Form</td><td>24,451</td><td>43%</td><td>41.8%</td></tr>
+        <tr><td>Precheck pass</td><td>10,810</td><td>44%</td><td>18.5%</td></tr>
+        <tr><td>Approved at LOS</td><td>1,745</td><td>16%</td><td>3.0%</td></tr>
+        <tr><td>Signed contract</td><td>1,397</td><td>80%</td><td>2.4%</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-heading">NTB</div>
+    <table>
+      <thead><tr><th>Step</th><th># User</th><th>vs Previous</th><th>Vs 1st</th></tr></thead>
+      <tbody>
+        <tr><td>Lead</td><td>24,085</td><td>100%</td><td>100.0%</td></tr>
+        <tr><td>Pass EKYC + Fulfill Form</td><td>2,898</td><td>12%</td><td>10.6%</td></tr>
+        <tr><td>Precheck pass</td><td>1,747</td><td>60%</td><td>6.4%</td></tr>
+        <tr><td>Approved at LOS</td><td>526</td><td>30%</td><td>1.9%</td></tr>
+        <tr><td>Signed contract</td><td>345</td><td>66%</td><td>1.3%</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-heading">ETB</div>
+    <table>
+      <thead><tr><th>Step</th><th># User</th><th>vs Previous</th><th>Vs 1st</th></tr></thead>
+      <tbody>
+        <tr><td>Lead</td><td>32,158</td><td>100%</td><td>100.0%</td></tr>
+        <tr><td>Pass EKYC + Fulfill Form</td><td>21,553</td><td>67%</td><td>69.5%</td></tr>
+        <tr><td>Precheck pass</td><td>9,063</td><td>42%</td><td>29.2%</td></tr>
+        <tr><td>Approved at LOS</td><td>1,219</td><td>13%</td><td>3.9%</td></tr>
+        <tr><td>Signed contract</td><td>1,052</td><td>86%</td><td>3.4%</td></tr>
+      </tbody>
+    </table>
+
+    <!-- 4b. Precheck reject -->
+    <div class="data-group-title">Precheck Reject Reasons (T4 vs T5)</div>
+
+    <div class="sub-heading">NTB Precheck</div>
+    <table>
+      <thead><tr><th>Reason</th><th>T4/2026</th><th>%</th><th>T5/2026</th><th>%</th></tr></thead>
+      <tbody>
+        <tr><td>age_invalid</td><td>434</td><td>44.47%</td><td>507</td><td>41.09%</td></tr>
+        <tr><td>citizen_id_length_invalid</td><td>92</td><td>9.43%</td><td>113</td><td>9.16%</td></tr>
+        <tr><td>citizen_id_remaining_days_invalid</td><td>21</td><td>2.15%</td><td>24</td><td>1.94%</td></tr>
+        <tr><td>dup_product_found</td><td>—</td><td>0.00%</td><td>94</td><td>7.62%</td></tr>
+        <tr><td>f_risk_control</td><td>373</td><td>38.22%</td><td>496</td><td>40.19%</td></tr>
+        <tr><td>los_rejected_in_last_7_days</td><td>56</td><td>5.74%</td><td>—</td><td>0.00%</td></tr>
+        <tr class="total-row"><td>Total</td><td>976</td><td></td><td>1,234</td><td></td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-heading">ETB Precheck</div>
+    <table>
+      <thead><tr><th>Reason</th><th>T4/2026</th><th>%</th><th>T5/2026</th><th>%</th></tr></thead>
+      <tbody>
+        <tr><td>age_invalid</td><td>3,420</td><td>25.38%</td><td>3,450</td><td>25.27%</td></tr>
+        <tr><td>citizen_id_length_invalid</td><td>—</td><td>0.00%</td><td>—</td><td>0.00%</td></tr>
+        <tr><td>citizen_id_remaining_days_invalid</td><td>11</td><td>0.08%</td><td>9</td><td>0.07%</td></tr>
+        <tr><td>dup_product_found</td><td>—</td><td>0.00%</td><td>3,033</td><td>22.21%</td></tr>
+        <tr><td>f_risk_control</td><td>6,722</td><td>49.89%</td><td>7,161</td><td>52.45%</td></tr>
+        <tr><td>los_rejected_in_last_7_days</td><td>3,321</td><td>24.65%</td><td>—</td><td>0.00%</td></tr>
+        <tr class="total-row"><td>Total</td><td>13,474</td><td></td><td>13,653</td><td></td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-heading">Total Precheck</div>
+    <table>
+      <thead><tr><th>Reason</th><th>T4/2026</th><th>%</th><th>T5/2026</th><th>%</th></tr></thead>
+      <tbody>
+        <tr><td>age_invalid</td><td>3,854</td><td>28.60%</td><td>3,957</td><td>28.98%</td></tr>
+        <tr><td>citizen_id_length_invalid</td><td>92</td><td>0.68%</td><td>113</td><td>0.83%</td></tr>
+        <tr><td>citizen_id_remaining_days_invalid</td><td>32</td><td>0.24%</td><td>33</td><td>0.24%</td></tr>
+        <tr><td>dup_product_found</td><td>0</td><td>0.00%</td><td>3,127</td><td>22.90%</td></tr>
+        <tr><td>f_risk_control</td><td>7,095</td><td>52.66%</td><td>7,657</td><td>56.08%</td></tr>
+        <tr><td>los_rejected_in_last_7_days</td><td>3,377</td><td>25.06%</td><td>0</td><td>0.00%</td></tr>
+        <tr class="total-row"><td>Total</td><td>14,450</td><td></td><td>14,887</td><td></td></tr>
+      </tbody>
+    </table>
+
+    <!-- 4c. LOS reject -->
+    <div class="data-group-title">Reject at LOS</div>
+    <table>
+      <thead><tr><th>Reason</th><th>NTB #</th><th>ETB #</th><th>NTB %</th><th>ETB %</th></tr></thead>
+      <tbody>
+        <tr><td>Hard rule</td><td>2,092</td><td>2,801</td><td>43%</td><td>33%</td></tr>
+        <tr><td>Policy</td><td>1,283</td><td>1,240</td><td>26%</td><td>15%</td></tr>
+        <tr><td>Cake Active</td><td>1,470</td><td>4,441</td><td>30%</td><td>52%</td></tr>
+      </tbody>
+    </table>
+
+    <!-- 4d. Road to 3% Assumptions -->
+    <div class="data-group-title">Road to 3% CVR — Assumptions</div>
+
+    <table>
+      <thead><tr><th>Action</th><th>Pool</th><th>Assumption</th><th>Calculation</th><th>Signed</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>+Age 18-20 relax</td>
+          <td>507 bị chặn age_invalid</td>
+          <td style="text-align:left">Pass precheck remaining rules → LOS AR 25% (thin-file 18-20)</td>
+          <td style="text-align:left">507 → AR 25% = 127 approved → Sign 66%</td>
+          <td>+84</td>
+        </tr>
+        <tr>
+          <td>+Relax f_risk_control</td>
+          <td>496 bị chặn fraud flag</td>
+          <td style="text-align:left">Cứu được 20% false positive → LOS AR 30%</td>
+          <td style="text-align:left">496 × 20% = 99 → AR 30% = 30 → Sign 66%</td>
+          <td>+20</td>
+        </tr>
+        <tr>
+          <td>+Relax score not met</td>
+          <td>1,283 bị policy reject</td>
+          <td style="text-align:left">Cứu được 20% → Sign rate 66%</td>
+          <td style="text-align:left">1,283 × 20% = 257 approved → Sign 66%</td>
+          <td>+170</td>
+        </tr>
+        <tr>
+          <td>+Score-based offer</td>
+          <td>EKYC pass rate 12% → 16%</td>
+          <td style="text-align:left">+956 lead qua EKYC → Precheck 60% → LOS AR 30%</td>
+          <td style="text-align:left">956 → 574 precheck → 172 approved → Sign 66%</td>
+          <td>+114</td>
+        </tr>
+        <tr>
+          <td>+VNEID SSO (bỏ chụp CCCD + NFC)</td>
+          <td>7,163 drop tại chụp mặt trước + sau + NFC</td>
+          <td style="text-align:left">Save 20% EKYC droppers = 1,433 thêm vào funnel</td>
+          <td style="text-align:left">1,433 → Thu nhập 78% → Kiểm tra 91% → Precheck 60% → AR 30% → Sign 66%</td>
+          <td>+121</td>
+        </tr>
+        <tr class="total-row">
+          <td>Total</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>+509</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 4e. EKYC Step-by-Step raw data -->
+    <div class="data-group-title">EKYC Step-by-Step (T4 vs T5)</div>
+
+    <div class="sub-heading">NTB</div>
+    <table>
+      <thead><tr><th>Step</th><th>T4 #</th><th>vs Previous</th><th>vs Initial</th><th>T5 #</th><th>vs Previous</th><th>vs Initial</th></tr></thead>
+      <tbody>
+        <tr><td>Xác thực số điện thoại</td><td>27,460</td><td></td><td></td><td>24,085</td><td></td><td></td></tr>
+        <tr><td>Nhập mã OTP</td><td>15,476</td><td>56.36%</td><td>56.36%</td><td>15,548</td><td>64.55%</td><td>64.55%</td></tr>
+        <tr><td>Đăng ký nhu cầu vay</td><td>12,144</td><td>78.47%</td><td>44.22%</td><td>12,315</td><td>79.21%</td><td>51.13%</td></tr>
+        <tr><td>Chụp mặt trước</td><td>8,504</td><td>70.03%</td><td>30.97%</td><td>8,559</td><td>69.50%</td><td>35.54%</td></tr>
+        <tr><td>Chụp mặt sau</td><td>5,471</td><td>64.33%</td><td>19.92%</td><td>5,839</td><td>68.22%</td><td>24.24%</td></tr>
+        <tr><td>Chụp selfie</td><td>5,318</td><td>97.20%</td><td>19.37%</td><td>5,701</td><td>97.64%</td><td>23.67%</td></tr>
+        <tr><td>Scan NFC</td><td>4,720</td><td>88.76%</td><td>17.19%</td><td>5,014</td><td>87.95%</td><td>20.82%</td></tr>
+        <tr><td>Bổ sung thông tin cá nhân</td><td>3,852</td><td>81.61%</td><td>14.03%</td><td>4,061</td><td>80.99%</td><td>16.86%</td></tr>
+        <tr><td>Bổ sung thông tin thu nhập</td><td>2,608</td><td>67.71%</td><td>9.50%</td><td>3,184</td><td>78.40%</td><td>13.22%</td></tr>
+        <tr><td>Kiểm tra thông tin</td><td>2,344</td><td>89.88%</td><td>8.54%</td><td>2,898</td><td>91.02%</td><td>12.03%</td></tr>
+        <tr><td>Đang xử lý hồ sơ (pass precheck)</td><td>1,424</td><td>60.75%</td><td>5.19%</td><td>1,747</td><td>60.28%</td><td>7.25%</td></tr>
+        <tr><td>Khoản vay được duyệt (approved)</td><td>381</td><td>26.76%</td><td>1.39%</td><td>526</td><td>30.11%</td><td>2.18%</td></tr>
+        <tr><td>Ký hợp đồng (disbursed)</td><td>248</td><td>65.09%</td><td>0.90%</td><td>345</td><td>65.59%</td><td>1.43%</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-heading">ETB</div>
+    <table>
+      <thead><tr><th>Step</th><th>T4 #</th><th>vs Previous</th><th>vs Initial</th><th>T5 #</th><th>vs Previous</th><th>vs Initial</th></tr></thead>
+      <tbody>
+        <tr><td>Xác thực số điện thoại</td><td>30,993</td><td></td><td></td><td>32,158</td><td></td><td></td></tr>
+        <tr><td>Nhập mã OTP</td><td>30,026</td><td>96.88%</td><td>96.88%</td><td>30,895</td><td>96.07%</td><td>96.07%</td></tr>
+        <tr><td>Chụp hình</td><td>29,691</td><td>98.88%</td><td>95.80%</td><td>30,467</td><td>98.61%</td><td>94.74%</td></tr>
+        <tr><td>Đăng ký nhu cầu vay (face authen)</td><td>23,722</td><td>79.90%</td><td>76.54%</td><td>24,941</td><td>81.86%</td><td>77.56%</td></tr>
+        <tr><td>Cung cấp thông tin cá nhân</td><td>21,770</td><td>91.77%</td><td>70.24%</td><td>22,914</td><td>91.87%</td><td>71.25%</td></tr>
+        <tr><td>Kiểm tra thông tin</td><td>20,697</td><td>95.07%</td><td>66.78%</td><td>21,553</td><td>94.06%</td><td>67.02%</td></tr>
+        <tr><td>Đang xử lý hồ sơ (pass precheck)</td><td>8,579</td><td>41.45%</td><td>27.68%</td><td>9,063</td><td>42.05%</td><td>28.18%</td></tr>
+        <tr><td>Khoản vay được duyệt (approved)</td><td>1,123</td><td>13.09%</td><td>3.62%</td><td>1,219</td><td>13.45%</td><td>3.79%</td></tr>
+        <tr><td>Ký hợp đồng (disbursed)</td><td>952</td><td>84.77%</td><td>3.07%</td><td>1,052</td><td>86.30%</td><td>3.27%</td></tr>
+      </tbody>
+    </table>
+
+    <!-- 4f. DS Segment data -->
+    <div class="data-group-title">Segment Breakdown (DS Data)</div>
+
+    <div class="sub-heading">BE Cash Loan <span class="vs-header vs-be">BE</span></div>
+    <div class="segment-table">
+    <table>
+      <thead><tr><th>Flow</th><th>Segment</th><th>Start #</th><th>Start %</th><th>Lead→Submit CR</th><th>Precheck CR</th><th>LOS CR</th><th>Sign Rate</th><th>E2E CR</th><th>End %</th></tr></thead>
+      <tbody>
+        <tr><td>NTB</td><td>New to Cake</td><td>14,201</td><td>24.3%</td><td>12.4%</td><td>60.9%</td><td>24.1%</td><td>71.4%</td><td>1.3%</td><td>15.4%</td></tr>
+        <tr><td>NTB</td><td>New to Loan (CIF)</td><td>5,235</td><td>9.0%</td><td>8.5%</td><td>57.9%</td><td>23.3%</td><td>52.3%</td><td>0.6%</td><td>2.6%</td></tr>
+        <tr><td>ETB</td><td>New to Loan (EKYC)</td><td>5,427</td><td>9.3%</td><td>27.6%</td><td>25.3%</td><td>36.7%</td><td>70.2%</td><td>1.8%</td><td>8.1%</td></tr>
+        <tr><td>ETB</td><td>Applied Never Disbursed</td><td>8,589</td><td>14.7%</td><td>46.7%</td><td>17.8%</td><td>22.4%</td><td>75.2%</td><td>1.4%</td><td>10.0%</td></tr>
+        <tr><td>ETB</td><td>Lapsed Borrower</td><td>3,307</td><td>5.7%</td><td>53.0%</td><td>16.1%</td><td>8.9%</td><td>65.8%</td><td>0.5%</td><td>1.4%</td></tr>
+        <tr><td>ETB</td><td>Active (1 Contract)</td><td>7,905</td><td>13.5%</td><td>55.0%</td><td>41.3%</td><td>11.8%</td><td>82.1%</td><td>2.2%</td><td>14.5%</td></tr>
+        <tr><td>ETB</td><td>Active (2+ Contracts)</td><td>13,797</td><td>23.6%</td><td>66.4%</td><td>60.4%</td><td>11.8%</td><td>88.7%</td><td>4.2%</td><td>48.1%</td></tr>
+        <tr class="total-row"><td colspan="2">Total</td><td>58,461</td><td></td><td></td><td></td><td></td><td></td><td>2.1%</td><td></td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="sub-heading">VNPay Cash Loan <span class="vs-header vs-vnpay">VNPAY</span></div>
+    <div class="segment-table">
+    <table>
+      <thead><tr><th>Flow</th><th>Segment</th><th>Start #</th><th>Start %</th><th>Lead→Submit CR</th><th>Precheck CR</th><th>LOS CR</th><th>Sign Rate</th><th>E2E CR</th><th>End %</th></tr></thead>
+      <tbody>
+        <tr><td>NTB</td><td>New to Cake</td><td>2,721</td><td>8.5%</td><td>43.1%</td><td>66.4%</td><td>42.8%</td><td>93.9%</td><td>11.5%</td><td>28%</td></tr>
+        <tr><td>NTB</td><td>New to Loan (CIF)</td><td>1,664</td><td>5.2%</td><td>14.8%</td><td>55.7%</td><td>43.8%</td><td>88.6%</td><td>3.2%</td><td>5%</td></tr>
+        <tr><td>ETB</td><td>New to Loan (EKYC)</td><td>1,702</td><td>5.3%</td><td>46.5%</td><td>32.4%</td><td>50.4%</td><td>89.6%</td><td>6.8%</td><td>10%</td></tr>
+        <tr><td>ETB</td><td>Applied Never Disbursed</td><td>4,202</td><td>13.2%</td><td>66.6%</td><td>23.5%</td><td>21.1%</td><td>90.8%</td><td>3.0%</td><td>11%</td></tr>
+        <tr><td>ETB</td><td>Lapsed Borrower</td><td>2,376</td><td>7.5%</td><td>67.6%</td><td>23.9%</td><td>19.8%</td><td>90.7%</td><td>2.9%</td><td>6%</td></tr>
+        <tr><td>ETB</td><td>Active (1 Contract)</td><td>6,134</td><td>19.3%</td><td>68.0%</td><td>17.3%</td><td>27.6%</td><td>92.4%</td><td>3.0%</td><td>16%</td></tr>
+        <tr><td>ETB</td><td>Active (2+ Contracts)</td><td>13,055</td><td>41.0%</td><td>73.5%</td><td>7.0%</td><td>42.2%</td><td>92.1%</td><td>2.0%</td><td>23%</td></tr>
+        <tr class="total-row"><td colspan="2">Total</td><td>31,854</td><td></td><td></td><td></td><td></td><td></td><td>3.5%</td><td></td></tr>
+      </tbody>
+    </table>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    Cake by VPBank — Lending Product &nbsp;·&nbsp; T5/2026
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BE Lending — Partner Version T5/2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink-500: #FF2D71;
+    --pink-700: #B8154F;
+    --grape-500: #7B2FBE;
+    --grape-900: #1A1033;
+    --mint-500: #0BC76A;
+    --amber-500: #FF7A2F;
+    --neutral-light: #F7F7F9;
+    --neutral-white: #FFFFFF;
+    --page-bg: #E8E8EF;
+    --hero-gradient: linear-gradient(135deg, #FF2D71, #7B2FBE);
+    --night-gradient: linear-gradient(160deg, #1A1033, #2D1B55);
+    --growth-gradient: linear-gradient(135deg, #0BC76A, #059952);
+    --radius-2xl: 28px;
+    --radius-xl: 20px;
+    --radius-lg: 16px;
+    --radius-md: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-weight: 400;
+    font-size: 15px;
+    color: #2a2a3a;
+    background: var(--page-bg);
+    line-height: 1.6;
+    padding: 40px 20px;
+  }
+
+  .container { max-width: 1060px; margin: 0 auto; }
+
+  .hero {
+    background: var(--night-gradient);
+    border-radius: var(--radius-2xl);
+    padding: 48px 40px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(255,45,113,0.25), transparent 70%);
+    border-radius: 50%;
+  }
+  .hero h1 {
+    font-weight: 700;
+    font-size: 28px;
+    color: #fff;
+    margin-bottom: 6px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero .subtitle {
+    font-weight: 400;
+    font-size: 15px;
+    color: rgba(255,255,255,0.65);
+    position: relative;
+    z-index: 1;
+  }
+
+  .section {
+    background: var(--neutral-white);
+    border-radius: var(--radius-xl);
+    padding: 36px 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 12px rgba(26,16,51,0.06);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .section-number {
+    background: var(--hero-gradient);
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--grape-900);
+  }
+
+  .kpi-banner {
+    background: var(--neutral-light);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    border-left: 4px solid var(--pink-500);
+  }
+  .kpi-banner .kpi-title {
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--grape-900);
+  }
+  .kpi-banner .kpi-sub {
+    font-size: 14px;
+    color: #555;
+    margin-top: 4px;
+    line-height: 1.7;
+  }
+
+  .conclusion {
+    background: var(--neutral-light);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    border-left: 4px solid var(--grape-500);
+  }
+  .conclusion.positive { border-left-color: var(--mint-500); }
+  .conclusion.warning { border-left-color: var(--amber-500); }
+  .conclusion p { font-size: 14px; color: #333; line-height: 1.7; }
+  .conclusion strong { color: var(--grape-900); }
+
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 20px;
+    font-size: 13.5px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(26,16,51,0.06);
+  }
+  thead th {
+    background: var(--grape-900);
+    color: #fff;
+    font-weight: 600;
+    padding: 12px 10px;
+    text-align: center;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  thead th:first-child { text-align: left; }
+  tbody td {
+    padding: 10px 10px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+  }
+  tbody td:first-child {
+    text-align: left;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:nth-child(even) { background: var(--neutral-light); }
+  tbody tr:hover { background: rgba(123,47,190,0.04); }
+  tbody tr.highlight td {
+    background: rgba(255,45,113,0.06);
+    font-weight: 600;
+  }
+  tbody tr.total-row td {
+    background: var(--grape-900);
+    color: #fff;
+    font-weight: 700;
+  }
+  tbody tr.subtotal td {
+    background: rgba(123,47,190,0.08);
+    font-weight: 700;
+  }
+
+  .sub-heading {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--grape-900);
+    margin: 24px 0 10px 0;
+  }
+
+  .note {
+    font-size: 13.5px;
+    color: #555;
+    margin-bottom: 16px;
+    padding-left: 4px;
+  }
+  .note strong { color: var(--grape-900); }
+
+  .road-card {
+    background: var(--night-gradient);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-top: 20px;
+  }
+  .road-card h3 {
+    color: #fff;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+  .road-card table thead th { background: rgba(255,255,255,0.1); }
+  .road-card table tbody td {
+    color: rgba(255,255,255,0.9);
+    border-bottom-color: rgba(255,255,255,0.08);
+  }
+  .road-card table tbody tr:nth-child(even) { background: rgba(255,255,255,0.04); }
+  .road-card table tbody tr:hover { background: rgba(255,255,255,0.08); }
+  .road-card table tbody tr.total-row td {
+    background: rgba(255,45,113,0.3);
+    color: #fff;
+  }
+
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .kpi-card {
+    background: var(--neutral-light);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    text-align: center;
+  }
+  .kpi-card .kpi-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--grape-900);
+  }
+  .kpi-card .kpi-label {
+    font-size: 11px;
+    color: #888;
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .kpi-card.accent .kpi-value { color: var(--pink-500); }
+  .kpi-card.green .kpi-value { color: var(--mint-500); }
+
+  .scroll-table { overflow-x: auto; }
+  .scroll-table table { min-width: 1000px; }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 600;
+  }
+  .badge-no { background: rgba(0,0,0,0.06); color: #888; }
+  .badge-room { background: rgba(255,122,47,0.12); color: #cc5f1f; }
+
+  /* Payday section styles */
+  .vs-card {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .vs-item {
+    background: var(--neutral-light);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    text-align: center;
+  }
+  .vs-item .vs-label {
+    font-size: 12px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+  .vs-item .vs-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--grape-900);
+  }
+  .vs-item .vs-detail {
+    font-size: 12px;
+    color: #888;
+    margin-top: 4px;
+  }
+  .vs-item.green .vs-value { color: var(--mint-500); }
+  .vs-item.pink .vs-value { color: var(--pink-500); }
+
+  .benefit-list {
+    list-style: none;
+    margin-bottom: 20px;
+  }
+  .benefit-list li {
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    background: var(--neutral-light);
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .benefit-list li .num {
+    background: var(--hero-gradient);
+    color: #fff;
+    font-weight: 700;
+    font-size: 12px;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .benefit-list li .content { flex: 1; }
+  .benefit-list li .content strong { color: var(--grape-900); }
+
+  .section-divider {
+    background: var(--night-gradient);
+    border-radius: var(--radius-xl);
+    padding: 32px 40px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  .section-divider h2 {
+    color: #fff;
+    font-weight: 700;
+    font-size: 22px;
+  }
+  .section-divider p {
+    color: rgba(255,255,255,0.6);
+    font-size: 14px;
+    margin-top: 4px;
+  }
+
+  .footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 12px;
+    color: #999;
+  }
+
+  @media print {
+    body { background: #fff; padding: 20px; }
+    .section { box-shadow: none; border: 1px solid #eee; break-inside: avoid; }
+    .hero { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1>BE Lending — Partner Version</h1>
+    <div class="subtitle">T5/2026 &nbsp;·&nbsp; Channel: BE &nbsp;·&nbsp; Cash Loan + Payday Proposal</div>
+  </div>
+
+  <!-- ===================== TABLE OF CONTENTS ===================== -->
+  <div class="section" style="padding: 28px 32px;">
+    <div class="sub-heading" style="margin-top: 0;">Mục lục</div>
+    <table>
+      <thead><tr><th>#</th><th>Nội dung</th></tr></thead>
+      <tbody>
+        <tr><td colspan="2" style="text-align:left; font-weight:700; background:rgba(123,47,190,0.08);">Cash Loan</td></tr>
+        <tr><td>1</td><td style="text-align:left">Disbursement Plan — Kế hoạch giải ngân 2026</td></tr>
+        <tr><td>2</td><td style="text-align:left">Funnel Analysis — Phân tích funnel T5/2026 (Overall, NTB, ETB) + Road to 3% CVR</td></tr>
+        <tr><td colspan="2" style="text-align:left; font-weight:700; background:rgba(123,47,190,0.08);">Payday Loan — Đề xuất mở rộng</td></tr>
+        <tr><td>3</td><td style="text-align:left">So sánh sản phẩm — Cash Loan vs Payday</td></tr>
+        <tr><td>4</td><td style="text-align:left">Payday AR cao hơn Cash Loan — Data benchmark</td></tr>
+        <tr><td>5</td><td style="text-align:left">Giá trị cho BE khi thêm Payday</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===================== CASH LOAN DIVIDER ===================== -->
+  <div class="section-divider">
+    <h2>Cash Loan</h2>
+    <p>Disbursement Plan + Funnel Analysis</p>
+  </div>
+
+  <!-- ===================== 1. DISBURSEMENT PLAN ===================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <div class="section-title">Disbursement Plan</div>
+    </div>
+
+    <!-- Highlight T1-T5 vs T6-T12 -->
+    <div class="sub-heading">Highlight: T1–T5 vs T6–T12</div>
+    <table>
+      <thead><tr><th>Chỉ tiêu</th><th>T1–T5</th><th>T6–T12</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td>Avg daily traffic</td><td>~2,854</td><td>~5,838</td><td style="text-align:left">Cần tăng 2.0x</td></tr>
+        <tr><td>Traffic to App rate</td><td>~16.4%</td><td>23.45%</td><td style="text-align:left">+7pp — cải thiện flow EKYC + score-based offer</td></tr>
+        <tr><td>AR (weighted)</td><td>~14.1%</td><td>~16%</td><td style="text-align:left">Target tăng lên 16% để hỗ trợ đầu traffic</td></tr>
+        <tr><td>Ticket size</td><td>~13 triệu</td><td>~14 triệu</td><td style="text-align:left">Tăng nhờ score-based offer</td></tr>
+        <tr class="highlight"><td>Disbursement</td><td>102.4 tỷ (avg 20.5 tỷ/tháng)</td><td>473.3 tỷ (avg 67.6 tỷ/tháng)</td><td style="text-align:left">3.3x growth</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-heading">Chi tiết theo tháng</div>
+    <div class="scroll-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Chỉ tiêu</th>
+          <th>2026</th>
+          <th>Thg1</th>
+          <th>Thg2</th>
+          <th>Thg3</th>
+          <th>Thg4</th>
+          <th>Thg5</th>
+          <th>Thg6</th>
+          <th>Thg7</th>
+          <th>Thg8</th>
+          <th>Thg9</th>
+          <th>Thg10</th>
+          <th>Thg11</th>
+          <th>Thg12</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight">
+          <td># Traffic</td>
+          <td>1,680,276</td>
+          <td>92,660</td>
+          <td>67,316</td>
+          <td>93,208</td>
+          <td>87,901</td>
+          <td>89,894</td>
+          <td>103,764</td>
+          <td>125,423</td>
+          <td>155,286</td>
+          <td>179,176</td>
+          <td>195,899</td>
+          <td>226,956</td>
+          <td>262,792</td>
+        </tr>
+        <tr>
+          <td>% Pass EKYC + Fulfill Form</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>43%</td>
+          <td>53%</td>
+          <td>53%</td>
+          <td>53%</td>
+          <td>53%</td>
+          <td>53%</td>
+          <td>53%</td>
+          <td>53%</td>
+        </tr>
+        <tr>
+          <td>% Pass precheck</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>44%</td>
+          <td>44%</td>
+          <td>44%</td>
+          <td>44%</td>
+          <td>44%</td>
+          <td>44%</td>
+          <td>44%</td>
+          <td>44%</td>
+        </tr>
+        <tr>
+          <td>% Traffic to app rate</td>
+          <td>21.64%</td>
+          <td>12.94%</td>
+          <td>14.08%</td>
+          <td>13.19%</td>
+          <td>15.17%</td>
+          <td>23.45%</td>
+          <td>23.45%</td>
+          <td>23.45%</td>
+          <td>23.45%</td>
+          <td>23.45%</td>
+          <td>23.45%</td>
+          <td>23.45%</td>
+          <td>23.45%</td>
+        </tr>
+        <tr>
+          <td># App in</td>
+          <td>363,534</td>
+          <td>11,992</td>
+          <td>9,477</td>
+          <td>12,291</td>
+          <td>13,335</td>
+          <td>23,479</td>
+          <td>24,333</td>
+          <td>29,412</td>
+          <td>36,415</td>
+          <td>42,017</td>
+          <td>45,938</td>
+          <td>53,221</td>
+          <td>61,625</td>
+        </tr>
+        <tr>
+          <td>% AR</td>
+          <td>13.31%</td>
+          <td>17.08%</td>
+          <td>15.15%</td>
+          <td>18.33%</td>
+          <td>12.05%</td>
+          <td>11.00%</td>
+          <td>12.00%</td>
+          <td>12.00%</td>
+          <td>12.00%</td>
+          <td>12.00%</td>
+          <td>14.00%</td>
+          <td>14.00%</td>
+          <td>14.00%</td>
+        </tr>
+        <tr>
+          <td>% Sign rate</td>
+          <td>84.00%</td>
+          <td>80.17%</td>
+          <td>81.03%</td>
+          <td>84.68%</td>
+          <td>84.49%</td>
+          <td>85.00%</td>
+          <td>85.00%</td>
+          <td>85.00%</td>
+          <td>85.00%</td>
+          <td>85.00%</td>
+          <td>85.00%</td>
+          <td>85.00%</td>
+          <td>85.00%</td>
+        </tr>
+        <tr class="highlight">
+          <td>% CVR</td>
+          <td>2.42%</td>
+          <td>1.77%</td>
+          <td>1.73%</td>
+          <td>2.05%</td>
+          <td>1.54%</td>
+          <td>2.19%</td>
+          <td>2.39%</td>
+          <td>2.39%</td>
+          <td>2.39%</td>
+          <td>2.39%</td>
+          <td>2.79%</td>
+          <td>2.79%</td>
+          <td>2.79%</td>
+        </tr>
+        <tr>
+          <td># Disbursed apps</td>
+          <td>40,653</td>
+          <td>1,631</td>
+          <td>1,176</td>
+          <td>1,908</td>
+          <td>1,352</td>
+          <td>1,971</td>
+          <td>2,482</td>
+          <td>3,000</td>
+          <td>3,714</td>
+          <td>4,286</td>
+          <td>5,467</td>
+          <td>6,333</td>
+          <td>7,333</td>
+        </tr>
+        <tr>
+          <td>$ Ticket size (tỷ)</td>
+          <td>14.2</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>0.013</td>
+          <td>0.013</td>
+          <td>0.014</td>
+          <td>0.014</td>
+          <td>0.014</td>
+          <td>0.015</td>
+          <td>0.015</td>
+          <td>0.015</td>
+        </tr>
+        <tr class="total-row">
+          <td>$ Disbursement (tỷ)</td>
+          <td>575.6</td>
+          <td>21.1</td>
+          <td>15.1</td>
+          <td>23.5</td>
+          <td>17.0</td>
+          <td>25.6</td>
+          <td>32.3</td>
+          <td>42.0</td>
+          <td>52.0</td>
+          <td>60.0</td>
+          <td>82.0</td>
+          <td>95.0</td>
+          <td>110.0</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- ===================== 2. FUNNEL ANALYSIS ===================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <div class="section-title">Funnel Analysis</div>
+    </div>
+
+    <!-- Overall -->
+    <div class="sub-heading">Overall</div>
+    <table>
+      <thead><tr><th>Step</th><th>Total #</th><th>Total</th><th>NTB #</th><th>NTB</th><th>ETB #</th><th>ETB</th></tr></thead>
+      <tbody>
+        <tr><td>Traffic</td><td>56,243</td><td>100%</td><td>24,085</td><td>100%</td><td>32,158</td><td>100%</td></tr>
+        <tr><td>Pass EKYC + Fulfill Form</td><td>24,451</td><td>43%</td><td>2,898</td><td>12%</td><td>21,553</td><td>67%</td></tr>
+        <tr><td>Precheck pass</td><td>10,810</td><td>44%</td><td>1,747</td><td>60%</td><td>9,063</td><td>42%</td></tr>
+        <tr class="subtotal"><td>Traffic to app rate</td><td>—</td><td>18.5%</td><td>—</td><td>6.4%</td><td>—</td><td>29.2%</td></tr>
+        <tr><td>LOS Approved</td><td>1,745</td><td>16%</td><td>526</td><td>30%</td><td>1,219</td><td>13%</td></tr>
+        <tr><td>Signed</td><td>1,397</td><td>80%</td><td>345</td><td>66%</td><td>1,052</td><td>86%</td></tr>
+        <tr class="total-row"><td>E2E CVR</td><td>—</td><td>2.4%</td><td>—</td><td>1.3%</td><td>—</td><td>3.4%</td></tr>
+      </tbody>
+    </table>
+
+    <!-- NTB Detail -->
+    <div class="sub-heading">NTB Detail (Traffic: 24,085 → Signed: 345 | CVR 1.3%)</div>
+
+    <table>
+      <thead><tr><th>Step</th><th>#</th><th>Step CVR</th><th>Vs 1st</th></tr></thead>
+      <tbody>
+        <tr><td>Traffic</td><td>24,085</td><td>—</td><td>100%</td></tr>
+        <tr><td>Pass EKYC + Fulfill Form</td><td>2,898</td><td style="color:var(--pink-500);font-weight:700">12%</td><td style="color:var(--pink-500);font-weight:700">10.6%</td></tr>
+        <tr><td>Precheck pass</td><td>1,747</td><td>60%</td><td>6.4%</td></tr>
+        <tr><td>LOS Approved</td><td>526</td><td style="color:var(--pink-500);font-weight:700">30%</td><td>1.9%</td></tr>
+        <tr><td>Signed</td><td>345</td><td>66%</td><td style="color:var(--pink-500);font-weight:700">1.3%</td></tr>
+      </tbody>
+    </table>
+
+    <p class="note"><strong>Lead → Submit to LOS 10% vs benchmarking 30%:</strong> 2 điểm drop — (1) NTB phải đủ full NFC + KYC, (2) Khách hàng không có nhu cầu vs tập ETB chủ yếu do upsell nên demand cao hơn.</p>
+
+    <!-- NTB EKYC Step-by-Step -->
+    <div class="sub-heading">NTB — EKYC Step-by-Step (T5/2026)</div>
+
+    <div class="conclusion warning">
+      <p><strong>Drop 88% từ traffic → hoàn thành EKYC:</strong> Trong đó <strong>48.9% không có nhu cầu</strong> (drop trước đăng ký nhu cầu vay) và <strong>39.1% rớt vì full EKYC</strong> (có nhu cầu nhưng drop trong quá trình chụp CCCD/NFC/nhập info). Chỉ 12% hoàn thành.</p>
+    </div>
+
+    <table>
+      <thead><tr><th>Step</th><th>#</th><th>vs Previous</th><th>vs Initial</th></tr></thead>
+      <tbody>
+        <tr style="background:rgba(255,122,47,0.08)"><td>Xác thực số điện thoại</td><td>24,085</td><td></td><td></td></tr>
+        <tr style="background:rgba(255,122,47,0.08)"><td>Nhập mã OTP</td><td>15,548</td><td>64.55%</td><td>64.55%</td></tr>
+        <tr style="background:rgba(255,122,47,0.12)"><td>Đăng ký nhu cầu vay</td><td>12,315</td><td>79.21%</td><td style="color:var(--pink-500);font-weight:700">51.13%</td></tr>
+        <tr style="background:rgba(123,47,190,0.06)"><td>Chụp mặt trước</td><td>8,559</td><td style="color:var(--pink-500);font-weight:700">69.50%</td><td>35.54%</td></tr>
+        <tr style="background:rgba(123,47,190,0.06)"><td>Chụp mặt sau</td><td>5,839</td><td style="color:var(--pink-500);font-weight:700">68.22%</td><td>24.24%</td></tr>
+        <tr><td>Chụp selfie</td><td>5,701</td><td>97.64%</td><td>23.67%</td></tr>
+        <tr style="background:rgba(123,47,190,0.06)"><td>Scan NFC</td><td>5,014</td><td style="color:var(--pink-500);font-weight:700">87.95%</td><td>20.82%</td></tr>
+        <tr><td>Bổ sung thông tin cá nhân</td><td>4,061</td><td>80.99%</td><td style="color:var(--pink-500);font-weight:700">16.86%</td></tr>
+        <tr><td>Bổ sung thông tin thu nhập</td><td>3,184</td><td>78.40%</td><td>13.22%</td></tr>
+        <tr><td>Kiểm tra thông tin</td><td>2,898</td><td>91.02%</td><td>12.03%</td></tr>
+        <tr><td>Đang xử lý hồ sơ (pass precheck)</td><td>1,747</td><td>60.28%</td><td>7.25%</td></tr>
+        <tr><td>Khoản vay được duyệt (approved)</td><td>526</td><td>30.11%</td><td>2.18%</td></tr>
+        <tr class="highlight"><td>Ký hợp đồng (disbursed)</td><td>345</td><td>65.59%</td><td>1.43%</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-heading">NTB — Precheck Reject (1,234)</div>
+    <table>
+      <thead><tr><th>Reason</th><th>#</th><th>%</th><th>Actionable?</th></tr></thead>
+      <tbody>
+        <tr><td>age_invalid (&lt;20 tuổi)</td><td>507</td><td>41%</td><td><span class="badge badge-room">Room to improve</span></td></tr>
+        <tr><td>f_risk_control (fraud)</td><td>496</td><td>40%</td><td><span class="badge badge-room">Room to improve</span></td></tr>
+        <tr><td>dup_product_found</td><td>94</td><td>8%</td><td><span class="badge badge-no">Không</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-heading">NTB — LOS Reject (4,845)</div>
+    <table>
+      <thead><tr><th>Reason</th><th>#</th><th>%</th><th>Actionable?</th></tr></thead>
+      <tbody>
+        <tr><td>Hard rule</td><td>2,092</td><td>43%</td><td><span class="badge badge-no">Không</span></td></tr>
+        <tr><td>Credit policy</td><td>2,753</td><td>57%</td><td><span class="badge badge-room">Relax to improve AR</span></td></tr>
+      </tbody>
+    </table>
+
+    <p class="note"><strong>Approved → Signed (66%):</strong> 181 người được duyệt không ký — cần investigate limit/pricing — score-based offer.</p>
+
+    <!-- Road to 3% -->
+    <div class="road-card">
+      <h3>Road to 3% CVR (NTB)</h3>
+      <table>
+        <thead><tr><th>Action</th><th>Incremental Signed</th><th>Cumulative CVR</th><th>Note</th></tr></thead>
+        <tbody>
+          <tr><td>Baseline</td><td>345</td><td>1.3%</td><td style="text-align:left">—</td></tr>
+          <tr><td>+Relax age</td><td>+84</td><td>1.8%</td><td style="text-align:left">External score</td></tr>
+          <tr><td>+Relax precheck rules</td><td>+20</td><td>1.9%</td><td style="text-align:left">Save được 20% precheck reject</td></tr>
+          <tr><td>+Relax credit policy</td><td>+170</td><td>2.6%</td><td style="text-align:left">Lower cutoff internal score + external score</td></tr>
+          <tr><td>+Score-based offer</td><td>+114</td><td>3.1%</td><td style="text-align:left">Align score-based offer theo BE scorev2</td></tr>
+          <tr><td>+VNEID SSO (bỏ chụp CCCD + NFC)</td><td>+121</td><td>3.6%</td><td style="text-align:left">Save 20% EKYC droppers — 7,163 drop tại chụp CCCD + NFC</td></tr>
+          <tr class="total-row"><td>Total</td><td>+509</td><td>~3.6%</td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ETB Detail -->
+    <div class="sub-heading" style="margin-top: 36px;">ETB Detail (Traffic: 32,158 → Signed: 1,052 | CVR 3.4%)</div>
+
+    <table>
+      <thead><tr><th>Step</th><th>#</th><th>Step CVR</th><th>Vs 1st</th></tr></thead>
+      <tbody>
+        <tr><td>Traffic</td><td>32,158</td><td>—</td><td>100%</td></tr>
+        <tr><td>Pass EKYC + Fulfill Form</td><td>21,553</td><td>67%</td><td>69.5%</td></tr>
+        <tr><td>Precheck pass</td><td>9,063</td><td>42%</td><td>29.2%</td></tr>
+        <tr><td>LOS Approved</td><td>1,219</td><td>13%</td><td>3.9%</td></tr>
+        <tr><td>Signed</td><td>1,052</td><td>86%</td><td>3.4%</td></tr>
+      </tbody>
+    </table>
+
+    <p class="note"><strong>Lead → EKYC (67%):</strong> Healthy — ETB chỉ face match, friction thấp.</p>
+
+    <div class="sub-heading">ETB — Precheck Reject (13,655)</div>
+    <table>
+      <thead><tr><th>Reason</th><th>#</th><th>%</th><th>Actionable?</th></tr></thead>
+      <tbody>
+        <tr><td>f_risk_control (fraud)</td><td>7,161</td><td>52%</td><td><span class="badge badge-room">Room to improve</span></td></tr>
+        <tr><td>age_invalid</td><td>3,450</td><td>25%</td><td><span class="badge badge-room">Room to improve</span></td></tr>
+        <tr><td>dup_product_found</td><td>3,033</td><td>22%</td><td><span class="badge badge-no">Không</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-heading">ETB — LOS Reject</div>
+    <table>
+      <thead><tr><th>Reason</th><th>#</th><th>%</th><th>Actionable?</th></tr></thead>
+      <tbody>
+        <tr><td>Hard rule</td><td>2,801</td><td>33%</td><td><span class="badge badge-no">Không</span></td></tr>
+        <tr><td>Credit policy</td><td>5,681</td><td>67%</td><td><span class="badge badge-room">Relax to improve AR</span></td></tr>
+      </tbody>
+    </table>
+
+    <p class="note"><strong>Approved → Signed (86%):</strong> Healthy.</p>
+  </div>
+
+  <!-- ===================== PAYDAY DIVIDER ===================== -->
+  <div class="section-divider">
+    <h2>Payday Loan — Đề xuất mở rộng sản phẩm</h2>
+    <p>Tại sao BE cần Payday bên cạnh Cash Loan?</p>
+  </div>
+
+  <!-- ===================== 3. SO SÁNH SẢN PHẨM ===================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <div class="section-title">So sánh sản phẩm</div>
+    </div>
+
+    <div class="kpi-banner">
+      <div class="kpi-title">Payday và Cash Loan phục vụ nhu cầu hoàn toàn khác nhau</div>
+      <div class="kpi-sub">Không thay thế, không cạnh tranh — bổ sung lẫn nhau trong cùng hệ sinh thái BE.</div>
+    </div>
+
+    <table>
+      <thead><tr><th></th><th>Cash Loan (hiện tại)</th><th>Payday (đề xuất)</th><th>So sánh</th></tr></thead>
+      <tbody>
+        <tr><td>Ticket size</td><td>10–50 triệu</td><td>3–5 triệu</td><td style="text-align:left">Khác segment ~3-10x</td></tr>
+        <tr><td>Tenor</td><td>3–24 tháng</td><td>30–45 ngày</td><td style="text-align:left">Ngắn hạn vs trả góp</td></tr>
+        <tr><td>IR</td><td>50%</td><td>60%</td><td style="text-align:left">Payday margin cao hơn per đồng</td></tr>
+        <tr><td>Insurance</td><td>7%</td><td>8%</td><td style="text-align:left">—</td></tr>
+        <tr><td>ETF</td><td>8% / 5%</td><td>0</td><td style="text-align:left">Không phí tất toán — khuyến khích repeat</td></tr>
+        <tr><td>Tuổi</td><td>20–60</td><td>18–50</td><td style="text-align:left">Payday mở thêm 18-19 tuổi</td></tr>
+        <tr><td>UW</td><td style="font-family:'Be Vietnam Pro';font-size:12.5px">Long feedback loop — cần thận trọng để tối ưu</td><td style="font-family:'Be Vietnam Pro';font-size:12.5px">Short feedback loop — tinh chỉnh liên tục theo vintage risk</td><td style="text-align:left">Payday iterate nhanh hơn</td></tr>
+        <tr><td>Use case</td><td style="font-family:'Be Vietnam Pro';font-size:12.5px">Mua sắm lớn, sửa nhà, đầu tư</td><td style="font-family:'Be Vietnam Pro';font-size:12.5px">Chi tiêu khẩn cấp, cuối tháng</td><td style="text-align:left">Khác nhu cầu hoàn toàn</td></tr>
+      </tbody>
+    </table>
+
+    <p class="note">Khách cần 3 triệu gấp trong 30 ngày sẽ không vay Cash Loan 10 triệu kỳ hạn 12 tháng. Hai sản phẩm cùng tồn tại mà không cannibalize — đã chứng minh ở các channel khác đang triển khai cả 2.</p>
+  </div>
+
+  <!-- ===================== 4. PAYDAY AR ===================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <div class="section-title">Payday AR cao hơn Cash Loan</div>
+    </div>
+
+    <div class="kpi-banner">
+      <div class="kpi-title">Concern: Cash Loan AR đang thấp (~11-12%), Payday có khá hơn không?</div>
+    </div>
+
+    <div class="conclusion positive">
+      <p><strong>Có.</strong> Data từ các channel đã triển khai cả 2 sản phẩm cho thấy:</p>
+    </div>
+
+    <div class="vs-card">
+      <div class="vs-item green">
+        <div class="vs-label">Payday AR</div>
+        <div class="vs-value">~1.5x</div>
+        <div class="vs-detail">cao hơn Cash Loan</div>
+      </div>
+      <div class="vs-item green">
+        <div class="vs-label">Payday Sign Rate</div>
+        <div class="vs-value">+10pp</div>
+        <div class="vs-detail">cao hơn Cash Loan</div>
+      </div>
+      <div class="vs-item green">
+        <div class="vs-label">Payday E2E CVR</div>
+        <div class="vs-value">~1.6x</div>
+        <div class="vs-detail">cao hơn Cash Loan</div>
+      </div>
+      <div class="vs-item pink">
+        <div class="vs-label">Cannibalize CL?</div>
+        <div class="vs-value">Không</div>
+        <div class="vs-detail">CL vẫn grow ở channel có cả 2</div>
+      </div>
+    </div>
+
+    <p class="note"><strong>Lý do AR cao hơn:</strong> Ticket nhỏ (3-5 triệu) → risk per deal thấp → scoring cutoff thấp hơn → nhiều khách đủ điều kiện hơn. Đặc biệt, tập khách bị reject Cash Loan vì credit policy có thể eligible Payday.</p>
+    <p class="note"><strong>Không cannibalize:</strong> Payday chiếm ~40% disbursement bên cạnh Cash Loan, tỷ trọng ổn định qua các tháng. Cash Loan volume không giảm khi có Payday.</p>
+  </div>
+
+  <!-- ===================== 5. GIÁ TRỊ CHO BE ===================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <div class="section-title">Giá trị cho BE khi thêm Payday</div>
+    </div>
+
+    <ul class="benefit-list">
+      <li>
+        <div class="num">1</div>
+        <div class="content"><strong>Convert traffic đang bị waste.</strong> BE đang drop ~90% lead NTB ở Cash Loan. Payday capture thêm 1 phần nhờ AR cao hơn và eligible pool rộng hơn.</div>
+      </li>
+      <li>
+        <div class="num">2</div>
+        <div class="content"><strong>Mở thêm segment tuổi 18-20.</strong> Cash Loan chặn dưới 20 tuổi (507 reject/tháng). Payday cho vay từ 18 → convert ngay segment này.</div>
+      </li>
+      <li>
+        <div class="num">3</div>
+        <div class="content"><strong>Tập khách reject Cash Loan → eligible Payday.</strong> 1,283 người/tháng bị reject Cash Loan vì credit policy. Với ticket nhỏ hơn, Payday có cutoff thấp hơn → duyệt được thêm.</div>
+      </li>
+      <li>
+        <div class="num">4</div>
+        <div class="content"><strong>Payday là phễu đầu vào cho Cash Loan.</strong> Khách vay Payday trả tốt → build credit history → upgrade lên Cash Loan. Repeat rate Payday cao → tạo pipeline upsell bền vững.</div>
+      </li>
+      <li>
+        <div class="num">5</div>
+        <div class="content"><strong>Tăng revenue per user cho BE.</strong> Cùng 1 user base, thêm 1 sản phẩm = thêm 1 revenue stream. Với điều kiện xây dựng portfolio tăng tỷ trọng repeat lên 50-70% trên total port — repeat càng nhiều, revenue càng cao. Ref hiện tại 1 năm user vay trung bình 3 khoản Payday.</div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    Cake by VPBank — Lending Product &nbsp;·&nbsp; T5/2026
+  </div>
+
+</div>
+</body>
+</html>

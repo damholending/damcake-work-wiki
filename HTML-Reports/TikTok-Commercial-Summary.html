@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TikTok × Cake — Commercial Summary</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --p5:#FF2D71;--p7:#B8154F;--g5:#7B2FBE;--g9:#1A1033;
+  --mint:#0BC76A;--amb:#FF7A2F;--bg:#E8E8EF;--neu:#F7F7F9;
+  --txt:#1A1033;--mid:#4A4060;--lt:#8B7FA8;
+  --glow:0 8px 24px rgba(255,45,113,.22);
+}
+body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;padding:28px}
+
+/* ── HEADER ── */
+.hdr{background:linear-gradient(160deg,#1A1033,#2D1B55);border-radius:20px;padding:24px 32px;display:flex;align-items:center;gap:20px;margin-bottom:20px;box-shadow:var(--glow)}
+.hlogo{width:48px;height:48px;background:linear-gradient(135deg,#FF2D71,#7B2FBE);border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;color:#fff;flex-shrink:0;box-shadow:0 4px 16px rgba(255,45,113,.4)}
+.htext h1{font-size:20px;font-weight:700;color:#fff;letter-spacing:-.01em}
+.htext p{font-size:12px;color:rgba(255,255,255,.5);margin-top:3px}
+.hbadges{margin-left:auto;display:flex;gap:8px;align-items:center;flex-shrink:0}
+.badge{padding:5px 14px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.badge-conf{background:rgba(255,45,113,.18);border:1px solid rgba(255,45,113,.4);color:#FF2D71}
+.badge-date{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6)}
+
+/* ── LAYOUT ── */
+.grid-top{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.full-width{margin-bottom:16px}
+
+/* ── CARDS ── */
+.card{background:#fff;border-radius:16px;padding:20px 24px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.card+.card{margin-top:14px}
+.card-title{font-size:11px;font-weight:700;color:var(--lt);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.card-title::before{content:'';width:3px;height:12px;background:linear-gradient(135deg,#FF2D71,#7B2FBE);border-radius:2px}
+
+/* ── PRODUCT SCHEME ── */
+.seg-overview{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.seg-card-sm{border-radius:12px;padding:14px 16px}
+.seg-card-sm.low{background:linear-gradient(135deg,rgba(11,199,106,.08),rgba(11,199,106,.02));border:1.5px solid rgba(11,199,106,.25)}
+.seg-card-sm.mid{background:linear-gradient(135deg,rgba(255,122,47,.08),rgba(255,122,47,.02));border:1.5px solid rgba(255,122,47,.25)}
+.seg-card-sm.high{background:linear-gradient(135deg,rgba(255,45,113,.08),rgba(255,45,113,.02));border:1.5px solid rgba(255,45,113,.25)}
+.seg-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.seg-card-sm.low .seg-label{color:#0BC76A}
+.seg-card-sm.mid .seg-label{color:#FF7A2F}
+.seg-card-sm.high .seg-label{color:#FF2D71}
+.seg-eir{font-size:28px;font-weight:800;line-height:1;margin-bottom:6px}
+.seg-card-sm.low .seg-eir{color:#0BC76A}
+.seg-card-sm.mid .seg-eir{color:#FF7A2F}
+.seg-card-sm.high .seg-eir{color:#FF2D71}
+.seg-meta{font-size:11px;color:var(--mid);line-height:1.6}
+.seg-meta span{display:block}
+.seg-meta b{color:var(--txt)}
+.rev-split-box{background:linear-gradient(135deg,rgba(255,45,113,.06),rgba(123,47,190,.06));border:1.5px solid rgba(255,45,113,.2);border-radius:12px;padding:12px 16px;margin-top:12px;text-align:center}
+.rev-split-box .rs-title{font-size:10px;font-weight:700;color:var(--lt);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.rev-split-eq{font-size:13px;color:var(--mid);margin-bottom:8px}
+.rev-split-eq code{font-family:'JetBrains Mono',monospace;font-size:12px;background:rgba(123,47,190,.08);padding:2px 6px;border-radius:5px;color:var(--g5)}
+.split-bars{display:flex;height:22px;border-radius:8px;overflow:hidden;gap:2px}
+.split-bar{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
+.split-cake{background:linear-gradient(135deg,#FF2D71,#7B2FBE);flex:1}
+.split-tt{background:linear-gradient(135deg,#1A1033,#2D1B55);flex:1}
+
+/* ── RISK CAP TABLE ── */
+.risk-table{width:100%;border-collapse:collapse;font-size:12px}
+.risk-table th{padding:8px 10px;text-align:center;font-size:10px;font-weight:700;color:var(--lt);text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--bg)}
+.risk-table th:first-child{text-align:left}
+.risk-table td{padding:9px 10px;text-align:center;border-bottom:1px solid var(--bg)}
+.risk-table td:first-child{text-align:left;font-weight:700}
+.seg-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.cap-cell{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;border-radius:6px;padding:4px 8px;display:inline-block}
+.cap-low{background:rgba(11,199,106,.1);color:#059952}
+.cap-mid{background:rgba(255,122,47,.1);color:#c85a00}
+.cap-high{background:rgba(255,45,113,.1);color:#B8154F}
+.risk-note{font-size:10px;color:var(--lt);margin-top:10px;line-height:1.5}
+.risk-note b{color:var(--mid)}
+
+/* ── STATIC HEATMAP ── */
+.hm-subtitle{font-size:11px;color:var(--lt);margin-bottom:12px;line-height:1.5}
+.hm-tables{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.hm-block h4{font-size:12px;font-weight:700;color:var(--txt);margin-bottom:2px}
+.hm-block p{font-size:10px;color:var(--lt);margin-bottom:10px}
+.hm-table{width:100%;border-collapse:collapse;font-size:11px}
+.hm-table th{padding:6px 8px;font-size:10px;font-weight:700;color:var(--lt);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--bg);text-align:center}
+.hm-table th:first-child{text-align:left;width:110px}
+.hm-table td{padding:5px 4px;text-align:center;border:1px solid rgba(0,0,0,.05)}
+.hm-table td:first-child{text-align:left;padding:5px 8px;background:var(--neu);font-size:10px}
+.hm-table td .mix-main{font-size:12px;font-weight:700;color:#1A1033}
+.hm-table td .mix-sub{font-size:9px;color:var(--lt)}
+.legend-bar{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:10px;color:var(--lt)}
+.legend-gradient{width:80px;height:10px;background:linear-gradient(90deg,#FF2D71,#fff,#0BC76A);border-radius:4px}
+
+/* ── SECTION DIVIDER ── */
+.section-divider{display:flex;align-items:center;gap:14px;margin:24px 0 18px}
+.section-divider-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(123,47,190,.25),transparent)}
+.section-divider-label{background:linear-gradient(135deg,#7B2FBE,#1A1033);color:#fff;font-size:11px;font-weight:700;padding:6px 18px;border-radius:999px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;box-shadow:0 4px 12px rgba(123,47,190,.3)}
+
+/* ── SIMULATOR SEGMENT CARDS ── */
+.sim-segs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
+.sim-seg-card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 2px 10px rgba(26,16,51,.07);border-top:3px solid var(--seg-color,#ccc)}
+.seg-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.seg-name{font-size:12px;font-weight:700;color:var(--txt)}
+.seg-ls-badge{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;color:#fff}
+.pg{margin-bottom:10px}.pg:last-child{margin-bottom:0}
+.pl{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.pn{font-size:10px;font-weight:600;color:var(--mid)}
+.pv{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--p5);background:rgba(255,45,113,.09);padding:1px 7px;border-radius:999px;min-width:44px;text-align:center}
+input[type=range]{-webkit-appearance:none;width:100%;height:5px;background:var(--bg);border-radius:999px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:linear-gradient(135deg,#FF2D71,#7B2FBE);cursor:pointer;box-shadow:0 2px 8px rgba(255,45,113,.3)}
+.profit-box{border-radius:10px;padding:8px 10px;margin-top:8px}
+.profit-box-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.profit-box-val{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700}
+.profit-box-sub{font-size:10px;color:var(--lt);margin-top:2px}
+.profit-box-cap{font-size:10px;font-weight:600;margin-top:3px}
+
+/* ── MIX BAR ── */
+.mix-card{background:#fff;border-radius:16px;padding:14px 20px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:12px}
+.cont-bar{height:8px;border-radius:999px;background:var(--bg);overflow:hidden;display:flex;gap:2px;margin:6px 0}
+.cont-seg{height:100%;border-radius:3px;transition:width .2s}
+.cont-sum-ok{color:var(--mint);font-size:11px;font-weight:700}
+.cont-sum-warn{color:var(--amb);font-size:11px;font-weight:700}
+
+/* ── KPI GRID ── */
+.kgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+.kc{background:#fff;border-radius:14px;padding:14px 12px;position:relative;overflow:hidden;box-shadow:0 2px 10px rgba(26,16,51,.06)}
+.kc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px}
+.k1::after{background:linear-gradient(135deg,#FF2D71,#7B2FBE)}
+.k2::after{background:linear-gradient(135deg,#7B2FBE,#1A1033)}
+.k3::after{background:linear-gradient(135deg,#FF7A2F,#e04)}
+.k4::after{background:linear-gradient(135deg,#0BC76A,#059952)}
+.kl{font-size:10px;font-weight:700;color:var(--lt);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.kv{font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace;line-height:1}
+.k1 .kv{color:var(--p5)}.k2 .kv{color:var(--g5)}.k3 .kv{color:var(--amb)}.k4 .kv{color:var(--mint)}
+.ks{font-size:10px;color:var(--lt);margin-top:4px}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;margin-top:6px}
+.pill.pos{background:rgba(11,199,106,.1);color:var(--mint)}
+.pill.neg{background:rgba(255,122,47,.1);color:var(--amb)}
+.pill.low{background:rgba(123,47,190,.1);color:var(--g5)}
+.dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+/* ── SIM LAYOUT ── */
+.sim-bottom{display:grid;grid-template-columns:290px 1fr;gap:16px}
+.sim-params .card,.sim-results .card{margin-bottom:12px}
+.sdiv{height:1px;background:var(--bg);margin:12px 0}
+.method-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.mbtn{padding:5px 11px;border-radius:999px;border:1.5px solid var(--bg);background:var(--neu);font-family:'Be Vietnam Pro',sans-serif;font-size:10px;font-weight:600;color:var(--mid);cursor:pointer;transition:all .15s}
+.mbtn:hover{border-color:var(--g5);color:var(--g5)}
+.mbtn.active{background:linear-gradient(135deg,#7B2FBE,#1A1033);border-color:transparent;color:#fff}
+
+/* ── TABLES ── */
+.pt{width:100%;border-collapse:collapse;font-size:12px}
+.pt td{padding:8px 10px;border-bottom:1px solid var(--bg)}
+.pt tr:last-child td{border-bottom:none}
+.pt .sec td{background:var(--bg);font-size:10px;font-weight:700;color:var(--lt);text-transform:uppercase;letter-spacing:.07em;padding:5px 10px}
+.pt .tot td{background:linear-gradient(135deg,rgba(255,45,113,.05),rgba(123,47,190,.05));font-weight:700}
+.pt .sharing-row td{background:linear-gradient(135deg,rgba(123,47,190,.05),rgba(26,16,51,.03));border-left:3px solid var(--g5)}
+.cmp{width:100%;border-collapse:collapse;font-size:11px}
+.cmp th{padding:7px 8px;border-bottom:2px solid var(--bg);font-size:10px;font-weight:700;color:var(--lt);text-transform:uppercase;letter-spacing:.05em}
+.cmp th:first-child{text-align:left}
+.cmp td{padding:7px 8px;border-bottom:1px solid var(--bg);text-align:center}
+.cmp td:first-child{text-align:left;color:var(--mid)}
+.cmp .active-col{background:rgba(255,45,113,.04)}
+.rv{text-align:right;font-family:'JetBrains Mono',monospace;font-weight:600}
+.pos2{color:var(--mint)}.neg2{color:var(--amb)}.loss{color:#e44}
+.bh-card .card-title::before{background:linear-gradient(135deg,#0BC76A,#FF7A2F)}
+
+/* ── TABS ── */
+.tab-bar{background:linear-gradient(160deg,#1A1033,#2D1B55);padding:0 28px;display:flex;gap:4px;border-top:1px solid rgba(255,255,255,.08);margin-bottom:20px;border-radius:0 0 16px 16px;margin-top:-8px}
+.tab-btn{padding:11px 22px;font-family:'Be Vietnam Pro',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,.5);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;letter-spacing:.02em}
+.tab-btn:hover{color:rgba(255,255,255,.8)}
+.tab-btn.active{color:#fff;border-bottom-color:#FF2D71}
+.tab-pane{display:none}.tab-pane.active{display:block}
+
+/* ── FOOTER ── */
+.footer{margin-top:16px;text-align:center;font-size:10px;color:var(--lt);display:flex;justify-content:space-between;align-items:center}
+.footer-logo{display:flex;align-items:center;gap:6px}
+.footer-dot{width:6px;height:6px;background:var(--p5);border-radius:50%}
+.confidential-bar{background:linear-gradient(135deg,rgba(255,45,113,.06),rgba(123,47,190,.06));border:1px solid rgba(255,45,113,.15);border-radius:8px;padding:6px 14px;display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:600;color:var(--p5)}
+@media print{body{padding:0;background:#fff}.card{box-shadow:none;border:1px solid #E8E8EF}}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<div class="hdr">
+  <div class="hlogo">𝕮</div>
+  <div class="htext">
+    <h1>TikTok × Cake — TikTok Cash Loan</h1>
+    <p>Commercial Summary · Chốt phương án hợp tác · Confidential</p>
+  </div>
+  <div class="hbadges">
+    <span class="badge badge-conf">CONFIDENTIAL</span>
+    <span class="badge badge-date" id="hdr-date"></span>
+  </div>
+</div>
+
+<!-- ══ TAB BAR ══ -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('summary',this)">📋 Commercial Summary</button>
+  <button class="tab-btn" onclick="switchTab('simulator',this)">⚡ Interactive Simulator</button>
+  <button class="tab-btn" onclick="switchTab('flat64',this)">🔵 64% p.a. — Single Segment</button>
+</div>
+
+<!-- ══ TAB 1: SUMMARY ══ -->
+<div id="tab-summary" class="tab-pane active">
+
+<!-- ══ ROW 1: Product Scheme + Risk Cap Matrix ══ -->
+<div class="grid-top">
+  <!-- Product Scheme -->
+  <div class="card">
+    <div class="card-title">Product Scheme — 3 Risk Segments</div>
+    <div class="seg-overview">
+      <div class="seg-card-sm low">
+        <div class="seg-label">Low Risk</div>
+        <div class="seg-eir">65%</div>
+        <div class="seg-meta">
+          <span>EIR/năm</span>
+          <span style="margin-top:6px"><b>Tenor</b> 6 tháng</span>
+          <span><b>Ticket</b> 7 triệu ₫</span>
+          <span><b>Risk cap</b> 3.0%</span>
+        </div>
+        <div style="margin-top:10px;background:rgba(11,199,106,.1);border-radius:8px;padding:7px 10px;display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:10px;font-weight:700;color:#059952;text-transform:uppercase;letter-spacing:.05em">Profit (Cake)</span>
+          <span id="sch_profit_low" style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:#059952">—</span>
+        </div>
+      </div>
+      <div class="seg-card-sm mid">
+        <div class="seg-label">Medium Risk</div>
+        <div class="seg-eir">70%</div>
+        <div class="seg-meta">
+          <span>EIR/năm</span>
+          <span style="margin-top:6px"><b>Tenor</b> 6 tháng</span>
+          <span><b>Ticket</b> 5 triệu ₫</span>
+          <span><b>Risk cap</b> 4.0%</span>
+        </div>
+        <div style="margin-top:10px;background:rgba(255,122,47,.1);border-radius:8px;padding:7px 10px;display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:10px;font-weight:700;color:#c85a00;text-transform:uppercase;letter-spacing:.05em">Profit (Cake)</span>
+          <span id="sch_profit_mid" style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:#c85a00">—</span>
+        </div>
+      </div>
+      <div class="seg-card-sm high">
+        <div class="seg-label">High Risk</div>
+        <div class="seg-eir">80%</div>
+        <div class="seg-meta">
+          <span>EIR/năm</span>
+          <span style="margin-top:6px"><b>Tenor</b> 6 tháng</span>
+          <span><b>Ticket</b> 5 triệu ₫</span>
+          <span><b>Risk cap</b> 5.0%</span>
+        </div>
+        <div style="margin-top:10px;background:rgba(255,45,113,.1);border-radius:8px;padding:7px 10px;display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:10px;font-weight:700;color:#B8154F;text-transform:uppercase;letter-spacing:.05em">Profit (Cake)</span>
+          <span id="sch_profit_high" style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:#B8154F">—</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px">
+      <!-- (1) Rev sharing -->
+      <div style="background:linear-gradient(135deg,rgba(255,45,113,.06),rgba(123,47,190,.06));border:1.5px solid rgba(255,45,113,.2);border-radius:12px;padding:12px 14px">
+        <div style="font-size:9px;font-weight:700;color:var(--lt);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">① Revenue Sharing</div>
+        <div style="font-size:11px;color:var(--mid);margin-bottom:8px">Sharing = <code style="font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(123,47,190,.08);padding:2px 5px;border-radius:4px;color:var(--g5)">(Lãi + Phí) × 50%</code></div>
+        <div style="display:flex;height:20px;border-radius:6px;overflow:hidden;gap:2px">
+          <div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;background:linear-gradient(135deg,#FF2D71,#7B2FBE)">🏦 Cake 50%</div>
+          <div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;background:linear-gradient(135deg,#1A1033,#2D1B55)">🎵 TikTok 50%</div>
+        </div>
+      </div>
+      <!-- (2) Risk Cap -->
+      <div style="background:linear-gradient(135deg,rgba(255,122,47,.06),rgba(184,21,79,.06));border:1.5px solid rgba(255,45,113,.2);border-radius:12px;padding:12px 14px">
+        <div style="font-size:9px;font-weight:700;color:var(--lt);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">② Risk Guarantee Cap</div>
+        <div style="font-size:11px;color:var(--mid);margin-bottom:8px">TikTok bù nếu loss &gt; cap — Cake chịu tối đa = cap</div>
+        <div style="background:rgba(255,45,113,.06);border-radius:8px;padding:8px 10px">
+          <div style="font-size:9px;font-weight:700;color:var(--lt);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Định nghĩa Risk</div>
+          <div style="font-size:11px;color:var(--txt);line-height:1.55;font-weight:600">Tổng dư nợ gốc quá hạn DPD90+ / Tổng giải ngân</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Risk Cap Matrix -->
+  <div class="card">
+    <div class="card-title">Risk Guarantee Cap Matrix</div>
+    <table class="risk-table">
+      <thead>
+        <tr>
+          <th>Segment</th>
+          <th>3 tháng</th>
+          <th>6 tháng</th>
+          <th>9 tháng</th>
+          <th>12 tháng</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="seg-dot" style="background:#0BC76A"></span>Low Risk</td>
+          <td><span class="cap-cell cap-low">2.0%</span></td>
+          <td><span class="cap-cell cap-low">3.0%</span></td>
+          <td><span class="cap-cell cap-low">5.0%</span></td>
+          <td><span class="cap-cell cap-low">7.0%</span></td>
+        </tr>
+        <tr>
+          <td><span class="seg-dot" style="background:#FF7A2F"></span>Medium Risk</td>
+          <td><span class="cap-cell cap-mid">3.0%</span></td>
+          <td><span class="cap-cell cap-mid">4.0%</span></td>
+          <td><span class="cap-cell cap-mid">7.0%</span></td>
+          <td><span class="cap-cell cap-mid">9.0%</span></td>
+        </tr>
+        <tr>
+          <td><span class="seg-dot" style="background:#FF2D71"></span>High Risk</td>
+          <td><span class="cap-cell cap-high">3.5%</span></td>
+          <td><span class="cap-cell cap-high">5.0%</span></td>
+          <td><span class="cap-cell cap-high">7.5%</span></td>
+          <td><span class="cap-cell cap-high">11.0%</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="risk-note">
+      <b>Cơ chế:</b> Nếu actual credit loss &gt; cap → TikTok bù phần vượt. Cake chịu tối đa đúng bằng cap tại mỗi tenor.<br>
+      <b>Worst-case</b> cho Cake = Risk cost bằng đúng cap. Không có bảo hiểm trong sản phẩm này.
+    </div>
+  </div>
+</div>
+
+<!-- ══ ROW 2: Static Heatmap ══ -->
+<div class="full-width">
+  <div class="card">
+    <div class="card-title">Profit Sensitivity — Tenor vs. Portfolio Mix (Worst-Case Risk)</div>
+    <div class="hm-subtitle">Risk = cap tại tenor tương ứng. Low/Mid chia đều phần còn lại khi % High tăng. Tenor 6M highlighted (default).</div>
+    <div class="hm-tables">
+      <div class="hm-block">
+        <h4>Profit After All Costs</h4>
+        <p>Sau UW (1%) + Fixed Cost (2%)</p>
+        <table class="hm-table" id="hm1"></table>
+      </div>
+      <div class="hm-block">
+        <h4>Profit Before Fixed Cost</h4>
+        <p>Contribution margin — trước fixed (2%)</p>
+        <table class="hm-table" id="hm2"></table>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;flex-wrap:wrap;gap:8px">
+      <div class="legend-bar">
+        <span>Profit:</span>
+        <div class="legend-gradient"></div>
+        <span>Lỗ ←→ Lãi</span>
+        <span style="margin-left:12px;color:var(--g5);font-weight:600">║ = Tenor 6M (default)</span>
+        <span style="margin-left:12px;color:#FF7A2F;font-weight:600">- - = Likely scenario (80% High)</span>
+      </div>
+      <div style="font-size:10px;color:var(--lt);background:var(--neu);padding:6px 12px;border-radius:8px;line-height:1.6">
+        <b style="color:var(--mid)">Giả định:</b> CoF 8%/năm · Không có bảo hiểm (BH = 0%) · UW 1% · Fixed 2% · Rev split 50%
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end tab-summary -->
+
+<!-- ══ TAB 2: SIMULATOR ══ -->
+<div id="tab-simulator" class="tab-pane">
+
+<!-- ══ SIMULATOR: SEGMENT CARDS ══ -->
+<div class="sim-segs">
+  <!-- LOW -->
+  <div class="sim-seg-card" style="--seg-color:#0BC76A">
+    <div class="seg-header-row">
+      <span class="seg-name">Low Risk</span>
+      <span class="seg-ls-badge" style="background:#0BC76A">65%/yr</span>
+    </div>
+    <div class="pg"><div class="pl"><span class="pn">Kỳ hạn (tháng)</span><span class="pv" id="tt_vkh_low">6 th</span></div><input type="range" id="tt_kh_low" min="1" max="36" step="1" value="6" oninput="ttUpd('tt_kh_low')"></div>
+    <div class="pg"><div class="pl"><span class="pn">Ticket (triệu ₫)</span><span class="pv" id="tt_vhm_low">7M</span></div><input type="range" id="tt_hm_low" min="1" max="50" step="1" value="7" oninput="ttUpd()"></div>
+    <div class="pg"><div class="pl"><span class="pn">Credit Cost (%/yr)</span><span class="pv" id="tt_vrisk_low">3.0%</span></div><input type="range" id="tt_risk_low" min="1" max="40" step=".5" value="3" oninput="ttUpd()"></div>
+    <div class="pg"><div class="pl"><span class="pn">% Contribution</span><span class="pv" id="tt_vcont_low">5%</span></div><input type="range" id="tt_cont_low" min="0" max="100" step="1" value="5" oninput="ttUpd()"></div>
+    <div class="profit-box" style="background:rgba(11,199,106,.07)">
+      <div class="profit-box-label" style="color:var(--lt)">NIM / Profit (per segment)</div>
+      <div class="profit-box-val" id="tt_profit_low" style="color:var(--mint)">—</div>
+      <div class="profit-box-sub" id="tt_toi_low">TOI: —</div>
+      <div class="profit-box-cap" id="tt_cap_low" style="color:var(--g5)">Cap: — | —</div>
+    </div>
+  </div>
+  <!-- MID -->
+  <div class="sim-seg-card" style="--seg-color:#FF7A2F">
+    <div class="seg-header-row">
+      <span class="seg-name">Medium Risk</span>
+      <span class="seg-ls-badge" style="background:#FF7A2F">70%/yr</span>
+    </div>
+    <div class="pg"><div class="pl"><span class="pn">Kỳ hạn (tháng)</span><span class="pv" id="tt_vkh_mid">6 th</span></div><input type="range" id="tt_kh_mid" min="1" max="36" step="1" value="6" oninput="ttUpd('tt_kh_mid')"></div>
+    <div class="pg"><div class="pl"><span class="pn">Ticket (triệu ₫)</span><span class="pv" id="tt_vhm_mid">5M</span></div><input type="range" id="tt_hm_mid" min="1" max="50" step="1" value="5" oninput="ttUpd()"></div>
+    <div class="pg"><div class="pl"><span class="pn">Credit Cost (%/yr)</span><span class="pv" id="tt_vrisk_mid">4.0%</span></div><input type="range" id="tt_risk_mid" min="1" max="40" step=".5" value="4" oninput="ttUpd()"></div>
+    <div class="pg"><div class="pl"><span class="pn">% Contribution</span><span class="pv" id="tt_vcont_mid">10%</span></div><input type="range" id="tt_cont_mid" min="0" max="100" step="1" value="10" oninput="ttUpd()"></div>
+    <div class="profit-box" style="background:rgba(255,122,47,.07)">
+      <div class="profit-box-label" style="color:var(--lt)">NIM / Profit (per segment)</div>
+      <div class="profit-box-val" id="tt_profit_mid" style="color:var(--amb)">—</div>
+      <div class="profit-box-sub" id="tt_toi_mid">TOI: —</div>
+      <div class="profit-box-cap" id="tt_cap_mid" style="color:var(--g5)">Cap: — | —</div>
+    </div>
+  </div>
+  <!-- HIGH -->
+  <div class="sim-seg-card" style="--seg-color:#FF2D71;outline:2px dashed #FF7A2F;outline-offset:3px" id="high-seg-card">
+    <div class="seg-header-row">
+      <span class="seg-name">High Risk <span style="font-size:10px;color:#FF7A2F;font-weight:700;margin-left:4px">★ Likely</span></span>
+      <span class="seg-ls-badge" style="background:linear-gradient(135deg,#FF2D71,#7B2FBE)">80%/yr</span>
+    </div>
+    <div class="pg"><div class="pl"><span class="pn">Kỳ hạn (tháng)</span><span class="pv" id="tt_vkh_high">6 th</span></div><input type="range" id="tt_kh_high" min="1" max="36" step="1" value="6" oninput="ttUpd('tt_kh_high')"></div>
+    <div class="pg"><div class="pl"><span class="pn">Ticket (triệu ₫)</span><span class="pv" id="tt_vhm_high">5M</span></div><input type="range" id="tt_hm_high" min="1" max="50" step="1" value="5" oninput="ttUpd()"></div>
+    <div class="pg"><div class="pl"><span class="pn">Credit Cost (%/yr)</span><span class="pv" id="tt_vrisk_high">5.0%</span></div><input type="range" id="tt_risk_high" min="1" max="40" step=".5" value="5" oninput="ttUpd()"></div>
+    <div class="pg"><div class="pl"><span class="pn">% Contribution</span><span class="pv" id="tt_vcont_high">85%</span></div><input type="range" id="tt_cont_high" min="0" max="100" step="1" value="85" oninput="ttUpd()"></div>
+    <div class="profit-box" style="background:rgba(255,45,113,.07)">
+      <div class="profit-box-label" style="color:var(--lt)">NIM / Profit (per segment)</div>
+      <div class="profit-box-val" id="tt_profit_high" style="color:var(--p5)">—</div>
+      <div class="profit-box-sub" id="tt_toi_high">TOI: —</div>
+      <div class="profit-box-cap" id="tt_cap_high" style="color:var(--g5)">Cap: — | —</div>
+    </div>
+  </div>
+</div>
+
+<!-- Portfolio Mix Bar -->
+<div class="mix-card">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+    <div style="font-size:11px;font-weight:700;color:var(--lt);text-transform:uppercase;letter-spacing:.07em">Portfolio Mix</div>
+    <div id="tt_cont_sum_label" class="cont-sum-ok">Total: 100%</div>
+  </div>
+  <div class="cont-bar">
+    <div id="tt_bar_low" class="cont-seg" style="background:#0BC76A;width:5%"></div>
+    <div id="tt_bar_mid" class="cont-seg" style="background:#FF7A2F;width:10%"></div>
+    <div id="tt_bar_high" class="cont-seg" style="background:linear-gradient(135deg,#FF2D71,#7B2FBE);width:85%"></div>
+  </div>
+  <div style="display:flex;gap:14px;margin-top:6px">
+    <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--mid)"><div style="width:8px;height:8px;border-radius:50%;background:#0BC76A"></div><span id="tt_mix_low">Low 5%</span></div>
+    <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--mid)"><div style="width:8px;height:8px;border-radius:50%;background:#FF7A2F"></div><span id="tt_mix_mid">Med 10%</span></div>
+    <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--mid)"><div style="width:8px;height:8px;border-radius:50%;background:#FF2D71"></div><span id="tt_mix_high">High 85%</span></div>
+    <div style="margin-left:auto;font-size:11px;font-weight:700;color:var(--lt)">Avg Ticket: <span id="tt_avg_ticket" style="color:var(--g5);font-family:'JetBrains Mono',monospace">—</span></div>
+  </div>
+</div>
+
+<!-- ══ SIMULATOR BOTTOM: Params + Results ══ -->
+<div class="sim-bottom">
+  <!-- LEFT: params -->
+  <div class="sim-params">
+    <div class="card bh-card">
+      <div class="card-title" onclick="toggleBH()" style="cursor:pointer;user-select:none">Phí Bảo Hiểm (BH) <span id="tt_bh_toggle" style="margin-left:auto;font-size:11px">▶ Mở rộng</span></div>
+      <div id="tt_bh_body" style="display:none">
+        <div class="pg"><div class="pl"><span class="pn">Penetration rate</span><span class="pv" id="tt_vbhpen">0%</span></div><input type="range" id="tt_bhpen" min="0" max="100" step="1" value="0" oninput="ttUpd()"></div>
+        <div class="pg"><div class="pl"><span class="pn">Premium (% ticket)</span><span class="pv" id="tt_vbhprem">0%</span></div><input type="range" id="tt_bhprem" min="0" max="20" step=".5" value="0" oninput="ttUpd()"></div>
+        <div class="pg"><div class="pl"><span class="pn">Cake revenue share</span><span class="pv" id="tt_vbhshare">86%</span></div><input type="range" id="tt_bhshare" min="0" max="100" step="1" value="86" oninput="ttUpd()"></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div class="card-title">Vốn — Shared</div>
+      <div class="pg"><div class="pl"><span class="pn">CoF/năm</span><span class="pv" id="tt_vcof">8%</span></div><input type="range" id="tt_cof" min="3" max="20" step=".25" value="8" oninput="ttUpd()"></div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div class="card-title">TikTok Sharing</div>
+      <div class="pg" style="margin-bottom:8px">
+        <div style="font-size:11px;font-weight:600;color:var(--mid);margin-bottom:6px">Phương thức</div>
+        <div class="method-row" id="tt_methodBtns">
+          <button class="mbtn" onclick="ttSetMethod('toi_risk',this)">% TOI−RISK</button>
+          <button class="mbtn" onclick="ttSetMethod('disbursement',this)">% Disbursement</button>
+          <button class="mbtn" onclick="ttSetMethod('toi_gross',this)">% TOI Gross</button>
+          <button class="mbtn active" onclick="ttSetMethod('rev_split',this)">Rev Split</button>
+        </div>
+      </div>
+      <div class="sdiv"></div>
+      <div class="pg"><div class="pl"><span class="pn">% Sharing TikTok</span><span class="pv" id="tt_vpart">50%</span></div><input type="range" id="tt_part" min="0" max="100" step="1" value="50" oninput="ttUpd()"><div style="font-size:10px;color:var(--lt);margin-top:3px" id="tt_shareHint">% trên TOI Gross (Lãi+Phí)</div></div>
+      <div class="pg"><div class="pl"><span class="pn">UW + Collection</span><span class="pv" id="tt_vuw">1%</span></div><input type="range" id="tt_uw" min="0" max="10" step=".1" value="1" oninput="ttUpd()"></div>
+      <div class="pg"><div class="pl"><span class="pn">Fixed Cost</span><span class="pv" id="tt_vfix">2%</span></div><input type="range" id="tt_fix" min="0" max="10" step=".1" value="2" oninput="ttUpd()"></div>
+    </div>
+  </div>
+
+  <!-- RIGHT: results -->
+  <div class="sim-results">
+    <!-- KPI -->
+    <div class="kgrid">
+      <div class="kc k1"><div class="kl">Portfolio Profit</div><div class="kv" id="tt_kp">—</div><div class="ks" id="tt_kpa">Weighted avg</div><div id="tt_ind"></div></div>
+      <div class="kc k2"><div class="kl">Portfolio TOI</div><div class="kv" id="tt_ktoi">—</div><div class="ks">Interest+Fee−CoF−Risk(i)</div></div>
+      <div class="kc k3"><div class="kl">Cake Bears Risk</div><div class="kv" id="tt_kcc">—</div><div class="ks">After TikTok guarantee</div></div>
+      <div class="kc k4"><div class="kl">TikTok Risk Cover</div><div class="kv" id="tt_ksh">—</div><div class="ks">Excess above cap</div></div>
+    </div>
+
+    <!-- Per-segment P&L -->
+    <div class="card">
+      <div class="card-title">Per-Segment P&L — % dư nợ gốc</div>
+      <table class="cmp" id="tt_segtbl"></table>
+    </div>
+
+    <!-- Portfolio P&L -->
+    <div class="card">
+      <div class="card-title">Portfolio P&L Breakdown (Weighted Avg)</div>
+      <table class="pt" id="tt_ptbl"></table>
+    </div>
+
+    <!-- Waterfall -->
+    <div class="card">
+      <div class="card-title">Portfolio P&L Waterfall</div>
+      <svg id="tt_wf" width="100%" viewBox="0 0 700 230" style="margin-top:6px;display:block"></svg>
+    </div>
+
+    <!-- Dynamic Heatmap -->
+    <div class="card">
+      <div class="card-title">Sensitivity Heatmap — Profit theo Mix & Tenor</div>
+      <div style="font-size:11px;color:var(--lt);margin:4px 0 10px;line-height:1.5">X: Avg tenor (3/6/9M). Y: % High Risk (Low/Mid chia đều phần còn lại). Risk = worst-case cap. Tham số khác giữ nguyên slider.</div>
+      <div id="tt_heatmap_wrap" style="overflow-x:auto"></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end tab-simulator -->
+
+<!-- ══ TAB 3: FLAT 64% SINGLE SEGMENT ══ -->
+<div id="tab-flat64" class="tab-pane">
+<div style="max-width:900px;margin:0 auto">
+
+  <!-- Header info -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title">Single Segment — 64% p.a. trên dư nợ giảm dần</div>
+    <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+      <div style="background:linear-gradient(135deg,#7B2FBE,#FF2D71);border-radius:12px;padding:10px 20px;color:#fff;font-weight:700;font-size:18px">64% p.a.</div>
+      <div style="color:var(--mid);font-size:12px;line-height:1.8">
+        <div>Monthly rate = 64% ÷ 12 = <b style="color:var(--lt)">5.33%/tháng</b></div>
+        <div>Interest applied on <b style="color:var(--lt)">reducing balance</b> (annuity)</div>
+        <div style="color:var(--amb);font-size:11px;margin-top:4px">★ Cap = dư nợ gốc quá hạn DPD90+ / tổng giải ngân</div>
+      </div>
+      <div style="margin-left:auto;background:rgba(255,255,255,0.05);border-radius:10px;padding:8px 14px;font-size:11px;color:var(--mid)">
+        Default caps: 3M 2% · 6M 3% · 9M 5% · 12M 7%
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls + P&L side by side -->
+  <div style="display:grid;grid-template-columns:280px 1fr;gap:16px;margin-bottom:16px">
+
+    <!-- Controls -->
+    <div class="card">
+      <div class="card-title">Parameters</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <label style="font-size:11px;color:var(--mid)">Tenor (tháng)
+          <input id="f64_tenor" type="range" min="3" max="12" value="6" step="1" oninput="document.getElementById('f64_tenor_v').textContent=this.value+'M';f64Calc()" style="width:100%;accent-color:#7B2FBE">
+          <span style="float:right;font-weight:700;color:var(--lt)" id="f64_tenor_v">6M</span>
+        </label>
+        <label style="font-size:11px;color:var(--mid)">Risk thực tế (% giải ngân)
+          <input id="f64_risk" type="range" min="0" max="12" value="3" step="0.5" oninput="document.getElementById('f64_risk_v').textContent=(+this.value).toFixed(1)+'%';f64Calc()" style="width:100%;accent-color:#FF2D71">
+          <span style="float:right;font-weight:700;color:var(--lt)" id="f64_risk_v">3.0%</span>
+        </label>
+        <label style="font-size:11px;color:var(--mid)">Cost of Funds (% năm)
+          <input id="f64_cof" type="range" min="6" max="12" value="8" step="0.5" oninput="document.getElementById('f64_cof_v').textContent=(+this.value).toFixed(1)+'%';f64Calc()" style="width:100%;accent-color:#0BC76A">
+          <span style="float:right;font-weight:700;color:var(--lt)" id="f64_cof_v">8.0%</span>
+        </label>
+        <label style="font-size:11px;color:var(--mid)">Rev Split — TikTok gets (%)
+          <input id="f64_split" type="range" min="30" max="70" value="50" step="5" oninput="document.getElementById('f64_split_v').textContent=this.value+'%';f64Calc()" style="width:100%;accent-color:#FF7A2F">
+          <span style="float:right;font-weight:700;color:var(--lt)" id="f64_split_v">50%</span>
+        </label>
+        <label style="font-size:11px;color:var(--mid)">UW + Collection (%)
+          <input id="f64_uw" type="range" min="0" max="3" value="1" step="0.5" oninput="document.getElementById('f64_uw_v').textContent=(+this.value).toFixed(1)+'%';f64Calc()" style="width:100%;accent-color:#7B2FBE">
+          <span style="float:right;font-weight:700;color:var(--lt)" id="f64_uw_v">1.0%</span>
+        </label>
+        <label style="font-size:11px;color:var(--mid)">Fixed Cost (%)
+          <input id="f64_fix" type="range" min="0" max="4" value="2" step="0.5" oninput="document.getElementById('f64_fix_v').textContent=(+this.value).toFixed(1)+'%';f64Calc()" style="width:100%;accent-color:#7B2FBE">
+          <span style="float:right;font-weight:700;color:var(--lt)" id="f64_fix_v">2.0%</span>
+        </label>
+        <div id="f64_cap_ind" style="font-size:10px;margin-top:4px;padding:6px 8px;background:rgba(255,255,255,0.04);border-radius:8px"></div>
+      </div>
+    </div>
+
+    <!-- P&L table -->
+    <div class="card">
+      <div class="card-title">P&L Breakdown</div>
+      <table id="f64_ptbl" style="width:100%;border-collapse:collapse;font-size:12px"></table>
+    </div>
+  </div>
+
+  <!-- Heatmap -->
+  <div class="card">
+    <div class="card-title">Profit Heatmap — Risk % × Tenor</div>
+    <div style="font-size:10px;color:var(--mid);margin-bottom:8px">
+      ★ = cap boundary &nbsp;|&nbsp; <span style="color:#FF7A2F;font-weight:600">dashed row = risk tại cap (6M)</span> &nbsp;|&nbsp; per-column color scaling
+    </div>
+    <div id="f64_heatmap"></div>
+  </div>
+
+</div>
+</div><!-- end tab-flat64 -->
+
+<!-- ══ FOOTER ══ -->
+<div class="footer" style="margin-top:24px">
+  <div class="footer-logo">
+    <div class="footer-dot"></div>
+    <span>Cake by VPBank · Lending Product</span>
+  </div>
+  <div class="confidential-bar">🔒 Strictly Confidential — CEO / CRO / CFO only</div>
+  <span>Prepared by Lending Product · <span id="footer-date"></span></span>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// TAB SWITCH
+// ═══════════════════════════════════════════════════
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-pane').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════
+// SHARED UTILS
+// ═══════════════════════════════════════════════════
+function af(r,n){const m=r/12;if(m===0)return 0;return m*n/(1-Math.pow(1+m,-n))-1}
+const pct=v=>(v*100).toFixed(2)+'%';
+
+// Risk caps (shared by static heatmap + simulator)
+const SEGS={
+  low: {ls:0.65, caps:{3:0.02,  6:0.03, 9:0.05,  12:0.07}},
+  mid: {ls:0.70, caps:{3:0.03,  6:0.04, 9:0.07,  12:0.09}},
+  high:{ls:0.80, caps:{3:0.035, 6:0.05, 9:0.075, 12:0.11}},
+};
+function getRiskCap(seg,kh){
+  const caps=SEGS[seg].caps,ts=[3,6,9,12];
+  if(kh<=3)return caps[3];if(kh>=12)return caps[12];
+  for(let i=0;i<ts.length-1;i++){
+    if(kh<=ts[i+1]){const t0=ts[i],t1=ts[i+1];return caps[t0]+(caps[t1]-caps[t0])*(kh-t0)/(t1-t0)}
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// STATIC HEATMAP (fixed params: CoF 8%, UW 1%, Fix 2%, BH 0%, Rev split 50%)
+// ═══════════════════════════════════════════════════
+const COF_S=0.08, UW_S=0.01, FIX_S=0.02, PART_S=0.5;
+const TENORS=[3,6,9], HIGH_STEPS=[0,10,20,30,40,50,60,70,80,90,100];
+
+function calcCellS(tenor,highPct){
+  const lp=(1-highPct)/2, mp=(1-highPct)/2, hp=highPct;
+  let profit=0, profitBF=0;
+  [['low',lp],['mid',mp],['high',hp]].forEach(([s,w])=>{
+    if(w===0)return;
+    const ls=SEGS[s].ls;
+    const risk=getRiskCap(s,tenor);
+    const ii=af(ls,tenor), cc=af(COF_S,tenor), ri=risk*ii;
+    const toi=ii-ri-cc, net=toi-risk;
+    const sharing=(ii)*PART_S;
+    const pr=net-sharing-UW_S-FIX_S;
+    profit+=pr*w; profitBF+=(pr+FIX_S)*w;
+  });
+  return{profit,profitBF};
+}
+function colorCellS(v,mn,mx){
+  if(v>=0){const t=mx>0?Math.min(v/mx,1):0;return`rgb(${Math.round(255+(11-255)*t)},${Math.round(255+(199-255)*t)},${Math.round(255+(106-255)*t)})`}
+  else{const t=mn<0?Math.min(-v/(-mn),1):0;return`rgb(255,${Math.round(255+(45-255)*t)},${Math.round(255+(113-255)*t)})`}
+}
+
+const gridS=HIGH_STEPS.map(hp=>TENORS.map(t=>calcCellS(t,hp/100)));
+function colMMStatic(key){
+  return TENORS.map((_,ci)=>{
+    const vals=HIGH_STEPS.map((_,ri)=>gridS[ri][ci][key]);
+    return{mn:Math.min(...vals),mx:Math.max(...vals)};
+  });
+}
+const colMM_SP=colMMStatic('profit'), colMM_SBF=colMMStatic('profitBF');
+
+function buildStaticTable(tableId,key,colMM){
+  const el=document.getElementById(tableId);
+  let h=`<thead><tr><th>% High ↓ / Tenor →</th>`;
+  TENORS.forEach(t=>h+=`<th>${t}M</th>`);
+  h+=`</tr></thead><tbody>`;
+  HIGH_STEPS.forEach((hp,ri)=>{
+    const isLikely=hp===80;
+    h+=`<tr>`;
+    if(isLikely){
+      h+=`<td style="background:#FFF5EE;border-left:3px solid #FF7A2F"><div class="mix-main" style="color:#FF7A2F">80% High ★</div><div class="mix-sub" style="color:#FF7A2F">Likely</div></td>`;
+    } else {
+      h+=`<td><div class="mix-main">${hp}% High</div><div class="mix-sub">L${((100-hp)/2).toFixed(0)} M${((100-hp)/2).toFixed(0)}</div></td>`;
+    }
+    TENORS.forEach((t,ci)=>{
+      const v=gridS[ri][ci][key];
+      const{mn,mx}=colMM[ci];
+      const bg=colorCellS(v,mn,mx);
+      const isSixM=ci===1;
+      let border='';
+      if(isSixM&&isLikely) border='border:2.5px dashed #FF7A2F';
+      else if(isSixM) border='border:2px solid rgba(123,47,190,.35)';
+      else if(isLikely) border='border-top:2px dashed #FF7A2F;border-bottom:2px dashed #FF7A2F';
+      h+=`<td style="background:${bg};${border}"><span style="font-size:11.5px;font-weight:700;color:#1A1033">${(v*100).toFixed(3)}%</span></td>`;
+    });
+    h+=`</tr>`;
+  });
+  h+=`</tbody>`;
+  el.innerHTML=h;
+}
+buildStaticTable('hm1','profit',colMM_SP);
+buildStaticTable('hm2','profitBF',colMM_SBF);
+
+// ═══════════════════════════════════════════════════
+// INTERACTIVE SIMULATOR
+// ═══════════════════════════════════════════════════
+const TT_SEGS=['low','mid','high'];
+const TT_LS={low:65,mid:70,high:80};
+const TT_LABELS={low:'Low Risk',mid:'Medium Risk',high:'High Risk'};
+const TT_COLORS={low:'#0BC76A',mid:'#FF7A2F',high:'#FF2D71'};
+
+let ttMethod='rev_split';
+const TT_METHOD_INFO={
+  toi_risk:{hint:'% of (TOI − RISK)'},
+  disbursement:{hint:'% trên tổng giải ngân'},
+  toi_gross:{hint:'% trên TOI Gross (Lãi+Phí)'},
+  rev_split:{hint:'% Doanh thu Lãi+Phí (trước mọi chi phí)'},
+};
+function ttSetMethod(m,btn){ttMethod=m;document.querySelectorAll('#tt_methodBtns .mbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('tt_shareHint').textContent=TT_METHOD_INFO[m].hint;ttUpd()}
+
+function ttCalcSeg(seg){
+  const ls=TT_LS[seg]/100;
+  const kh=+document.getElementById(`tt_kh_${seg}`).value;
+  const hm=+document.getElementById(`tt_hm_${seg}`).value*1e6;
+  const risk=+document.getElementById(`tt_risk_${seg}`).value/100;
+  const cont=+document.getElementById(`tt_cont_${seg}`).value/100;
+  const cof=+document.getElementById('tt_cof').value/100;
+  const bhpen=+document.getElementById('tt_bhpen').value/100;
+  const bhprem=+document.getElementById('tt_bhprem').value/100;
+  const bhshare=+document.getElementById('tt_bhshare').value/100;
+  const uw=+document.getElementById('tt_uw').value/100;
+  const fix=+document.getElementById('tt_fix').value/100;
+  const partPct=+document.getElementById('tt_part').value/100;
+  const fi=bhpen*bhprem*bhshare;
+  const ii=af(ls,kh), cc=af(cof,kh), ri=risk*ii;
+  const riskCap=getRiskCap(seg,kh);
+  const cakeRisk=Math.min(risk,riskCap);
+  const ttRiskCover=Math.max(0,risk-riskCap);
+  const rp=cakeRisk;
+  const toi=ii+fi-ri-cc;
+  const net=toi-rp;
+  let sharing;
+  if(ttMethod==='toi_risk') sharing=net*partPct;
+  else if(ttMethod==='disbursement') sharing=partPct;
+  else sharing=(ii+fi)*partPct;
+  const profit=net-sharing-uw-fix;
+  return{ls,kh,hm,risk,riskCap,cakeRisk,ttRiskCover,cont,cof,bhpen,bhprem,bhshare,uw,fix,partPct,ii,fi,cc,ri,rp,toi,net,sharing,profit};
+}
+
+function ttPortfolio(){
+  const segs=TT_SEGS.map(s=>({...ttCalcSeg(s),seg:s}));
+  const totalCont=segs.reduce((a,g)=>a+g.cont,0)||1;
+  const w=k=>segs.reduce((a,g)=>a+g[k]*g.cont,0)/totalCont;
+  return{segs,totalCont,
+    ii:w('ii'),fi:w('fi'),cc:w('cc'),ri:w('ri'),rp:w('rp'),
+    cakeRisk:w('cakeRisk'),ttRiskCover:w('ttRiskCover'),
+    toi:w('toi'),net:w('net'),sharing:w('sharing'),profit:w('profit'),
+    hm:w('hm'),uw:segs[0].uw,fix:segs[0].fix
+  };
+}
+
+function toggleBH(){
+  const body=document.getElementById('tt_bh_body');
+  const lbl=document.getElementById('tt_bh_toggle');
+  if(body.style.display==='none'){body.style.display='block';lbl.textContent='▼ Thu gọn'}
+  else{body.style.display='none';lbl.textContent='▶ Mở rộng'}
+}
+
+function ttUpd(changedId){
+  TT_SEGS.forEach(s=>{
+    const kh=+document.getElementById(`tt_kh_${s}`).value;
+    if(changedId===`tt_kh_${s}`){
+      document.getElementById(`tt_risk_${s}`).value=(getRiskCap(s,kh)*100).toFixed(1);
+    }
+    document.getElementById(`tt_vkh_${s}`).textContent=kh+' th';
+    document.getElementById(`tt_vhm_${s}`).textContent=document.getElementById(`tt_hm_${s}`).value+'M';
+    document.getElementById(`tt_vrisk_${s}`).textContent=parseFloat(document.getElementById(`tt_risk_${s}`).value).toFixed(1)+'%';
+    document.getElementById(`tt_vcont_${s}`).textContent=document.getElementById(`tt_cont_${s}`).value+'%';
+  });
+  document.getElementById('tt_vcof').textContent=parseFloat(document.getElementById('tt_cof').value).toFixed(2)+'%';
+  document.getElementById('tt_vbhpen').textContent=parseFloat(document.getElementById('tt_bhpen').value).toFixed(0)+'%';
+  document.getElementById('tt_vbhprem').textContent=parseFloat(document.getElementById('tt_bhprem').value).toFixed(1)+'%';
+  document.getElementById('tt_vbhshare').textContent=parseFloat(document.getElementById('tt_bhshare').value).toFixed(0)+'%';
+  document.getElementById('tt_vpart').textContent=parseFloat(document.getElementById('tt_part').value).toFixed(0)+'%';
+  document.getElementById('tt_vuw').textContent=parseFloat(document.getElementById('tt_uw').value).toFixed(1)+'%';
+  document.getElementById('tt_vfix').textContent=parseFloat(document.getElementById('tt_fix').value).toFixed(1)+'%';
+
+  const p=ttPortfolio();
+
+  // Segment cards
+  TT_SEGS.forEach(s=>{
+    const g=p.segs.find(x=>x.seg===s);
+    const profEl=document.getElementById(`tt_profit_${s}`);
+    profEl.textContent=pct(g.profit);
+    profEl.style.color=g.profit>0.01?TT_COLORS[s]:g.profit>0?'var(--lt)':'#e44';
+    document.getElementById(`tt_toi_${s}`).textContent=`TOI: ${pct(g.toi)} | Cake net: ${pct(g.net)}`;
+    const covered=g.ttRiskCover>0.0001, atCap=Math.abs(g.risk-g.riskCap)<0.0005;
+    const capEl=document.getElementById(`tt_cap_${s}`);
+    capEl.textContent=`Cap ${pct(g.riskCap)} | ${covered?'TT covers: '+pct(g.ttRiskCover):atCap?'⚡ At cap (worst)':'✓ Below cap'}`;
+    capEl.style.color=covered?'var(--mint)':atCap?'var(--amb)':'var(--g5)';
+  });
+
+  // Mix bar
+  const conts=TT_SEGS.map(s=>+document.getElementById(`tt_cont_${s}`).value);
+  const totalC=conts.reduce((a,b)=>a+b,0);
+  const sumLabel=document.getElementById('tt_cont_sum_label');
+  sumLabel.textContent=`Total: ${totalC}%`;
+  sumLabel.className=Math.abs(totalC-100)<1?'cont-sum-ok':'cont-sum-warn';
+  const barBase=totalC||1;
+  TT_SEGS.forEach((s,i)=>{
+    document.getElementById(`tt_bar_${s}`).style.width=(conts[i]/barBase*100)+'%';
+    document.getElementById(`tt_mix_${s}`).textContent=`${TT_LABELS[s].split(' ')[0]} ${conts[i]}%`;
+  });
+  document.getElementById('tt_avg_ticket').textContent=(p.hm/1e6).toFixed(1)+'M';
+
+  // KPIs
+  document.getElementById('tt_kp').textContent=pct(p.profit);
+  document.getElementById('tt_kpa').textContent=`Avg ticket ${(p.hm/1e6).toFixed(1)}M`;
+  document.getElementById('tt_ktoi').textContent=pct(p.toi);
+  document.getElementById('tt_kcc').textContent=pct(p.cakeRisk);
+  document.getElementById('tt_ksh').textContent=pct(p.ttRiskCover);
+  const ttInd=document.getElementById('tt_ind');
+  if(p.profit>0.02) ttInd.innerHTML='<span class="pill pos"><span class="dot"></span>Có lãi</span>';
+  else if(p.profit>0) ttInd.innerHTML='<span class="pill low"><span class="dot"></span>Biên thấp</span>';
+  else ttInd.innerHTML='<span class="pill neg"><span class="dot"></span>Lỗ</span>';
+
+  ttRenderSegTable(p);
+  ttRenderPnL(p);
+  ttRenderWF(p);
+  ttRenderHeatmap();
+}
+
+function ttRenderSegTable(p){
+  let html=`<thead><tr><th style="text-align:left">Segment</th><th>EIR</th><th>Tenor</th><th>Risk</th><th>Cap</th><th>TOI</th><th>Sharing</th><th>Profit</th><th>Mix</th></tr></thead><tbody>`;
+  p.segs.forEach(g=>{
+    const pc=g.profit>=0.01?'pos2':g.profit>0?'':'loss';
+    html+=`<tr>
+      <td style="font-weight:700"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${TT_COLORS[g.seg]};margin-right:5px;vertical-align:middle"></span>${TT_LABELS[g.seg]}</td>
+      <td style="text-align:center">${(g.ls*100).toFixed(0)}%</td>
+      <td style="text-align:center">${g.kh}th</td>
+      <td class="neg2" style="text-align:center;font-family:'JetBrains Mono',monospace">${pct(g.risk)}</td>
+      <td style="text-align:center;color:var(--g5);font-family:'JetBrains Mono',monospace">${pct(g.riskCap)}</td>
+      <td style="text-align:center;font-family:'JetBrains Mono',monospace">${pct(g.toi)}</td>
+      <td style="text-align:center;font-family:'JetBrains Mono',monospace">${pct(g.sharing)}</td>
+      <td class="${pc}" style="text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700">${pct(g.profit)}</td>
+      <td style="text-align:center;color:var(--lt)">${(g.cont*100).toFixed(0)}%</td>
+    </tr>`;
+  });
+  const pc=p.profit>=0.01?'pos2':p.profit>0?'':'loss';
+  html+=`<tr style="background:linear-gradient(135deg,rgba(255,45,113,.05),rgba(123,47,190,.05));font-weight:700">
+    <td colspan="5" style="color:var(--g5)">Portfolio (Weighted Avg)</td>
+    <td style="text-align:center;font-family:'JetBrains Mono',monospace">${pct(p.toi)}</td>
+    <td style="text-align:center;font-family:'JetBrains Mono',monospace">${pct(p.sharing)}</td>
+    <td class="${pc}" style="text-align:center;font-family:'JetBrains Mono',monospace">${pct(p.profit)}</td>
+    <td style="text-align:center;color:var(--lt)">100%</td>
+  </tr>`;
+  document.getElementById('tt_segtbl').innerHTML=html+'</tbody>';
+}
+
+function ttRenderPnL(p){
+  const shLabel=TT_METHOD_INFO[ttMethod].hint;
+  const sL=p.segs.find(x=>x.seg==='low')||{};
+  const sM=p.segs.find(x=>x.seg==='mid')||{};
+  const sH=p.segs.find(x=>x.seg==='high')||{};
+  const cv=(g,k)=>g[k]!=null?pct(Math.abs(g[k])):'-';
+  const cc=(v)=>v==null?'':v>=0?'pos2':'loss';
+  const rows=[
+    {sec:'REVENUE'},
+    {l:'(+) Doanh thu lãi',   k:'ii',     c:'pos2'},
+    {l:'(+) Doanh thu BH',    k:'fi',     c:'pos2'},
+    {sec:'COST OF FUNDS & RISK(i)'},
+    {l:'(−) CoF',             k:'cc',     c:'neg2'},
+    {l:'(−) Risk trên lãi',   k:'ri',     c:'neg2'},
+    {tot:true,l:'TOI',        k:'toi'},
+    {sec:'CREDIT COST — PRINCIPAL'},
+    {l:'(−) Cake bears (capped)', k:'cakeRisk', c:'neg2', bold:true},
+    {tot:true,l:'TOI − RISK (Cake)', k:'net'},
+    {sec:'OPEX & SHARING'},
+    {shr:true,l:`(−) TikTok sharing (${shLabel})`, k:'sharing', c:'neg2'},
+    {l:'(−) UW + Collection', k:'uw',     c:'neg2'},
+    {l:'(−) Fixed Cost',      k:'fix',    c:'neg2'},
+    {tot:true,l:'Profit (Cake)', k:'profit'},
+  ];
+  const hdr=`<tr style="background:rgba(123,47,190,0.12)">
+    <th style="text-align:left;padding:6px 8px;font-size:11px;color:var(--mid);width:40%">P&L Item</th>
+    <th style="text-align:right;padding:6px 8px;font-size:11px;color:#0BC76A;width:15%">Low</th>
+    <th style="text-align:right;padding:6px 8px;font-size:11px;color:#FF7A2F;width:15%">Mid</th>
+    <th style="text-align:right;padding:6px 8px;font-size:11px;color:#FF2D71;width:15%">High</th>
+    <th style="text-align:right;padding:6px 8px;font-size:11px;color:#7B2FBE;width:15%">Portfolio</th>
+  </tr>`;
+  document.getElementById('tt_ptbl').innerHTML=hdr+rows.map(r=>{
+    if(r.sec)return`<tr class="sec"><td colspan="5">${r.sec}</td></tr>`;
+    const rowCls=r.tot?'tot':r.shr?'sharing-row':'';
+    const fw=r.tot||r.bold?700:400;
+    const vc=(g,k)=>{const v=g[k];if(v==null)return'-';const cls=r.tot?cc(v):r.c||'';return`<td class="rv ${cls}" style="width:15%">${pct(Math.abs(v))}</td>`;};
+    const vp=(v)=>{const cls=r.tot?cc(v):r.c||'';return`<td class="rv ${cls}" style="width:15%">${pct(Math.abs(v))}</td>`;};
+    return`<tr class="${rowCls}">
+      <td style="color:var(--mid);font-weight:${fw};width:40%">${r.l}</td>
+      ${vc(sL,r.k)}${vc(sM,r.k)}${vc(sH,r.k)}${vp(p[r.k])}
+    </tr>`;
+  }).join('');
+}
+
+function ttRenderWF(p){
+  const W=700,H=230,pL=32,pR=16,pT=28,pB=42,cW=W-pL-pR,cH=H-pT-pB;
+  const bars=[{l:'Lãi',v:p.ii,t:'pos'},{l:'Phí BH',v:p.fi,t:'bh'},{l:'CoF',v:-p.cc,t:'neg'},{l:'Risk(i)',v:-p.ri,t:'neg'},{l:'TOI',v:p.toi,t:'total'},{l:'Risk(g)',v:-p.rp,t:'neg'},{l:'T−R',v:p.net,t:'total'},{l:'TikTok',v:-p.sharing,t:'neg'},{l:'UW',v:-p.uw,t:'neg'},{l:'Fixed',v:-p.fix,t:'neg'},{l:'Profit',v:p.profit,t:'total'}];
+  let run=0,allV=[];
+  bars.forEach(b=>{b.t==='total'?allV.push(b.v,0):(allV.push(run,run+b.v),run+=(b.v||0))});
+  const maxV=Math.max(...allV.map(Math.abs))*1.25||0.3;
+  const sy=v=>pT+cH/2-v/maxV*(cH/2);
+  const bW=cW/bars.length*0.6,gap=cW/bars.length;
+  let html=`<defs><linearGradient id="tt_gp" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#7B2FBE"/><stop offset="100%" stop-color="#FF2D71"/></linearGradient><linearGradient id="tt_gn" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FF7A2F"/><stop offset="100%" stop-color="#FF5050" stop-opacity=".75"/></linearGradient></defs>`;
+  const axY=sy(0);
+  html+=`<line x1="${pL}" y1="${axY}" x2="${W-pR}" y2="${axY}" stroke="#C0B8D0" stroke-width="1.5"/>`;
+  [.1,.2,.3,-.1].forEach(gv=>{const gy=sy(gv);html+=`<line x1="${pL}" y1="${gy}" x2="${W-pR}" y2="${gy}" stroke="#E0DCE8" stroke-width="1" stroke-dasharray="3,3"/><text x="${pL-4}" y="${gy+4}" font-size="9" fill="#8B7FA8" text-anchor="end">${(gv*100).toFixed(0)}%</text>`});
+  run=0;let prevX=null;
+  bars.forEach((b,i)=>{
+    const cx=pL+i*gap+gap/2,bx=cx-bW/2;
+    let y1,y2,fill;
+    if(b.t==='total'){y1=sy(Math.max(0,b.v));y2=sy(Math.min(0,b.v));fill=b.l==='Profit'?(b.v>=0?'#0BC76A':'#e44'):b.v>=0?'url(#tt_gp)':'#e44';}
+    else{y1=sy(Math.max(run,run+b.v));y2=sy(Math.min(run,run+b.v));fill=b.t==='bh'?'#0BC76A':b.v>=0?'url(#tt_gp)':b.l==='TikTok'?'#7B2FBE':'url(#tt_gn)'}
+    const bh=Math.max(Math.abs(y2-y1),2),by=Math.min(y1,y2);
+    if(b.t!=='total'&&prevX!==null){const cy=sy(run);html+=`<line x1="${prevX}" y1="${cy}" x2="${bx}" y2="${cy}" stroke="#C0B8D0" stroke-width="1" stroke-dasharray="3,3"/>`}
+    html+=`<rect x="${bx}" y="${by}" width="${bW}" height="${bh}" rx="3" fill="${fill}" opacity=".9"/>`;
+    const tv=pct(Math.abs(b.v)),ty=by-4<pT?by+bh+13:by-4;
+    html+=`<text x="${cx}" y="${ty}" text-anchor="middle" font-size="8.5" font-weight="600" fill="#4A4060">${tv}</text>`;
+    html+=`<text x="${cx}" y="${H-pB+15}" text-anchor="middle" font-size="9.5" font-weight="600" fill="#4A4060">${b.l}</text>`;
+    if(b.t==='total')prevX=bx+bW;else run+=b.v;
+  });
+  document.getElementById('tt_wf').innerHTML=html;
+}
+
+function ttRenderHeatmap(){
+  const tenors=[3,6,9];
+  const highSteps=[0,10,20,30,40,50,60,70,80,90,100];
+  const cof=+document.getElementById('tt_cof').value/100;
+  const bhpen=+document.getElementById('tt_bhpen').value/100;
+  const bhprem=+document.getElementById('tt_bhprem').value/100;
+  const bhshare=+document.getElementById('tt_bhshare').value/100;
+  const uw=+document.getElementById('tt_uw').value/100;
+  const fix=+document.getElementById('tt_fix').value/100;
+  const partPct=+document.getElementById('tt_part').value/100;
+  const fi=bhpen*bhprem*bhshare;
+
+  function calcHeatCell(tenor,highPct){
+    const lp=(1-highPct)/2,mp=(1-highPct)/2;
+    let total=0;
+    [['low',lp],['mid',mp],['high',highPct]].forEach(([s,w])=>{
+      if(w===0)return;
+      const ls=SEGS[s].ls;
+      const risk=getRiskCap(s,tenor);
+      const ii=af(ls,tenor),cc=af(cof,tenor),ri=risk*ii;
+      const toi=ii+fi-ri-cc, net=toi-risk;
+      let sharing;
+      if(ttMethod==='toi_risk') sharing=net*partPct;
+      else if(ttMethod==='disbursement') sharing=partPct;
+      else sharing=(ii+fi)*partPct;
+      total+=(net-sharing-uw-fix)*w;
+    });
+    return total;
+  }
+
+  const grid=highSteps.map(hp=>tenors.map(t=>calcHeatCell(t,hp/100)));
+  const grid2=highSteps.map((hp,ri)=>tenors.map((t,ci)=>grid[ri][ci]+fix));
+
+  function colMM(g){return tenors.map((_,ci)=>{const v=highSteps.map((_,ri)=>g[ri][ci]);return{mn:Math.min(...v),mx:Math.max(...v)}});}
+  const mm1=colMM(grid), mm2=colMM(grid2);
+
+  function colorCell(v,mn,mx){
+    if(v>=0){const t=mx>0?Math.min(v/mx,1):0;return`rgb(${Math.round(255+(11-255)*t)},${Math.round(255+(199-255)*t)},${Math.round(255+(106-255)*t)})`}
+    else{const t=mn<0?Math.min(-v/(-mn),1):0;return`rgb(255,${Math.round(255+(45-255)*t)},${Math.round(255+(113-255)*t)})`}
+  }
+
+  function buildHeatTable(gridData,mm,key,label,sublabel){
+    let h=`<div style="font-size:12px;font-weight:700;color:var(--txt);margin-bottom:2px">${label}</div>
+    <div style="font-size:10px;color:var(--lt);margin-bottom:8px">${sublabel}</div>
+    <table style="border-collapse:collapse;width:100%;font-size:11px">
+    <thead><tr><th style="padding:6px 10px;text-align:left;font-size:10px;color:var(--lt);font-weight:600;background:var(--bg);border-bottom:2px solid var(--bg)">% High ↓ / Tenor →</th>`;
+    tenors.forEach(t=>h+=`<th style="text-align:center;padding:6px 4px;font-size:11px;font-weight:700;color:var(--txt);background:var(--bg);border-bottom:2px solid var(--bg)">${t}M</th>`);
+    h+=`</tr></thead><tbody>`;
+    highSteps.forEach((hp,ri)=>{
+      const isLikely=hp===80;
+      h+=`<tr>`;
+      if(isLikely){
+        h+=`<td style="padding:4px 10px;background:#FFF5EE;border-left:3px solid #FF7A2F"><div style="font-size:11px;font-weight:700;color:#FF7A2F">80% High ★</div><div style="font-size:9px;color:#FF7A2F">Likely</div></td>`;
+      } else {
+        h+=`<td style="padding:4px 10px;background:var(--bg)"><div style="font-size:11px;font-weight:700;color:var(--txt)">${hp}% High</div><div style="font-size:9px;color:var(--lt)">L${((100-hp)/2).toFixed(0)} M${((100-hp)/2).toFixed(0)}</div></td>`;
+      }
+      tenors.forEach((t,ci)=>{
+        const v=gridData[ri][ci];
+        const{mn,mx}=mm[ci];
+        const bg=colorCell(v,mn,mx);
+        const isSixM=ci===1;
+        let border='';
+        if(isSixM&&isLikely) border='border:2.5px dashed #FF7A2F';
+        else if(isSixM) border='border:2px solid rgba(123,47,190,.35)';
+        else if(isLikely) border='border-top:2px dashed #FF7A2F;border-bottom:2px dashed #FF7A2F';
+        h+=`<td style="text-align:center;background:${bg};${border};padding:5px 3px"><span style="font-size:12px;font-weight:700;color:#1A1033">${(v*100).toFixed(3)}%</span></td>`;
+      });
+      h+=`</tr>`;
+    });
+    h+=`</tbody></table>`;
+    return h;
+  }
+
+  const t1=buildHeatTable(grid,mm1,'profit','Profit After All Costs','= Net revenue − Sharing − UW − Fixed Cost');
+  const t2=buildHeatTable(grid2,mm2,'profitBF','Profit Before Fixed Cost','= Contribution margin — trước fixed cost');
+
+  document.getElementById('tt_heatmap_wrap').innerHTML=
+    `<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">${t1}${t2}</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:10px;color:var(--lt)">
+      <span>Profit:</span><span style="display:inline-block;width:60px;height:10px;background:linear-gradient(90deg,#FF2D71,#fff,#0BC76A);border-radius:4px"></span>
+      <span>Lỗ ←→ Lãi</span>
+      <span style="margin-left:12px;color:var(--g5);font-weight:600">║ = 6M</span>
+      <span style="margin-left:8px;color:#FF7A2F;font-weight:600">- - = Likely (80% High)</span>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════
+// SCHEME CARD PROFITS (static: 6M, CoF 8%, rev split 50%, UW 1%, Fix 2%, BH 0%)
+// Risk = worst-case cap
+// ═══════════════════════════════════════════════════
+function calcSchemeProfit(seg,kh){
+  const ls=SEGS[seg].ls, cof=0.08, part=0.5, uw=0.01, fix=0.02;
+  const risk=getRiskCap(seg,kh);
+  const ii=af(ls,kh), cc=af(cof,kh), ri=risk*ii;
+  const toi=ii-ri-cc, net=toi-risk;
+  const sharing=ii*part;
+  return net-sharing-uw-fix;
+}
+(function renderSchemeProfit(){
+  const tenor=6;
+  ['low','mid','high'].forEach(s=>{
+    const v=calcSchemeProfit(s,tenor);
+    const el=document.getElementById(`sch_profit_${s}`);
+    if(el){
+      el.textContent=(v*100).toFixed(3)+'%';
+      if(v<0) el.style.color='#e44';
+    }
+  });
+})();
+
+// ═══════════════════════════════════════════════════
+// TAB 3 — FLAT 64% SINGLE SEGMENT
+// ═══════════════════════════════════════════════════
+const F64_LS = 0.64;
+const F64_CAPS = {3:0.02, 6:0.03, 9:0.05, 12:0.07};
+
+function f64GetCap(kh){
+  const ts=[3,6,9,12],caps=F64_CAPS;
+  if(kh<=3)return caps[3]; if(kh>=12)return caps[12];
+  for(let i=0;i<ts.length-1;i++){
+    if(kh<=ts[i+1]){const t0=ts[i],t1=ts[i+1];return caps[t0]+(caps[t1]-caps[t0])*(kh-t0)/(t1-t0);}
+  }
+}
+
+function f64Calc(){
+  const kh  = +document.getElementById('f64_tenor').value;
+  const cof = +document.getElementById('f64_cof').value/100;
+  const risk= +document.getElementById('f64_risk').value/100;
+  const spl = +document.getElementById('f64_split').value/100;
+  const uw  = +document.getElementById('f64_uw').value/100;
+  const fix = +document.getElementById('f64_fix').value/100;
+
+  const cap = f64GetCap(kh);
+  const ii  = af(F64_LS, kh);
+  const cc  = af(cof, kh);
+  const ri  = risk * ii;
+  const toi = ii - cc - ri;
+  const cakeRisk = Math.min(risk, cap);
+  const ttCover  = Math.max(0, risk - cap);
+  const net  = toi - cakeRisk;
+  const shr  = ii * spl;
+  const profit = net - shr - uw - fix;
+
+  // Update KPI cards
+  const kpis = [
+    {id:'f64_k_ii',   v:ii,       label:'Doanh thu lãi'},
+    {id:'f64_k_toi',  v:toi,      label:'TOI'},
+    {id:'f64_k_net',  v:net,      label:'TOI − Risk'},
+    {id:'f64_k_pf',   v:profit,   label:'Profit (Cake)'},
+  ];
+  kpis.forEach(k=>{
+    const el=document.getElementById(k.id);
+    if(!el)return;
+    el.textContent=pct(Math.abs(v=>v)(k.v));
+    el.textContent=(k.v*100).toFixed(3)+'%';
+    el.style.color=k.v>=0?'var(--mint)':'#e44';
+  });
+
+  // P&L table
+  const rows=[
+    {sec:'REVENUE'},
+    {l:'(+) Doanh thu lãi',      v:ii,       c:'pos2'},
+    {sec:'COST OF FUNDS & RISK(i)'},
+    {l:'(−) CoF',                v:cc,       c:'neg2'},
+    {l:'(−) Risk trên lãi',      v:ri,       c:'neg2'},
+    {tot:true, l:'TOI',          v:toi},
+    {sec:'CREDIT COST — PRINCIPAL'},
+    {l:'(−) Cake bears (≤ cap)', v:cakeRisk, c:'neg2', bold:true},
+    {l:'  TikTok covers (> cap)',v:ttCover,  c:'pos2', italic:true},
+    {tot:true, l:'TOI − Risk (Cake)', v:net},
+    {sec:'OPEX & SHARING'},
+    {l:`(−) TikTok rev share (${(spl*100).toFixed(0)}% × lãi)`, v:shr, c:'neg2'},
+    {l:'(−) UW + Collection',    v:uw,       c:'neg2'},
+    {l:'(−) Fixed Cost',         v:fix,      c:'neg2'},
+    {tot:true, l:'Profit (Cake)', v:profit},
+  ];
+  document.getElementById('f64_ptbl').innerHTML=rows.map(r=>{
+    if(r.sec)return`<tr class="sec"><td colspan="2">${r.sec}</td></tr>`;
+    const fw=r.tot||r.bold?700:400;
+    const fs=r.italic?'italic':'normal';
+    const cls=r.tot?(r.v>=0?'pos2':'loss'):r.c||'';
+    return`<tr class="${r.tot?'tot':''}">
+      <td style="color:var(--mid);font-weight:${fw};font-style:${fs};width:65%">${r.l}</td>
+      <td class="rv ${cls}" style="width:35%">${(r.v*100).toFixed(3)}%</td>
+    </tr>`;
+  }).join('');
+
+  // Heatmap: rows=risk levels, cols=tenors
+  f64RenderHeatmap(cof, spl, uw, fix);
+
+  // Cap indicator
+  const capEl=document.getElementById('f64_cap_ind');
+  if(risk>cap) capEl.innerHTML=`<span style="color:var(--mint)">⚠ Risk ${pct(risk)} > cap ${pct(cap)} → TikTok covers excess ${pct(ttCover)}</span>`;
+  else if(Math.abs(risk-cap)<0.001) capEl.innerHTML=`<span style="color:var(--amb)">⚡ Risk at cap (${pct(cap)}) — worst case</span>`;
+  else capEl.innerHTML=`<span style="color:var(--g5)">✓ Risk ${pct(risk)} within cap ${pct(cap)}</span>`;
+}
+
+function f64RenderHeatmap(cof, spl, uw, fix){
+  const tenors=[3,6,9,12];
+  const risks=[0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.10];
+  const riskLabels=['1%','2%','3%','4%','5%','6%','7%','8%','9%','10%'];
+
+  // Compute all values first for per-column scaling
+  const vals=tenors.map(kh=>{
+    const cap=f64GetCap(kh);
+    return risks.map(risk=>{
+      const ii=af(F64_LS,kh), cc=af(cof,kh), ri=risk*ii;
+      const toi=ii-cc-ri, cakeR=Math.min(risk,cap), net=toi-cakeR;
+      return net - ii*spl - uw - fix;
+    });
+  });
+
+  // Per-column min/max
+  const colMin=tenors.map((_,ci)=>Math.min(...risks.map((_,ri)=>vals[ci][ri])));
+  const colMax=tenors.map((_,ci)=>Math.max(...risks.map((_,ri)=>vals[ci][ri])));
+
+  function hmColor(v, mn, mx){
+    if(v<0) return`rgba(228,68,68,${Math.min(0.9,0.2+Math.abs(v)/(Math.abs(mn)||0.01)*0.7)})`;
+    const t=mx>0?v/mx:0;
+    return`rgba(11,199,106,${0.15+t*0.75})`;
+  }
+
+  let html=`<table style="width:100%;border-collapse:collapse;font-size:11px">
+    <thead><tr>
+      <th style="padding:5px 8px;text-align:left;color:var(--lt);font-size:10px">Risk %</th>
+      ${tenors.map(t=>`<th style="padding:5px 8px;text-align:center;color:var(--lt);font-size:10px">${t}M</th>`).join('')}
+    </tr></thead><tbody>`;
+
+  risks.forEach((risk,ri)=>{
+    const isLikely = Math.abs(risk - f64GetCap(6)) < 0.005;
+    const rowStyle = isLikely ? 'border:2px dashed #FF7A2F;' : '';
+    html+=`<tr style="${rowStyle}">
+      <td style="padding:4px 8px;color:var(--mid);font-weight:600">${riskLabels[ri]}</td>`;
+    tenors.forEach((kh,ci)=>{
+      const v=vals[ci][ri];
+      const bg=hmColor(v, colMin[ci], colMax[ci]);
+      const cap=f64GetCap(kh);
+      const marker=Math.abs(risk-cap)<0.005?' ★':'';
+      html+=`<td style="padding:4px 8px;text-align:center;background:${bg};border-radius:4px;font-weight:600;color:${v>=0?'var(--lt)':'#e44'}">${(v*100).toFixed(3)}%${marker}</td>`;
+    });
+    html+='</tr>';
+  });
+  html+='</tbody></table>';
+  document.getElementById('f64_heatmap').innerHTML=html;
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+ttUpd();
+f64Calc();
+
+const now=new Date();
+const d=now.toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit',year:'numeric'});
+document.getElementById('hdr-date').textContent=d;
+document.getElementById('footer-date').textContent=d;
+</script>
+</body>
+</html>

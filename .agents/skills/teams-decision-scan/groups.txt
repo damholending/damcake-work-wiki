@@ -1,0 +1,39 @@
+# Teams group chat IDs để scan định kỳ
+# Format: <alias> | <chatId> | <topic hint cho keyword search>
+# Comment line: bắt đầu bằng #
+#
+# Maintain by: Đạm
+# Last updated: 2026-06-09
+
+# === RECURRING GROUPS ===
+
+# 1. Risk - Product - BD (all working teams): CRO Vinh + BD Hương/Giang/Ngọc + Risk Khánh/Trúc + Fraud Huyền + Product team
+Risk-Product-BD | 19:af4e53eb8b544fb9b76675d2aabe6cd7@thread.v2 | score, cutoff, NTB, precheck, BE, VDS, MWG, ZLP, risk, deploy
+
+# 2. Lending Leaders 3 (CRO + Head of Lending Product Đạm + Head of BD) — strategy + escalation
+Lending-Leaders-3 | 19:507d045ce8404ef0895c467d31172dff@thread.v2 | strategy, escalation, P&L, KPI, target, partner, lending, risk, BD
+
+# 3. Lending Team — team nội bộ Đạm (Lâm, Cường, Định, Duyên, Tiên, Chi, Kiệt)
+Lending-Team | 19:88e0ecad9e33415d89792e8e96916a04@thread.v2 | team, dashboard, road to 3k, ZLP, submit, CR, score distribution, weekly
+
+# 4. ZLP Channel — recurring sync meeting với partner ZaloPay (timeline, cutoff, province, WL)
+ZLP-Channel | 19:meeting_NWM0ZGQyZjYtMjBmZS00ZDAyLTg5MTktMWQ4OGQzODkzZTEy@thread.v2 | ZLP, ZaloPay, pool A, pool B, band, province, WL, flag, deploy, timeline
+
+# 5. BD & Lending Team — thảo luận channels (MWG, VNPAY, Long Châu, new product)
+BD-Lending-Channels | 19:41341dd3f12448eabb755c21e85ae249@thread.v2 | MWG, VNPAY, Long Châu, new product, channel, scheme, pilot, BD
+
+# 6. BE Channel — all working team (BD Hương + Lending PM Cường + DS Bá Minh + Risk)
+BE-Channel | 19:785161ac750b4745959bfd5deefa6ea9@thread.v2 | BE, BExCake, cutoff, score, NTB, paylater, cashloan, monitor, distribution
+
+# 7. Cake Channel — Marketing team + Lending team (AR, performance, campaign)
+Cake-Channel | 19:0f2f032823e74aa68e83b7f7b8742c59@thread.v2 | Cake, MKT, marketing, AR, payday, cashloan, campaign, performance, relax
+
+# THÊM GROUP Ở DƯỚI (Đạm fill):
+# alias | 19:xxx@thread.v2 | keyword1, keyword2
+
+# === NOTES ===
+
+# Meeting chats (19:meeting_...) có 2 loại:
+# - One-off (vd: ad-hoc call) → KHÔNG add vào list
+# - Recurring meeting series (vd: ZLP weekly sync) → ADD vì sticky chat persist xuyên tuần
+# Đạm tự decide khi add.

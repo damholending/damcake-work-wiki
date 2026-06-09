@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI cho team Lending — 3 thay đổi + lộ trình data</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink-500:#FF2D71; --pink-700:#B8154F; --grape-500:#7B2FBE;
+    --grape-900:#1A1033; --mint-500:#0BC76A; --amber-500:#FF7A2F;
+    --surf-1:#F7F7F9; --white:#FFFFFF; --page:#E8E8EF;
+    --ink-60:#5b5670; --ink-40:#8b86a0; --red:#E11D48;
+    --hero:linear-gradient(135deg,#FF2D71,#7B2FBE);
+    --night:linear-gradient(160deg,#1A1033,#2D1B55);
+    --growth:linear-gradient(135deg,#0BC76A,#059952);
+    --r-2xl:28px; --r-xl:20px; --r-lg:16px; --r-md:12px;
+    --glow:0 8px 24px rgba(255,45,113,.28);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Be Vietnam Pro',sans-serif;background:var(--page);color:var(--grape-900);line-height:1.5}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+
+  /* TOPBAR / STEPPER */
+  .topbar{position:sticky;top:0;z-index:50;background:rgba(247,247,249,.85);backdrop-filter:blur(12px);border-bottom:1px solid #e2e2ea}
+  .topbar-in{max-width:1080px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .brand{font-weight:700;font-size:14.5px;display:flex;align-items:center;gap:8px;white-space:nowrap}
+  .brand .bdot{width:11px;height:11px;border-radius:50%;background:var(--hero)}
+  .stepper{display:flex;gap:4px;flex:1;justify-content:center;min-width:260px;flex-wrap:wrap}
+  .step-item{display:flex;align-items:center;gap:8px;cursor:pointer;padding:6px 11px;border-radius:999px;transition:.2s;font-size:13px;font-weight:600;color:var(--ink-40)}
+  .step-item .sn{width:22px;height:22px;border-radius:50%;background:#e2e2ea;display:grid;place-items:center;font-family:'JetBrains Mono',monospace;font-size:12px;transition:.2s}
+  .step-item .sl{display:none}
+  @media(min-width:940px){.step-item .sl{display:inline}}
+  .step-item:hover{color:var(--grape-900)}
+  .step-item.on{background:#fff;color:var(--grape-900);box-shadow:0 2px 10px rgba(26,16,51,.08)}
+  .step-item.on .sn{background:var(--hero);color:#fff}
+  .navbtns{display:flex;gap:8px}
+  .nav-arrow{font-family:inherit;font-weight:600;font-size:13px;border:none;cursor:pointer;border-radius:999px;padding:9px 16px;background:#fff;color:var(--grape-900);box-shadow:0 2px 8px rgba(26,16,51,.06);transition:.15s}
+  .nav-arrow:hover{transform:translateY(-1px)}
+  .nav-arrow:disabled{opacity:.35;cursor:not-allowed;transform:none}
+  .nav-next{background:var(--hero);color:#fff;box-shadow:var(--glow)}
+
+  /* SCREENS */
+  .screen{display:none;padding:24px 0 56px}
+  .screen.active{display:block;animation:fade .35s}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* HERO */
+  .hero{background:var(--night);border-radius:var(--r-2xl);padding:34px 38px;color:var(--white);position:relative;overflow:hidden}
+  .hero::after{content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;background:var(--hero);filter:blur(60px);opacity:.55;border-radius:50%}
+  .chip{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;background:rgba(255,255,255,.12);padding:6px 14px;border-radius:999px;position:relative;z-index:1}
+  .chip b{color:var(--pink-500)}
+  .hero h1{font-size:29px;font-weight:700;margin:16px 0 10px;position:relative;z-index:1;letter-spacing:-.5px}
+  .hero p{font-size:16px;color:#d9d4ec;max-width:720px;position:relative;z-index:1}
+  .hero p .hl{color:var(--white);font-weight:600}
+
+  /* PANEL */
+  .panel{background:var(--white);border-radius:var(--r-2xl);padding:26px 28px;margin-top:18px;box-shadow:0 4px 20px rgba(26,16,51,.06)}
+  .panel-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:18px}
+  .panel-head h2{font-size:19px;font-weight:700}
+  .panel-head .sub{font-size:13.5px;color:var(--ink-60)}
+  .controls{display:flex;gap:10px;align-items:center}
+  .btn{font-family:inherit;font-weight:600;font-size:14px;border:none;cursor:pointer;border-radius:999px;padding:11px 20px;transition:transform .12s,box-shadow .12s,opacity .12s}
+  .btn-go{background:var(--hero);color:#fff;box-shadow:var(--glow)}
+  .btn-go:hover{transform:translateY(-1px)}
+  .btn-go:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;transform:none}
+  .btn-reset{background:var(--surf-1);color:var(--ink-60)}
+  .btn-reset:hover{color:var(--grape-900)}
+
+  /* WEEK (screen 1) */
+  .week{display:flex;gap:8px;margin:0 0 22px}
+  .day{flex:1;text-align:center;font-weight:600;font-size:13px;color:var(--ink-40);padding:9px 0;border-radius:var(--r-md);background:var(--surf-1);transition:.25s}
+  .day.active{color:#fff;background:var(--hero);box-shadow:var(--glow)}
+  .day .t{display:block;font-size:11px;font-weight:400;opacity:.8;margin-top:1px}
+
+  /* COLUMNS (screens 1,2) */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:760px){.cols{grid-template-columns:1fr}}
+  .col{border-radius:var(--r-xl);padding:22px;border:1.5px solid #ececf2;display:flex;flex-direction:column}
+  .col-old{background:var(--surf-1)}
+  .col-new{background:linear-gradient(180deg,#fff,#fef4f8);border-color:rgba(255,45,113,.25)}
+  .col h3{font-size:15px;font-weight:700;display:flex;align-items:center;gap:9px;margin-bottom:4px}
+  .col h3 .dot{width:10px;height:10px;border-radius:50%}
+  .col-old .dot{background:var(--amber-500)}
+  .col-new .dot{background:var(--pink-500)}
+  .col .tag{font-size:12.5px;color:var(--ink-60);margin-bottom:16px}
+
+  .steps{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;min-height:182px}
+  .step{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--ink-60);background:#fff;border:1px solid #ececf2;border-radius:var(--r-md);padding:9px 12px;opacity:.45;transition:.22s}
+  .step.on{opacity:1;border-color:var(--amber-500);color:var(--grape-900);transform:translateX(3px)}
+  .step .ico{width:22px;height:22px;border-radius:7px;background:var(--surf-1);display:grid;place-items:center;font-size:12px;flex-shrink:0}
+  .step.on .ico{background:#fff3e9}
+
+  .skill-card{background:var(--grape-900);color:#fff;border-radius:var(--r-md);padding:14px 16px;min-height:182px;display:flex;flex-direction:column;gap:10px;margin-bottom:16px;position:relative;overflow:hidden}
+  .skill-card .file{font-size:12.5px;color:#c9c2e0;display:flex;align-items:center;gap:8px}
+  .skill-card .file b{color:var(--pink-500)}
+  .skill-line{font-size:12px;color:#a79dc4;border-left:2px solid var(--grape-500);padding-left:10px}
+  .skill-line .k{color:var(--mint-500)}
+  .auto-tag{margin-top:auto;font-size:12px;font-weight:600;color:var(--mint-500);display:flex;align-items:center;gap:7px}
+  .toast{position:absolute;left:14px;right:14px;bottom:-90px;background:var(--growth);color:#fff;border-radius:var(--r-md);padding:10px 13px;font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:9px;transition:bottom .4s cubic-bezier(.2,.8,.3,1);box-shadow:0 8px 20px rgba(11,199,106,.3)}
+  .toast.show{bottom:14px}
+  .toast .clock{font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.2);padding:1px 7px;border-radius:6px;font-size:11px}
+
+  /* BIG NUMBER (screen 2) */
+  .bigwrap{text-align:center;padding:14px 0 6px;min-height:118px;display:flex;flex-direction:column;justify-content:center}
+  .biglbl{font-size:12px;color:var(--ink-40);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+  .bignum{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:40px;letter-spacing:-1px;transition:.18s}
+  .col-old .bignum{color:var(--pink-700)}
+  .col-new .bignum{color:var(--mint-500)}
+  .bignum .u{font-size:18px;color:var(--ink-40);font-weight:400}
+  .narr{font-size:12.5px;color:var(--ink-60);font-style:italic;margin-top:6px;min-height:32px}
+  .flip{animation:flip .2s}
+  @keyframes flip{0%{opacity:.3;transform:translateY(-6px)}100%{opacity:1;transform:translateY(0)}}
+  .datarow{display:flex;align-items:center;gap:9px;font-size:12.5px;border-radius:var(--r-md);padding:9px 12px;margin-bottom:14px;font-weight:600}
+  .datarow.bad{background:#fff3e9;color:var(--amber-500)}
+  .datarow.good{background:#e6f9f0;color:#059952}
+
+  /* COUNTER (screens 1,2) */
+  .counter{margin-top:auto;padding-top:14px;border-top:1px dashed #d8d4e0}
+  .counter .row{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;margin-bottom:6px}
+  .counter .row:last-child{margin-bottom:0}
+  .counter .lbl{color:var(--ink-60)}
+  .counter .val{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:18px;transition:.2s}
+  .col-old .val{color:var(--pink-700)}
+  .col-new .val{color:var(--mint-500)}
+  .pulse{animation:pulse .4s}
+  @keyframes pulse{0%{transform:scale(1)}40%{transform:scale(1.18)}100%{transform:scale(1)}}
+
+  /* REPORT (screen 3) */
+  .report{border:1.5px solid #ececf2;border-radius:var(--r-xl);padding:20px 22px;background:linear-gradient(180deg,#fff,#fafafc)}
+  .report .rhead{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eee;padding-bottom:12px;margin-bottom:6px}
+  .report .rhead .ttl{font-weight:700;font-size:15px}
+  .report .rhead .meta{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-40)}
+  .badge-ai{font-size:11px;font-weight:600;color:#fff;background:var(--grape-500);padding:3px 10px;border-radius:999px}
+  .rline{display:flex;align-items:center;gap:12px;padding:13px 12px;border-radius:var(--r-md);transition:.25s;border:1px solid transparent}
+  .rline .mark{width:24px;height:24px;border-radius:50%;background:var(--surf-1);display:grid;place-items:center;font-size:13px;flex-shrink:0;transition:.25s;color:var(--ink-40)}
+  .rline .txt{font-size:14px}
+  .rline .txt .num{font-family:'JetBrains Mono',monospace;font-weight:600}
+  .rline .note{font-size:12px;color:var(--red);margin-top:2px;display:none}
+  .rline.ok{background:#e6f9f0;border-color:rgba(11,199,106,.25)}
+  .rline.ok .mark{background:var(--mint-500);color:#fff}
+  .rline.bad{background:#fef2f4;border-color:rgba(225,29,72,.3)}
+  .rline.bad .mark{background:var(--red);color:#fff}
+  .rline.bad .note{display:block}
+  .rline.checking .mark{background:var(--amber-500);color:#fff;animation:spin .6s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .scoreline{display:flex;align-items:center;gap:10px;margin-top:16px;font-size:14px;font-weight:600;color:var(--ink-60);opacity:0;transition:.3s}
+  .scoreline.show{opacity:1}
+  .scoreline .pill{font-family:'JetBrains Mono',monospace;background:#fef2f4;color:var(--red);padding:3px 11px;border-radius:999px;font-size:13px}
+  .paths{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px;max-height:0;overflow:hidden;opacity:0;transition:.5s}
+  .paths.show{max-height:400px;opacity:1}
+  @media(max-width:760px){.paths{grid-template-columns:1fr}}
+  .path{border-radius:var(--r-xl);padding:20px;color:#fff}
+  .path h4{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .path p{font-size:13px;line-height:1.55}
+  .path-bad{background:linear-gradient(135deg,#E11D48,#B8154F)}
+  .path-good{background:var(--growth)}
+  .path .tagline{font-size:11px;text-transform:uppercase;letter-spacing:1px;opacity:.8;font-weight:600;margin-bottom:4px}
+
+  /* DATA FLOW (screen 4) */
+  .toggle{display:flex;gap:10px;background:rgba(255,255,255,.12);padding:7px;border-radius:999px;margin-top:18px;width:max-content;position:relative;z-index:1}
+  .tg{font-family:inherit;font-weight:600;font-size:13.5px;border:none;cursor:pointer;border-radius:999px;padding:10px 20px;background:transparent;color:#d9d4ec;transition:.2s;white-space:nowrap}
+  .tg.on{background:var(--hero);color:#fff;box-shadow:var(--glow)}
+  .fh2{font-size:18px;font-weight:700;text-align:center;margin-bottom:4px}
+  .fsub{text-align:center;font-size:13.5px;color:var(--ink-60);margin-bottom:26px}
+  .flow{display:flex;align-items:stretch;justify-content:center;gap:6px;flex-wrap:wrap}
+  .node{flex:1;min-width:120px;max-width:185px;border-radius:var(--r-lg);padding:16px 14px;text-align:center;border:1.5px solid #ececf2;background:var(--surf-1);position:relative;display:flex;flex-direction:column;gap:5px;animation:pop .4s}
+  @keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .node .ic{font-size:26px}
+  .node .nt{font-size:13.5px;font-weight:700;line-height:1.25}
+  .node .ns{font-size:11.5px;color:var(--ink-60);line-height:1.35}
+  .node .flag{position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;padding:2px 9px;border-radius:999px;white-space:nowrap}
+  .flag-manual{background:#fff3e9;color:var(--amber-500);border:1px solid var(--amber-500)}
+  .flag-auto{background:#e6f9f0;color:#059952;border:1px solid var(--mint-500)}
+  .node.db{background:linear-gradient(160deg,#241544,#3a2168);border-color:transparent;color:#fff}
+  .node.db .ns{color:#bdb2da}
+  .node.key{background:linear-gradient(180deg,#fff,#fef4f8);border-color:rgba(255,45,113,.4)}
+  .node.key .nt{color:var(--pink-700)}
+  .node.out{background:linear-gradient(160deg,#0BC76A,#059952);border-color:transparent;color:#fff}
+  .node.out .ns{color:#d6f7e6}
+  .arrow{display:flex;align-items:center;justify-content:center;color:var(--grape-500);font-size:22px;font-weight:700;flex:0 0 22px}
+  @media(max-width:760px){.flow{flex-direction:column;align-items:stretch}.node{max-width:none}.arrow{transform:rotate(90deg);padding:2px 0}}
+  .notes{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:28px}
+  @media(max-width:760px){.notes{grid-template-columns:1fr 1fr}}
+  .note{background:var(--surf-1);border-radius:var(--r-md);padding:14px;font-size:12.5px;color:var(--grape-900);font-weight:600;line-height:1.4}
+  .note .ne{font-size:18px;display:block;margin-bottom:5px}
+
+  /* TAKEAWAY */
+  .take{background:var(--night);border-radius:var(--r-2xl);padding:30px 36px;margin-top:18px;color:#fff;position:relative;overflow:hidden}
+  .take::after{content:"";position:absolute;left:-50px;bottom:-70px;width:220px;height:220px;background:var(--hero);filter:blur(70px);opacity:.4;border-radius:50%}
+  .take h2{font-size:22px;font-weight:700;position:relative;z-index:1}
+  .take h2 .em{background:var(--hero);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .take .lead{font-size:14.5px;color:#d9d4ec;margin:8px 0 22px;position:relative;z-index:1}
+  .take p{position:relative;z-index:1}
+  .turn{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;position:relative;z-index:1}
+  @media(max-width:760px){.turn{grid-template-columns:1fr}}
+  .qcard{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:var(--r-lg);padding:16px}
+  .qcard .n{font-family:'JetBrains Mono',monospace;color:var(--pink-500);font-weight:600;font-size:13px}
+  .qcard p{font-size:13.5px;color:#ece9f5;margin-top:6px}
+  .sign{margin-top:20px;font-size:12.5px;color:var(--ink-40);position:relative;z-index:1}
+
+  /* CODE + DEMO (screen 5) */
+  .code{font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.55;background:var(--grape-900);color:#d6cff0;border-radius:var(--r-md);padding:13px 14px;overflow-x:auto;white-space:pre;margin-top:6px}
+  .code .cm{color:#7e74a8}
+  .code .kw{color:var(--pink-500)}
+  .code .hlc{color:var(--mint-500)}
+  .demo3{display:flex;align-items:stretch;justify-content:center;gap:8px}
+  @media(max-width:760px){.demo3{flex-direction:column}.demo3 .arrow{transform:rotate(90deg);padding:2px 0}}
+  .dcard{flex:1;min-width:0;border:1.5px solid #ececf2;border-radius:var(--r-lg);padding:14px;background:#fff;display:flex;flex-direction:column}
+  .dcard.skill{background:linear-gradient(180deg,#fff,#fef4f8);border-color:rgba(255,45,113,.25)}
+  .dcard.out{background:var(--surf-1)}
+  .dh{font-size:13px;font-weight:700;margin-bottom:8px}
+  .dh .dby{font-weight:400;color:var(--ink-40);font-size:11.5px}
+  .srows{display:flex;flex-direction:column;gap:7px}
+  .srow{font-size:12.5px;background:#fff;border:1px solid #ececf2;border-radius:8px;padding:8px 10px;color:var(--ink-60)}
+  .srow b{color:var(--grape-900)}
+  .srow.warn{background:#fff3e9;border-color:var(--amber-500);color:var(--amber-500);font-weight:600}
+  .report-out{font-size:13px;line-height:1.6;color:var(--grape-900);min-height:130px}
+  .report-out .ph{color:var(--ink-40);font-style:italic}
+  .report-out.run{color:var(--ink-40);font-style:italic}
+  .steps3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:760px){.steps3{grid-template-columns:1fr}}
+  .s3{display:flex;gap:12px}
+  .s3n{flex:0 0 30px;height:30px;border-radius:50%;background:var(--hero);color:#fff;font-family:'JetBrains Mono',monospace;font-weight:600;display:grid;place-items:center;box-shadow:var(--glow)}
+  .s3b{font-size:13px}
+  .s3b b{font-size:13.5px}
+  .s3b p{color:var(--ink-60);margin-top:3px;font-size:12.5px}
+
+  /* FULL FLOW (screen 7) */
+  .envbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;background:var(--surf-1);border:1px solid #e2e2ea;border-radius:var(--r-lg);padding:13px 16px;margin-bottom:24px;font-size:13px}
+  .envbar .ok{font-weight:600;color:var(--grape-900)}
+  .envbar .vs{color:var(--ink-40);font-size:12px}
+  .envbar .no{color:var(--ink-40);text-decoration:line-through}
+  .pipe .node{opacity:.45;transition:opacity .35s,transform .35s,box-shadow .35s,border-color .35s}
+  .pipe .node.lit{opacity:1;transform:translateY(-3px);box-shadow:var(--glow);border-color:var(--pink-500)}
+  .pipe.done .node{opacity:1}
+  .pipe-status{text-align:center;margin-top:20px;font-size:13.5px;font-weight:600;color:var(--ink-60);min-height:20px}
+
+  /* ANTIGRAVITY IDE MOCK (screen Dùng Antigravity) */
+  .ide{border-radius:var(--r-lg);overflow:hidden;border:1px solid #2a1d4a;background:#140d28;font-family:'JetBrains Mono',monospace;font-size:12px}
+  .ide-bar{background:#1d1338;padding:9px 14px;display:flex;align-items:center;color:#9b90c0;font-size:11.5px}
+  .ide-bar .dotr{width:10px;height:10px;border-radius:50%;margin-right:6px}
+  .ide-body{display:grid;grid-template-columns:210px 1fr;min-height:310px}
+  @media(max-width:760px){.ide-body{grid-template-columns:1fr}}
+  .ide-tree{background:#0f0a1f;border-right:1px solid #2a1d4a;padding:12px}
+  .ide-tree .tt{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#6b6090;margin-bottom:8px}
+  .ide-tree .f{padding:3px 6px;border-radius:5px;color:#c9c2e0;opacity:0;transition:.3s}
+  .ide-tree .f.show{opacity:1}
+  .ide-tree .f.ind{padding-left:18px}
+  .ide-tree .f.new{background:rgba(255,45,113,.18);color:#fff}
+  .ide-main{display:flex;flex-direction:column}
+  .ide-chat{flex:1;padding:14px;display:flex;flex-direction:column;gap:9px;border-bottom:1px solid #2a1d4a;min-height:120px}
+  .bubble{max-width:90%;padding:8px 12px;border-radius:12px;font-family:'Be Vietnam Pro',sans-serif;font-size:12.5px;line-height:1.45;opacity:0;transform:translateY(6px);transition:.3s}
+  .bubble.show{opacity:1;transform:none}
+  .bubble.user{align-self:flex-end;background:var(--hero);color:#fff;border-bottom-right-radius:3px}
+  .bubble.ai{align-self:flex-start;background:#241544;color:#e7e1f5;border-bottom-left-radius:3px}
+  .ide-term{background:#0b0718;padding:12px 14px;color:#b9f3d2;min-height:96px;line-height:1.7;overflow-x:auto}
+  .ide-term .line{opacity:0;transition:.2s;white-space:pre}
+  .ide-term .line.show{opacity:1}
+  .ide-term .cmd{color:#fff}
+  .ide-term .ok2{color:var(--mint-500)}
+  .defbox{background:rgba(255,45,113,.14);border:1px solid rgba(255,45,113,.4);border-radius:var(--r-lg);padding:13px 16px;font-size:13.5px;color:#fff;position:relative;z-index:1;margin-bottom:22px;line-height:1.5}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <div class="brand"><span class="bdot"></span>AI cho team Lending</div>
+    <div class="stepper">
+      <div class="step-item" data-go="0"><span class="sn">1</span><span class="sl">Giao việc lặp</span></div>
+      <div class="step-item" data-go="1"><span class="sn">2</span><span class="sl">Tính & viết</span></div>
+      <div class="step-item" data-go="2"><span class="sn">3</span><span class="sl">Kiểm bài</span></div>
+      <div class="step-item" data-go="3"><span class="sn">4</span><span class="sl">Lộ trình data</span></div>
+      <div class="step-item" data-go="4"><span class="sn">5</span><span class="sl">Dùng Antigravity</span></div>
+      <div class="step-item" data-go="5"><span class="sn">6</span><span class="sl">Tạo skill</span></div>
+      <div class="step-item" data-go="6"><span class="sn">7</span><span class="sl">Full flow</span></div>
+    </div>
+    <div class="navbtns">
+      <button class="nav-arrow nav-prev">← Trước</button>
+      <button class="nav-arrow nav-next">Tiếp →</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ============ SCREEN 1 ============ -->
+  <section class="screen active" data-sim="1">
+    <div class="hero">
+      <span class="chip">Thay đổi <b>1 / 3</b></span>
+      <h1>Giao việc lặp cho AI, đừng tự làm lại mỗi lần</h1>
+      <p>AI giống <span class="hl">một nhân viên mới</span>: việc nào lặp lại, bạn viết quy trình <span class="hl">một lần</span> rồi giao cho nó tự chạy — chứ không phải sáng nào cũng ngồi làm lại từ đầu.</p>
+    </div>
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>Một tuần làm báo cáo Disbursement sáng</h2>
+          <div class="sub">Bấm tua từng ngày — nhìn công sức hai bên đi về đâu.</div>
+        </div>
+        <div class="controls">
+          <button class="btn btn-reset js-reset">Làm lại</button>
+          <button class="btn btn-go js-go">▶ Chạy thứ Hai</button>
+        </div>
+      </div>
+      <div class="week js-week">
+        <div class="day">T2<span class="t">8:00</span></div>
+        <div class="day">T3<span class="t">8:00</span></div>
+        <div class="day">T4<span class="t">8:00</span></div>
+        <div class="day">T5<span class="t">8:00</span></div>
+        <div class="day">T6<span class="t">8:00</span></div>
+      </div>
+      <div class="cols">
+        <div class="col col-old">
+          <h3><span class="dot"></span>Cách cũ — bạn làm tay mỗi sáng</h3>
+          <div class="tag">Mỗi ngày lặp lại đúng 5 bước này.</div>
+          <div class="steps js-steps">
+            <div class="step"><span class="ico">1</span>Mở Claude, gõ lại yêu cầu</div>
+            <div class="step"><span class="ico">2</span>Kéo số từ dashboard, dán vào</div>
+            <div class="step"><span class="ico">3</span>Đợi, đọc, sửa lại cho gọn</div>
+            <div class="step"><span class="ico">4</span>Dựng slide / format lại</div>
+            <div class="step"><span class="ico">5</span>Gửi cho ban lãnh đạo</div>
+          </div>
+          <div class="counter">
+            <div class="row"><span class="lbl">Buổi sáng bạn ngồi làm</span><span class="val js-oldRuns">0</span></div>
+            <div class="row"><span class="lbl">Tổng thời gian bỏ ra</span><span class="val js-oldMin">0 phút</span></div>
+          </div>
+        </div>
+        <div class="col col-new">
+          <h3><span class="dot"></span>Cách mới — viết skill 1 lần, AI tự chạy</h3>
+          <div class="tag">Đầu tư một lần ~30 phút. Sau đó tự động.</div>
+          <div class="skill-card">
+            <div class="file">📄 <b>skill</b>: bao-cao-disbursement-sang</div>
+            <div class="skill-line"><span class="k">khi:</span> mỗi ngày 7:00 sáng</div>
+            <div class="skill-line"><span class="k">lấy:</span> số disbursement T-1 từ dashboard</div>
+            <div class="skill-line"><span class="k">viết:</span> tóm tắt + gửi ban lãnh đạo</div>
+            <div class="auto-tag">⚡ Tự chạy — bạn không đụng tay</div>
+            <div class="toast js-toast"><span class="clock">07:00</span> Đã gửi báo cáo sáng ✓</div>
+          </div>
+          <div class="counter">
+            <div class="row"><span class="lbl">Buổi sáng bạn ngồi làm</span><span class="val js-newRuns">0</span></div>
+            <div class="row"><span class="lbl">Đầu tư ban đầu</span><span class="val js-newMin">— phút</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="take">
+      <h2><span class="em">Đầu tư 1 lần. Tự chạy mãi.</span></h2>
+      <div class="lead">Việc nào bạn làm tới lần thứ 3 theo cùng một kiểu — đừng prompt lại nữa, đóng gói thành skill.</div>
+      <div class="turn">
+        <div class="qcard"><span class="n">01</span><p>Việc này một tháng tôi làm lại mấy lần?</p></div>
+        <div class="qcard"><span class="n">02</span><p>Mỗi lần có giống nhau ~80% không?</p></div>
+        <div class="qcard"><span class="n">03</span><p>Phần nào cần đầu óc tôi, phần nào chỉ là thao tác lặp?</p></div>
+      </div>
+      <div class="sign">Tới lượt bạn: tuần này chọn đúng 1 việc lặp, thử đóng gói. Không cần nhiều.</div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 2 ============ -->
+  <section class="screen" data-sim="2">
+    <div class="hero">
+      <span class="chip">Thay đổi <b>2 / 3</b></span>
+      <h1>AI viết giỏi, nhưng làm toán hay sai</h1>
+      <p>Nhân viên AI viết văn rất mượt, nhưng bảo nó <span class="hl">tự cộng một bảng số</span> thì mỗi lần ra một kết quả khác. Cách đúng: <span class="hl">đưa nó con số đã tính sẵn</span>, để nó lo phần viết.</p>
+    </div>
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>Hỏi: "Tổng disbursement hôm qua là bao nhiêu?"</h2>
+          <div class="sub">Bấm hỏi cùng một câu nhiều lần — để ý con số có đổi không.</div>
+        </div>
+        <div class="controls">
+          <button class="btn btn-reset js-reset">Làm lại</button>
+          <button class="btn btn-go js-go">Hỏi lại lần nữa →</button>
+        </div>
+      </div>
+      <div class="cols">
+        <div class="col col-old">
+          <h3><span class="dot"></span>Bắt AI tự cộng cả bảng số</h3>
+          <div class="tag">Đưa AI cả bảng 9,847 dòng, bảo nó tự cộng.</div>
+          <div class="datarow bad">📄 AI phải đọc 9,847 dòng khách hàng</div>
+          <div class="bigwrap">
+            <span class="biglbl">AI trả lời</span>
+            <div class="bignum js-oldNum">— <span class="u"></span></div>
+            <div class="narr js-oldNarr">Bấm "Hỏi lại" để xem.</div>
+          </div>
+          <div class="counter">
+            <div class="row"><span class="lbl">Số lần hỏi</span><span class="val js-oldAsk">0</span></div>
+            <div class="row"><span class="lbl">Số kết quả KHÁC nhau</span><span class="val js-oldDistinct">0</span></div>
+          </div>
+        </div>
+        <div class="col col-new">
+          <h3><span class="dot"></span>Máy tính cộng sẵn, AI chỉ viết</h3>
+          <div class="tag">Máy tính ra con số, AI viết câu quanh nó.</div>
+          <div class="datarow good">🔒 AI chỉ thấy 1 con số đã tính sẵn</div>
+          <div class="bigwrap">
+            <span class="biglbl">Kết quả</span>
+            <div class="bignum js-newNum">— <span class="u"></span></div>
+            <div class="narr js-newNarr">Bấm "Hỏi lại" để xem.</div>
+          </div>
+          <div class="counter">
+            <div class="row"><span class="lbl">Số lần hỏi</span><span class="val js-newAsk">0</span></div>
+            <div class="row"><span class="lbl">Số kết quả KHÁC nhau</span><span class="val js-newDistinct">0</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="take">
+      <h2><span class="em">Số là việc của máy tính. Chữ là việc của AI.</span></h2>
+      <div class="lead">Bên trái: hỏi 5 lần ra 5 số khác nhau — biết tin số nào? Lại bắt AI đọc cả nghìn dòng khách hàng (chậm, tốn, lộ thông tin). Bên phải: máy tính lo phần cộng nên lần nào cũng một số đúng, AI chỉ việc viết.</div>
+      <div class="defbox"><b>👉 Cách làm này có tên: Pattern Y.</b> Máy tính tính sẵn con số (an toàn — AI không thấy thông tin khách hàng, lại đỡ tốn), AI chỉ viết phần chữ. Cả Loki dựng trên Pattern Y.</div>
+      <div class="turn">
+        <div class="qcard"><span class="n">01</span><p>Trong việc của tôi, đâu là phần "tính" — số, công thức, lọc?</p></div>
+        <div class="qcard"><span class="n">02</span><p>Đâu là phần "viết" — giải thích, tóm tắt, soạn?</p></div>
+        <div class="qcard"><span class="n">03</span><p>AI có đang phải đọc dữ liệu nhạy cảm mà nó không cần thấy không?</p></div>
+      </div>
+      <div class="sign">Tới lượt bạn: chọn 1 việc, tách rõ phần "tính" và phần "viết" trước khi giao cho AI.</div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 3 ============ -->
+  <section class="screen" data-sim="3">
+    <div class="hero">
+      <span class="chip">Thay đổi <b>3 / 3</b></span>
+      <h1>Kiểm bài trước khi nộp</h1>
+      <p>AI nói <span class="hl">rất tự tin kể cả khi sai</span>. Báo cáo trông gọn gàng không có nghĩa số bên trong đúng. Việc càng quan trọng — <span class="hl">số lên CEO</span> — càng phải kiểm tay trước khi gửi.</p>
+    </div>
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>Báo cáo sáng AI vừa tạo — sắp gửi CEO</h2>
+          <div class="sub">Trông hoàn hảo. Bấm kiểm từng dòng trước khi bấm gửi.</div>
+        </div>
+        <div class="controls">
+          <button class="btn btn-reset js-reset">Làm lại</button>
+          <button class="btn btn-go js-go">🔍 Kiểm từng dòng</button>
+        </div>
+      </div>
+      <div class="report">
+        <div class="rhead">
+          <span class="ttl">Disbursement Daily Pulse — T-1</span>
+          <span class="meta">07:00 · <span class="badge-ai">AI tạo</span></span>
+        </div>
+        <div class="rline" data-ok="0">
+          <span class="mark">?</span>
+          <div class="txt">
+            Tổng disbursement T-1: <span class="num">1,247 tỷ</span>
+            <div class="note">✗ Sai — chưa trừ giao dịch hoàn/hủy sau 22:00. Số đúng: 1,189 tỷ.</div>
+          </div>
+        </div>
+        <div class="rline" data-ok="1"><span class="mark">?</span><div class="txt">Tăng <span class="num">+5.2%</span> so với hôm trước</div></div>
+        <div class="rline" data-ok="1"><span class="mark">?</span><div class="txt">Kênh dẫn đầu: <span class="num">CAKE — 412 tỷ</span></div></div>
+        <div class="rline" data-ok="1"><span class="mark">?</span><div class="txt">Cảnh báo: VDS × Cash Loan giảm <span class="num">−28%</span></div></div>
+        <div class="scoreline js-score">
+          Kết quả kiểm: <span class="pill">3/4 đúng — 1 số sai suýt lên CEO</span>
+        </div>
+      </div>
+      <div class="paths js-paths">
+        <div class="path path-bad">
+          <div class="tagline">Nếu gửi luôn</div>
+          <h4>😬 CEO thấy số sai</h4>
+          <p>Sai một lần trước mặt sếp = mất tin. Và đây là dự án AI đầu tiên của Cake — mất tin ở đây kéo lùi cả câu chuyện "AI làm được" nhiều tháng.</p>
+        </div>
+        <div class="path path-good">
+          <div class="tagline">Cách đúng</div>
+          <h4>🛡️ Shadow 2 tuần rồi mới go-live</h4>
+          <p>Cho skill chạy "im lặng" 2 tuần, người kiểm song song mỗi sáng. Đủ tin số mới để nó tự gửi CEO. Kiểm bài có hệ thống, không phải may rủi.</p>
+        </div>
+      </div>
+    </div>
+    <div class="take">
+      <h2><span class="em">AI tự tin ≠ AI đúng.</span></h2>
+      <div class="lead">3 dòng đúng, 1 dòng sai — mà dòng sai lại là con số to nhất, gửi thẳng CEO. Kiểm tay là kỷ luật không bao giờ bỏ, không phải bước thừa.</div>
+      <div class="turn">
+        <div class="qcard"><span class="n">01</span><p>Việc này nếu sai thì ai thấy, hậu quả tới đâu?</p></div>
+        <div class="qcard"><span class="n">02</span><p>Phần nào tôi kiểm được bằng tay / so với số gốc?</p></div>
+        <div class="qcard"><span class="n">03</span><p>Có nên cho chạy thử (shadow) trước khi để tự động không?</p></div>
+      </div>
+      <div class="sign">Tới lượt bạn: trước khi để bất kỳ skill nào tự gửi, hỏi "sai thì sao" và đặt cách kiểm.</div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 4 — DATA FLOW ============ -->
+  <section class="screen" data-sim="4">
+    <div class="hero">
+      <span class="chip">Loki · Lộ trình data</span>
+      <h1>Data đi vào skill thế nào?</h1>
+      <p>Bắt đầu bằng <span class="hl">file</span> để team làm quen — đích là skill <span class="hl">nối thẳng DB</span>. Bấm chuyển 2 phase để thấy bước thủ công biến mất.</p>
+      <div class="toggle">
+        <button class="tg on" data-p="1">Phase 1 — Làm quen</button>
+        <button class="tg" data-p="2">Phase 2 — Final (MCP)</button>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="fh2" id="ptitle">Phase 1 — Team tạo skill trên file Analyst xuất</div>
+      <div class="fsub" id="psub">Chỉ Portfolio Analyst chạm DB. Team làm việc trên file sạch — chưa cần IT.</div>
+
+      <div class="flow" id="flow1">
+        <div class="node db"><span class="ic">🗄️</span><span class="nt">DB Lending</span><span class="ns">Data thô + PII</span></div>
+        <div class="arrow">→</div>
+        <div class="node key"><span class="ic">👤</span><span class="nt">Portfolio Analyst</span><span class="ns">Pattern Y: code tính ra số tổng</span></div>
+        <div class="arrow">→</div>
+        <div class="node"><span class="flag flag-manual">làm tay</span><span class="ic">📄</span><span class="nt">File JSON / Excel</span><span class="ns">Aggregate, sạch PII</span></div>
+        <div class="arrow">→</div>
+        <div class="node"><span class="flag flag-manual">làm tay</span><span class="ic">🧩</span><span class="nt">Team upload + viết skill</span><span class="ns">Phần narrative</span></div>
+        <div class="arrow">→</div>
+        <div class="node out"><span class="ic">📊</span><span class="nt">Báo cáo</span><span class="ns">Team đọc, refine</span></div>
+      </div>
+
+      <div class="flow" id="flow2" style="display:none">
+        <div class="node db"><span class="ic">🗄️</span><span class="nt">DB Lending</span><span class="ns">Data thô + PII</span></div>
+        <div class="arrow">→</div>
+        <div class="node key"><span class="flag flag-auto">tự động</span><span class="ic">🔌</span><span class="nt">MCP server</span><span class="ns">IT dựng — nối thẳng DB</span></div>
+        <div class="arrow">→</div>
+        <div class="node key"><span class="flag flag-auto">tự động</span><span class="ic">🧩</span><span class="nt">Skill nối thẳng</span><span class="ns">Pattern Y full, query live</span></div>
+        <div class="arrow">→</div>
+        <div class="node out"><span class="ic">📊</span><span class="nt">Báo cáo tự động</span><span class="ns">Cron 7:00 sáng</span></div>
+      </div>
+
+      <div class="notes" id="notes1">
+        <div class="note"><span class="ne">✅</span>Bắt đầu được ngay — chưa cần MCP/IT</div>
+        <div class="note"><span class="ne">🔒</span>Team không chạm raw/PII, chỉ thấy file sạch</div>
+        <div class="note"><span class="ne">🎯</span>Mục tiêu: tập tạo & quen với skill</div>
+        <div class="note"><span class="ne">✋</span>Đánh đổi: Analyst xuất file tay định kỳ</div>
+      </div>
+      <div class="notes" id="notes2" style="display:none">
+        <div class="note"><span class="ne">⚡</span>Skill query DB live, tự chạy 7:00</div>
+        <div class="note"><span class="ne">🔌</span>Cần IT dựng MCP + Data Eng cấp access</div>
+        <div class="note"><span class="ne">🚀</span>Bỏ hẳn bước xuất tay + upload</div>
+        <div class="note"><span class="ne">🎯</span>Final objective</div>
+      </div>
+    </div>
+    <div class="take">
+      <h2><span class="em">Phase 2 = tự động hóa đúng phần tay của Phase 1.</span></h2>
+      <p class="lead">Hai ô "làm tay" (Analyst xuất file + team upload) chính là thứ MCP thay thế ở Phase 2. Vì vậy skill viết ở Phase 1 phải <b>tách nguồn data khỏi phần viết</b> — đổi nguồn (file → MCP) mà không phải viết lại logic. Đó là lý do tập trên file trước không hề phí.</p>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN — DÙNG ANTIGRAVITY ============ -->
+  <section class="screen" data-sim="8">
+    <div class="hero">
+      <span class="chip">Công cụ + vai Analyst</span>
+      <h1>Antigravity hoạt động thế nào?</h1>
+      <p>Antigravity là <span class="hl">IDE</span> — không phải chat web. Khác lớn nhất: ở đây AI <span class="hl">có "tay"</span> — tự tạo file, chạy lệnh, đọc kết quả. Đây cũng là nơi <span class="hl">Analyst biến data thô → JSON sạch</span>.</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><div><h2>Màn hình gồm 4 vùng</h2><div class="sub">Quen 4 vùng này là dùng được.</div></div></div>
+      <div class="notes">
+        <div class="note"><span class="ne">📁</span>Cây thư mục — các file dự án (folder loki/)</div>
+        <div class="note"><span class="ne">🤖</span>Khung chat Claude — gõ yêu cầu tiếng Việt</div>
+        <div class="note"><span class="ne">⌨️</span>Terminal — nơi lệnh chạy &amp; in kết quả</div>
+        <div class="note"><span class="ne">📝</span>Editor — mở xem / sửa file</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div><h2>Thử: gõ một yêu cầu, xem AI tự làm</h2><div class="sub">Khác chat web — AI ở đây chạy thật trên máy.</div></div>
+        <div class="controls">
+          <button class="btn btn-reset js8-reset">Làm lại</button>
+          <button class="btn btn-go js8-go">▶ Gửi yêu cầu mẫu</button>
+        </div>
+      </div>
+      <div class="ide">
+        <div class="ide-bar"><span class="dotr" style="background:#ff5f57"></span><span class="dotr" style="background:#febc2e"></span><span class="dotr" style="background:#28c840"></span>&nbsp;Antigravity — loki/</div>
+        <div class="ide-body">
+          <div class="ide-tree">
+            <div class="tt">📁 loki</div>
+            <div class="f show ind">📁 raw/</div>
+            <div class="f show ind" style="padding-left:30px">📄 raw_disbursement.csv</div>
+            <div class="f show ind">📁 scripts/</div>
+            <div class="f js8-f-script ind" style="padding-left:30px">🐍 aggregate.py</div>
+            <div class="f show ind">📁 data/</div>
+            <div class="f js8-f-json ind" style="padding-left:30px">📄 disbursement_T-1.json</div>
+          </div>
+          <div class="ide-main">
+            <div class="ide-chat js8-chat"></div>
+            <div class="ide-term js8-term"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><div><h2>3 bước Analyst làm</h2><div class="sub">Vai Analyst: biến data thô thành JSON sạch cho team.</div></div></div>
+      <div class="steps3">
+        <div class="s3"><div class="s3n">1</div><div class="s3b"><b>Lấy data thô</b><p>Export từ DB / dashboard ra Excel hoặc CSV.</p></div></div>
+        <div class="s3"><div class="s3n">2</div><div class="s3b"><b>Nói Claude viết script (copy)</b>
+          <pre class="code">File Excel này có cột cccd, channel,
+product, amount. Viết script Python:
+tính tổng, so sánh hôm trước / 7 ngày,
+top tăng giảm theo channel×product, xuất JSON.
+<span class="hlc">KHÔNG đưa cột cccd/sđt vào output.</span></pre>
+        </div></div>
+        <div class="s3"><div class="s3n">3</div><div class="s3b"><b>Kiểm số → xuất JSON</b><p>Chạy script, kiểm vài số bằng tay, xuất JSON sạch đưa team (mỗi sáng).</p></div></div>
+      </div>
+    </div>
+
+    <div class="take">
+      <h2><span class="em">AI có tay — Analyst lo TÍNH, team lo VIẾT.</span></h2>
+      <p class="lead">Khác chat web (chỉ trả lời bằng chữ), Antigravity cho Claude tự tạo file + chạy script + ghi JSON ra đĩa. Đó là cách Analyst làm phần "tính" của Pattern Y; team làm phần "viết" ở tab sau. Lên Phase 2, phần tính này được MCP làm tự động.</p>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 6 — TẠO SKILL ============ -->
+  <section class="screen" data-sim="5">
+    <div class="hero">
+      <span class="chip">Phase 1 · Bắt tay làm</span>
+      <h1>Tạo skill Pattern Y trên file JSON</h1>
+      <p>Analyst đưa bạn <span class="hl">file JSON đã tính sẵn số</span>. Việc của bạn: viết skill biến nó thành báo cáo tiếng Việt — <span class="hl">không cần code</span>.</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>Skill làm gì? — File JSON vào, báo cáo ra</h2>
+          <div class="sub">Bấm chạy để xem skill biến số thành báo cáo.</div>
+        </div>
+        <div class="controls">
+          <button class="btn btn-reset js5-reset">Làm lại</button>
+          <button class="btn btn-go js5-go">▶ Chạy skill</button>
+        </div>
+      </div>
+      <div class="demo3">
+        <div class="dcard">
+          <div class="dh">📄 File JSON <span class="dby">(Analyst xuất)</span></div>
+          <pre class="code"><span class="cm"># disbursement_T-1.json</span>
+{
+  <span class="kw">"total_disb_ty"</span>: 1189,
+  <span class="kw">"vs_hom_truoc"</span>: "+5.2%",
+  <span class="kw">"vs_7ngay"</span>: "-2.1%",
+  <span class="kw">"top_tang"</span>: "MWG×Credit Card +120 tỷ",
+  <span class="kw">"top_giam"</span>: "VDS×Cash Loan -180 tỷ"
+}</pre>
+        </div>
+        <div class="arrow">→</div>
+        <div class="dcard skill">
+          <div class="dh">🧩 SKILL.md <span class="dby">(bạn viết)</span></div>
+          <div class="srows">
+            <div class="srow"><b>đọc:</b> file JSON bên trái</div>
+            <div class="srow"><b>viết:</b> báo cáo sáng theo mẫu</div>
+            <div class="srow"><b>giọng:</b> Cake, tiếng Việt, gọn</div>
+            <div class="srow warn">⚠️ Không tự tính lại số — chỉ dùng số trong file</div>
+          </div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="dcard out">
+          <div class="dh">📊 Báo cáo</div>
+          <div class="report-out js5-out"><span class="ph">Bấm "Chạy skill" để xem kết quả.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><div><h2>3 bước tạo — không cần biết code</h2></div></div>
+      <div class="steps3">
+        <div class="s3">
+          <div class="s3n">1</div>
+          <div class="s3b"><b>Xin Analyst file JSON mẫu</b><p>Một ngày data đã tính sẵn, dạng như ô demo bên trên.</p></div>
+        </div>
+        <div class="s3">
+          <div class="s3n">2</div>
+          <div class="s3b"><b>Nói với Claude (copy câu này)</b>
+            <pre class="code">Đây là file JSON disbursement đã tính sẵn.
+Viết cho tôi một skill: đọc file này, xuất
+báo cáo sáng gồm tổng + 3 so sánh + top
+tăng/giảm. Giọng Cake, tiếng Việt, gọn.
+<span class="hlc">Đừng tự tính lại số — chỉ dùng số trong file.</span></pre>
+          </div>
+        </div>
+        <div class="s3">
+          <div class="s3n">3</div>
+          <div class="s3b"><b>Chạy thử → sửa → lưu</b><p>Claude sinh ra SKILL.md. Chạy thử, thấy lệch thì nói "sửa chỗ này". Ưng thì lưu vào thư viện skill.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="take">
+      <h2><span class="em">Skill chỉ đọc file, không tự tính.</span></h2>
+      <p class="lead">Vì skill chỉ "đọc số có sẵn rồi viết", lên Phase 2 bạn chỉ đổi nguồn — thay file JSON bằng MCP query thẳng DB — <b>phần viết giữ nguyên, không làm lại</b>. Đó là lý do tập trên file ở Phase 1 không hề phí công.</p>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 7 — FULL FLOW ============ -->
+  <section class="screen" data-sim="7">
+    <div class="hero">
+      <span class="chip">Full flow · Antigravity</span>
+      <h1>Cả chuỗi chạy trên một máy</h1>
+      <p>Từ data thô tới báo cáo — tất cả chạy trong <span class="hl">Antigravity + Claude Code</span> (có terminal + Python + file), không qua claude.ai web.</p>
+    </div>
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>Chạy cả chuỗi Pattern Y</h2>
+          <div class="sub">Một nút — xem data thô đi hết đường tới báo cáo.</div>
+        </div>
+        <div class="controls">
+          <button class="btn btn-reset js7-reset">Làm lại</button>
+          <button class="btn btn-go js7-go">▶ Chạy cả chuỗi</button>
+        </div>
+      </div>
+
+      <div class="envbar">
+        <span class="ok">🖥️ Antigravity (IDE) + 🤖 Claude Code = chạy được</span>
+        <span class="vs">vs</span>
+        <span class="no">claude.ai web — không chạy script/file</span>
+      </div>
+
+      <div class="flow pipe js7-flow">
+        <div class="node"><span class="ic">📊</span><span class="nt">Data thô</span><span class="ns">csv có PII · vai Analyst</span></div>
+        <div class="arrow">→</div>
+        <div class="node"><span class="ic">🐍</span><span class="nt">Script tính</span><span class="ns">Python · vai Analyst</span></div>
+        <div class="arrow">→</div>
+        <div class="node key"><span class="ic">📄</span><span class="nt">JSON sạch</span><span class="ns">4 số · no PII</span></div>
+        <div class="arrow">→</div>
+        <div class="node"><span class="ic">🧩</span><span class="nt">Skill viết</span><span class="ns">vai team</span></div>
+        <div class="arrow">→</div>
+        <div class="node out"><span class="ic">📋</span><span class="nt">Báo cáo</span><span class="ns">tiếng Việt</span></div>
+      </div>
+      <div class="pipe-status js7-status">Bấm "Chạy cả chuỗi" để bắt đầu.</div>
+    </div>
+
+    <div class="take">
+      <h2><span class="em">Một máy, một chuỗi, hai vai.</span></h2>
+      <p class="lead">Analyst chạy 2 chặng đầu (thô → JSON), team chạy 2 chặng sau (JSON → báo cáo) — tất cả trong Antigravity. Lên Phase 2, hai chặng đầu của Analyst được MCP làm tự động; phần skill của team giữ nguyên.</p>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  /* ---------- NAVIGATION ---------- */
+  const screens=[...document.querySelectorAll('.screen')];
+  const items=[...document.querySelectorAll('.step-item')];
+  const prevB=document.querySelector('.nav-prev');
+  const nextB=document.querySelector('.nav-next');
+  let cur=0;
+  function show(n){
+    cur=Math.max(0,Math.min(screens.length-1,n));
+    screens.forEach((s,i)=>s.classList.toggle('active',i===cur));
+    items.forEach((s,i)=>s.classList.toggle('on',i===cur));
+    prevB.disabled=cur===0; nextB.disabled=cur===screens.length-1;
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  items.forEach(it=>it.addEventListener('click',()=>show(+it.dataset.go)));
+  prevB.addEventListener('click',()=>show(cur-1));
+  nextB.addEventListener('click',()=>show(cur+1));
+  show(0);
+
+  /* ---------- SCREEN 1 ---------- */
+  (function(root){
+    const dayNames=['','thứ Ba','thứ Tư','thứ Năm','thứ Sáu','— hết tuần'];
+    const MIN=12, SETUP=30;
+    const days=[...root.querySelectorAll('.js-week .day')];
+    const steps=[...root.querySelectorAll('.js-steps .step')];
+    const go=root.querySelector('.js-go'), rs=root.querySelector('.js-reset');
+    const oR=root.querySelector('.js-oldRuns'), oM=root.querySelector('.js-oldMin');
+    const nR=root.querySelector('.js-newRuns'), nM=root.querySelector('.js-newMin');
+    const toast=root.querySelector('.js-toast');
+    let day=0;
+    const set=(el,t)=>{el.textContent=t;el.classList.remove('pulse');void el.offsetWidth;el.classList.add('pulse');};
+    function run(){
+      if(day>=5)return; day++;
+      days[day-1].classList.add('active');
+      steps.forEach(s=>s.classList.remove('on'));
+      steps.forEach((s,i)=>setTimeout(()=>s.classList.add('on'),i*180));
+      setTimeout(()=>{set(oR,day);set(oM,(day*MIN)+' phút');},steps.length*180);
+      if(day===1)set(nM,SETUP+' phút (1 lần)');
+      toast.classList.remove('show');void toast.offsetWidth;
+      setTimeout(()=>toast.classList.add('show'),300);
+      setTimeout(()=>toast.classList.remove('show'),2100);
+      if(day>=5){go.disabled=true;go.textContent='Hết tuần ✓';}
+      else go.textContent='▶ Chạy '+dayNames[day];
+    }
+    function reset(){
+      day=0; days.forEach(d=>d.classList.remove('active'));
+      steps.forEach(s=>s.classList.remove('on'));
+      oR.textContent='0';oM.textContent='0 phút';nR.textContent='0';nM.textContent='— phút';
+      toast.classList.remove('show');go.disabled=false;go.textContent='▶ Chạy thứ Hai';
+    }
+    go.addEventListener('click',run); rs.addEventListener('click',reset);
+  })(document.querySelector('[data-sim="1"]'));
+
+  /* ---------- SCREEN 2 ---------- */
+  (function(root){
+    const wrong=['1,180','1,402','1,247','1,318','1,205','1,389','1,260','1,151'];
+    const narrs=['Khoảng 1,180 tỷ, dựa trên các dòng tôi đọc được.','Tôi tính ra 1,402 tỷ (có thể sót vài dòng).','Tầm 1,247 tỷ nếu cộng đủ.','Ước tính 1,318 tỷ.','Có lẽ 1,205 tỷ.'];
+    const TRUE='1,247';
+    const go=root.querySelector('.js-go'), rs=root.querySelector('.js-reset');
+    const oN=root.querySelector('.js-oldNum'), oNa=root.querySelector('.js-oldNarr'), oA=root.querySelector('.js-oldAsk'), oD=root.querySelector('.js-oldDistinct');
+    const nN=root.querySelector('.js-newNum'), nNa=root.querySelector('.js-newNarr'), nA=root.querySelector('.js-newAsk'), nD=root.querySelector('.js-newDistinct');
+    let ask=0; const seen=new Set();
+    const flip=el=>{el.classList.remove('flip');void el.offsetWidth;el.classList.add('flip');};
+    function go_(){
+      ask++;
+      const w=wrong[(ask-1)%wrong.length];
+      oN.innerHTML=w+' <span class="u">tỷ</span>';flip(oN);
+      oNa.textContent=narrs[(ask-1)%narrs.length];
+      seen.add(w); oA.textContent=ask; oD.textContent=seen.size;
+      nN.innerHTML=TRUE+' <span class="u">tỷ</span>';flip(nN);
+      nNa.textContent='Disbursement hôm qua đạt 1,247 tỷ, tăng nhẹ so với hôm trước.';
+      nA.textContent=ask; nD.textContent=1;
+    }
+    function reset(){
+      ask=0;seen.clear();
+      oN.innerHTML='— <span class="u"></span>';nN.innerHTML='— <span class="u"></span>';
+      oNa.textContent='Bấm "Hỏi lại" để xem.';nNa.textContent='Bấm "Hỏi lại" để xem.';
+      oA.textContent='0';oD.textContent='0';nA.textContent='0';nD.textContent='0';
+    }
+    go.addEventListener('click',go_); rs.addEventListener('click',reset);
+  })(document.querySelector('[data-sim="2"]'));
+
+  /* ---------- SCREEN 3 ---------- */
+  (function(root){
+    const lines=[...root.querySelectorAll('.rline')];
+    const go=root.querySelector('.js-go'), rs=root.querySelector('.js-reset');
+    const score=root.querySelector('.js-score'), paths=root.querySelector('.js-paths');
+    let i=0, running=false;
+    function next(){
+      if(i>=lines.length){running=false;score.classList.add('show');
+        setTimeout(()=>paths.classList.add('show'),250);
+        go.disabled=true;go.textContent='Đã kiểm xong ✓';return;}
+      const ln=lines[i]; ln.classList.add('checking'); ln.querySelector('.mark').textContent='⟳';
+      setTimeout(()=>{
+        ln.classList.remove('checking');
+        if(ln.dataset.ok==='1'){ln.classList.add('ok');ln.querySelector('.mark').textContent='✓';}
+        else{ln.classList.add('bad');ln.querySelector('.mark').textContent='✗';}
+        i++;next();
+      },560);
+    }
+    function start(){if(running)return;running=true;go.textContent='Đang kiểm…';next();}
+    function reset(){
+      i=0;running=false;
+      lines.forEach(l=>{l.classList.remove('ok','bad','checking');l.querySelector('.mark').textContent='?';});
+      score.classList.remove('show');paths.classList.remove('show');
+      go.disabled=false;go.textContent='🔍 Kiểm từng dòng';
+    }
+    go.addEventListener('click',start); rs.addEventListener('click',reset);
+  })(document.querySelector('[data-sim="3"]'));
+
+  /* ---------- SCREEN 4 — phase toggle ---------- */
+  (function(root){
+    const titles={
+      '1':['Phase 1 — Team tạo skill trên file Analyst xuất','Chỉ Portfolio Analyst chạm DB. Team làm việc trên file sạch — chưa cần IT.'],
+      '2':['Phase 2 — Skill nối thẳng DB qua MCP','Bỏ bước thủ công. Skill tự query data live và chạy theo lịch.']
+    };
+    const f1=root.querySelector('#flow1'), f2=root.querySelector('#flow2');
+    const n1=root.querySelector('#notes1'), n2=root.querySelector('#notes2');
+    const tt=root.querySelector('#ptitle'), ts=root.querySelector('#psub');
+    root.querySelectorAll('.tg').forEach(b=>b.addEventListener('click',()=>{
+      const p=b.dataset.p;
+      root.querySelectorAll('.tg').forEach(x=>x.classList.toggle('on',x===b));
+      f1.style.display=p==='1'?'flex':'none'; f2.style.display=p==='2'?'flex':'none';
+      n1.style.display=p==='1'?'grid':'none'; n2.style.display=p==='2'?'grid':'none';
+      tt.textContent=titles[p][0]; ts.textContent=titles[p][1];
+    }));
+  })(document.querySelector('[data-sim="4"]'));
+
+  /* ---------- SCREEN 5 — chạy skill demo ---------- */
+  (function(root){
+    if(!root)return;
+    const go=root.querySelector('.js5-go'), rs=root.querySelector('.js5-reset'), out=root.querySelector('.js5-out');
+    const report='<b>Báo cáo Disbursement sáng — T-1</b><br>'+
+      'Tổng disbursement hôm qua đạt <b>1,189 tỷ</b>, tăng +5.2% so với hôm trước, giảm nhẹ 2.1% so với trung bình 7 ngày.<br>'+
+      '• Tăng mạnh nhất: MWG × Credit Card (+120 tỷ).<br>'+
+      '• Cần chú ý: VDS × Cash Loan giảm 180 tỷ.';
+    function run(){
+      out.classList.add('run'); out.textContent='⟳ Đang đọc file + viết…';
+      go.disabled=true; go.textContent='Đang chạy…';
+      setTimeout(()=>{out.classList.remove('run');out.innerHTML=report;go.textContent='Đã chạy ✓';},750);
+    }
+    function reset(){out.classList.remove('run');out.innerHTML='<span class="ph">Bấm "Chạy skill" để xem kết quả.</span>';go.disabled=false;go.textContent='▶ Chạy skill';}
+    go.addEventListener('click',run); rs.addEventListener('click',reset);
+  })(document.querySelector('[data-sim="5"]'));
+
+  /* ---------- SCREEN 7 — full flow ---------- */
+  (function(root){
+    if(!root)return;
+    const go=root.querySelector('.js7-go'), rs=root.querySelector('.js7-reset');
+    const flow=root.querySelector('.js7-flow'), status=root.querySelector('.js7-status');
+    const nodes=[...flow.querySelectorAll('.node')];
+    const msgs=['📊 Đọc data thô (có PII)…','🐍 Script tính + bỏ PII…','📄 Ra JSON sạch (4 số)…','🧩 Skill đọc JSON, đang viết…','📋 Xong — báo cáo sẵn sàng ✓'];
+    let timers=[];
+    function run(){
+      reset(true); go.disabled=true; go.textContent='Đang chạy…';
+      nodes.forEach((n,i)=>{
+        timers.push(setTimeout(()=>{
+          n.classList.add('lit'); status.textContent=msgs[i];
+          if(i===nodes.length-1){flow.classList.add('done');go.textContent='Xong ✓';}
+        }, i*650));
+      });
+    }
+    function reset(keepBtn){
+      timers.forEach(clearTimeout); timers=[];
+      nodes.forEach(n=>n.classList.remove('lit')); flow.classList.remove('done');
+      status.textContent='Bấm "Chạy cả chuỗi" để bắt đầu.';
+      if(!keepBtn){go.disabled=false;go.textContent='▶ Chạy cả chuỗi';}
+    }
+    go.addEventListener('click',run); rs.addEventListener('click',()=>reset(false));
+  })(document.querySelector('[data-sim="7"]'));
+
+  /* ---------- SCREEN — Dùng Antigravity (mô phỏng IDE) ---------- */
+  (function(root){
+    if(!root)return;
+    const go=root.querySelector('.js8-go'), rs=root.querySelector('.js8-reset');
+    const chat=root.querySelector('.js8-chat'), term=root.querySelector('.js8-term');
+    const fScript=root.querySelector('.js8-f-script'), fJson=root.querySelector('.js8-f-json');
+    let timers=[];
+    function bubble(who,txt){const b=document.createElement('div');b.className='bubble '+who;b.textContent=txt;chat.appendChild(b);requestAnimationFrame(()=>b.classList.add('show'));}
+    function termline(html){const l=document.createElement('div');l.className='line';l.innerHTML=html;term.appendChild(l);requestAnimationFrame(()=>l.classList.add('show'));}
+    const steps=[
+      ()=>bubble('user','Đọc raw_disbursement.csv, tính tổng + top tăng/giảm, xuất data/disbursement_T-1.json. Bỏ cột cccd.'),
+      ()=>{bubble('ai','Để mình viết script Python nhé…'); fScript.classList.add('show','new');},
+      ()=>termline('<span class="cmd">$ python3 scripts/aggregate.py</span>'),
+      ()=>termline('{ "total_disb_ty": 111.1, "top_tang": "VDS×CashLoan +30.0 tỷ" … }'),
+      ()=>{termline('<span class="ok2">✓ đã ghi data/disbursement_T-1.json (no PII)</span>'); fJson.classList.add('show','new');},
+      ()=>bubble('ai','Xong ✓ JSON sạch ở data/. Mình không đụng cột cccd trong file raw.')
+    ];
+    function run(){
+      reset(true); go.disabled=true; go.textContent='Đang chạy…';
+      steps.forEach((fn,i)=>timers.push(setTimeout(fn,i*850)));
+      timers.push(setTimeout(()=>{go.textContent='Xong ✓';},steps.length*850));
+    }
+    function reset(keepBtn){
+      timers.forEach(clearTimeout); timers=[];
+      chat.innerHTML=''; term.innerHTML='';
+      fScript.classList.remove('show','new'); fJson.classList.remove('show','new');
+      if(!keepBtn){go.disabled=false;go.textContent='▶ Gửi yêu cầu mẫu';}
+    }
+    go.addEventListener('click',run); rs.addEventListener('click',()=>reset(false));
+  })(document.querySelector('[data-sim="8"]'));
+</script>
+</body>
+</html>

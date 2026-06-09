@@ -1,0 +1,491 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.w{padding:1.5rem 0;font-family:var(--font-sans)}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:1.5rem}
+.kpi{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:11px 14px}
+.kpi-l{font-size:11px;color:var(--color-text-secondary);margin-bottom:3px}
+.kpi-v{font-size:19px;font-weight:500}
+.kpi-s{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+.pos{color:#1D9E75}.neg{color:#E24B4A}.neu{color:var(--color-text-primary)}
+.tabs{display:flex;border-bottom:0.5px solid var(--color-border-tertiary)}
+.tab{font-size:13px;padding:7px 14px;cursor:pointer;color:var(--color-text-secondary);border-bottom:2px solid transparent;margin-bottom:-0.5px}
+.tab.active{color:var(--color-text-primary);font-weight:500;border-bottom:2px solid #1D9E75}
+.pane{display:none;padding-top:16px}.pane.active{display:block}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;margin-bottom:14px}
+.pl-table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
+.pl-table th{padding:7px 10px;background:var(--color-background-secondary);color:var(--color-text-secondary);font-weight:500;font-size:11px;text-align:right;white-space:nowrap}
+.pl-table th:first-child{text-align:left;width:40%}
+.pl-table td{padding:6px 10px;border-top:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary);text-align:right;white-space:nowrap}
+.pl-table td:first-child{text-align:left;color:var(--color-text-secondary)}
+.pl-table tr.sub td:first-child{padding-left:20px;font-size:12px}
+.pl-table tr.sub td{font-size:12px;color:var(--color-text-secondary)}
+.pl-table tr.total td{background:var(--color-background-secondary);font-weight:500;font-size:14px;color:var(--color-text-primary)}
+.pl-table tr.subtotal td{background:var(--color-background-secondary);font-weight:500;color:var(--color-text-primary)}
+.pl-table tr.spacer td{padding:3px;border:none;background:transparent}
+.pl-table tr.sec-hdr td{background:var(--color-background-secondary);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;color:var(--color-text-secondary);padding:5px 10px;border-top:1px solid var(--color-border-secondary)}
+.inp-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-bottom:12px}
+.inp-grid3{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:10px;margin-bottom:12px}
+.param{display:flex;flex-direction:column;gap:3px}
+.param label{font-size:12px;color:var(--color-text-secondary)}
+.prow{display:flex;align-items:center;gap:7px}
+.prow input[type=range]{flex:1}
+.pval{font-size:12px;font-weight:500;color:var(--color-text-primary);min-width:58px;text-align:right}
+.grp{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 8px;display:flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.dg{background:#1D9E75}.db{background:#378ADD}.dp{background:#7F77DD}.dr{background:#E24B4A}
+.linked-box{border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:14px 16px;margin-bottom:12px;background:var(--color-background-primary)}
+.linked-title{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.link-badge{font-size:10px;color:var(--color-text-secondary);background:var(--color-background-secondary);padding:2px 7px;border-radius:10px}
+.slider-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.slider-row:last-child{margin-bottom:0}
+.slider-label{font-size:12px;color:var(--color-text-secondary);width:200px;flex-shrink:0}
+.slider-val{font-size:14px;font-weight:500;min-width:90px;text-align:right}
+.sv-green{color:#1D9E75}.sv-blue{color:#378ADD}
+.derived-row{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--color-text-secondary);background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 12px;margin-bottom:12px}
+.derived-row b{color:var(--color-text-primary)}
+.chart-section{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:12px}
+.chart-legend{display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap}
+.leg-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--color-text-secondary)}
+.leg-line{width:20px;height:2px;flex-shrink:0;border-radius:1px}
+.note-box{font-size:12px;color:var(--color-text-secondary);background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 12px;margin-top:8px;line-height:1.7}
+.partner-box{border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:14px 16px;background:var(--color-background-primary);margin-bottom:12px}
+.partner-box-title{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px}
+.partner-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.partner-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;border-left:3px solid transparent}
+.partner-card.c10{border-color:#9FE1CB}.partner-card.c20{border-color:#5DCAA5}.partner-card.c30{border-color:#1D9E75}
+.pc-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:4px}
+.pc-pct{font-size:18px;font-weight:500;color:#1D9E75}
+.pc-rows{margin-top:6px}
+.pc-row{display:flex;justify-content:space-between;font-size:11px;padding:2px 0;border-top:0.5px solid var(--color-border-tertiary)}
+.pc-row .pck{color:var(--color-text-secondary)}.pc-row .pcv{font-weight:500;color:var(--color-text-primary)}
+.acq-box{border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:14px 16px;margin-top:10px;background:var(--color-background-primary)}
+.acq-box-title{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px}
+.acq-convert-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:center}
+.acq-side{padding:12px 14px;background:var(--color-background-secondary);border-radius:var(--border-radius-md)}
+.acq-side-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:4px}
+.acq-side-val{font-size:22px;font-weight:500;color:#7F77DD}
+.acq-side-sub{font-size:11px;color:var(--color-text-secondary);margin-top:3px}
+.acq-arrow{text-align:center;padding:0 12px;font-size:18px;color:var(--color-text-secondary)}
+.acq-equiv-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:4px}
+.acq-equiv-val{font-size:22px;font-weight:500;color:#E24B4A}
+.acq-formula{font-size:12px;color:var(--color-text-secondary);margin-top:10px;padding-top:10px;border-top:0.5px solid var(--color-border-tertiary);line-height:1.8}
+.acq-formula b{color:var(--color-text-primary)}
+.curr-marker{font-size:10px;background:#1D9E75;color:#fff;padding:1px 5px;border-radius:3px;margin-left:3px;vertical-align:middle}
+.sens-wrap{overflow-x:auto}
+.st{width:100%;border-collapse:collapse;font-size:12px}
+.st th{padding:5px 8px;background:var(--color-background-secondary);color:var(--color-text-secondary);font-weight:500;border:0.5px solid var(--color-border-tertiary);text-align:center;white-space:nowrap}
+.st td{padding:5px 8px;border:0.5px solid var(--color-border-tertiary);text-align:center}
+.cp{background:#EAF3DE;color:#3B6D11}.cn{background:#FCEBEB;color:#A32D2D}.cm{background:#FAEEDA;color:#854F0B}
+</style>
+
+<div class="w">
+<div class="kpi-grid" id="kpis"></div>
+<div class="tabs">
+  <div class="tab active" onclick="ST('params')">Thông số</div>
+  <div class="tab" onclick="ST('pl')">P&L</div>
+  <div class="tab" onclick="ST('sens')">Sensitivity</div>
+</div>
+
+<div class="pane active" id="pane-params">
+  <div class="grp"><span class="dot dg"></span>Danh mục</div>
+  <div class="inp-grid">
+    <div class="param"><label>Số lượng KH</label><div class="prow"><input type="range" id="nKH" min="100" max="20000" step="100" value="1000"><span class="pval" id="nKH-v">1,000</span></div></div>
+    <div class="param"><label>Hạn mức OD bình quân / KH (triệu VND)</label><div class="prow"><input type="range" id="hanMuc" min="10" max="1000" step="10" value="300"><span class="pval" id="hanMuc-v">300</span></div></div>
+  </div>
+
+  <div class="linked-box">
+    <div class="linked-title">Utilization &amp; Dư nợ bình quân <span class="link-badge">&#8646; liên kết</span></div>
+    <div class="slider-row">
+      <span class="slider-label">Utilization (%)</span>
+      <input type="range" id="util" min="1" max="100" step="1" value="17" style="flex:1">
+      <span class="slider-val sv-green" id="util-v">17%</span>
+    </div>
+    <div class="slider-row">
+      <span class="slider-label">Dư nợ BQ / KH (triệu VND)</span>
+      <input type="range" id="duNo" min="1" max="300" step="1" value="51" style="flex:1">
+      <span class="slider-val sv-blue" id="duNo-v">51 tr</span>
+    </div>
+  </div>
+  <div class="derived-row" id="derived-dn"></div>
+
+  <div class="chart-section">
+    <div class="chart-legend">
+      <div class="leg-item"><div class="leg-line" style="background:#E24B4A"></div>% Total risk / dư nợ</div>
+      <div class="leg-item"><div class="leg-line" style="background:#1D9E75"></div>% Lợi nhuận / dư nợ</div>
+    </div>
+    <div style="position:relative;height:230px"><canvas id="utilChart"></canvas></div>
+  </div>
+
+  <div class="partner-box">
+    <div class="partner-box-title">Partner nhận được tại utilization hiện tại — <span id="curr-util-label">—</span></div>
+    <div class="partner-grid" id="partner-cards"></div>
+    <div style="font-size:11px;color:var(--color-text-secondary);margin-top:8px" id="partner-note"></div>
+  </div>
+
+  <div class="grp"><span class="dot db"></span>Thu nhập</div>
+  <div class="inp-grid">
+    <div class="param"><label>Lãi suất OD (%/năm)</label><div class="prow"><input type="range" id="laiSuat" min="6" max="24" step="0.5" value="18"><span class="pval" id="laiSuat-v">18.0%</span></div></div>
+    <div class="param"><label>Phí quản lý tháng / KH (nghìn VND)</label><div class="prow"><input type="range" id="phiQL" min="0" max="500" step="10" value="50"><span class="pval" id="phiQL-v">50</span></div></div>
+  </div>
+  <div class="inp-grid">
+    <div class="param"><label>Phí partner thu từ HKD / KH / tháng (nghìn VND)</label><div class="prow"><input type="range" id="phiPartner" min="0" max="1000" step="10" value="600"><span class="pval" id="phiPartner-v">600</span></div></div>
+    <div class="param"><label>% KH có partner thu phí</label><div class="prow"><input type="range" id="pctPartner" min="0" max="100" step="5" value="100"><span class="pval" id="pctPartner-v">100%</span></div></div>
+  </div>
+
+  <div class="grp"><span class="dot dr"></span>Chi phí rủi ro</div>
+  <div class="inp-grid">
+    <div class="param"><label>Chi phí rủi ro trên hạn mức (%/năm)</label><div class="prow"><input type="range" id="riskLimit" min="0.5" max="10" step="0.1" value="2"><span class="pval" id="riskLimit-v">2.0%</span></div></div>
+    <div class="param"><label>Tương đương trên dư nợ (tự tính)</label>
+      <div class="prow" style="margin-top:6px"><span style="font-size:20px;font-weight:500;color:#E24B4A" id="riskOnDuNo">—</span></div>
+    </div>
+  </div>
+  <div class="note-box" id="risk-note"></div>
+
+  <div class="grp"><span class="dot db"></span>Chi phí vốn & vận hành</div>
+  <div class="inp-grid3">
+    <div class="param"><label>Chi phí vốn CoF (%/năm dư nợ)</label><div class="prow"><input type="range" id="cof" min="2" max="12" step="0.25" value="7"><span class="pval" id="cof-v">7.0%</span></div></div>
+    <div class="param"><label>UW + Disbursal (%/năm dư nợ)</label><div class="prow"><input type="range" id="uwCost" min="0" max="5" step="0.1" value="1"><span class="pval" id="uwCost-v">1.0%</span></div></div>
+    <div class="param"><label>Allocation cost (%/năm dư nợ)</label><div class="prow"><input type="range" id="allocCost" min="0" max="5" step="0.1" value="1"><span class="pval" id="allocCost-v">1.0%</span></div></div>
+  </div>
+
+  <div class="grp"><span class="dot dp"></span>Acquisition cost = % × TOI</div>
+  <div class="inp-grid">
+    <div class="param"><label>% chia lại cho partner (% của TOI)</label><div class="prow"><input type="range" id="acqPct" min="0" max="80" step="5" value="30"><span class="pval" id="acqPct-v">30%</span></div></div>
+  </div>
+  <div class="acq-box">
+    <div class="acq-box-title">Quy đổi acquisition cost → % trên dư nợ bình quân</div>
+    <div class="acq-convert-grid">
+      <div class="acq-side">
+        <div class="acq-side-label">Acquisition (% × TOI)</div>
+        <div class="acq-side-val" id="acq-input-pct">—</div>
+        <div class="acq-side-sub" id="acq-input-abs">—</div>
+      </div>
+      <div class="acq-arrow">→</div>
+      <div class="acq-side">
+        <div class="acq-equiv-label">Tương đương % / dư nợ</div>
+        <div class="acq-equiv-val" id="acq-equiv-pct">—</div>
+        <div class="acq-side-sub" id="acq-equiv-abs">—</div>
+      </div>
+    </div>
+    <div class="acq-formula" id="acq-formula"></div>
+  </div>
+</div>
+
+<div class="pane" id="pane-pl">
+  <div class="card" style="overflow-x:auto">
+    <table class="pl-table">
+      <thead><tr>
+        <th style="text-align:left">Khoản mục</th>
+        <th>% / dư nợ</th>
+        <th>% / hạn mức</th>
+        <th>Tỷ VND / năm</th>
+      </tr></thead>
+      <tbody id="pl-body"></tbody>
+    </table>
+  </div>
+  <div style="position:relative;height:300px"><canvas id="plChart"></canvas></div>
+</div>
+
+<div class="pane" id="pane-sens">
+  <div style="font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:8px">% Lợi nhuận / dư nợ — theo Lãi suất × Utilization</div>
+  <div class="card sens-wrap"><div id="s1"></div></div>
+  <div style="font-size:12px;font-weight:500;color:var(--color-text-secondary);margin:14px 0 8px">% Lợi nhuận / dư nợ — theo Acquisition % × Risk % trên hạn mức</div>
+  <div class="card sens-wrap"><div id="s2"></div></div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+let plCI=null,utCI=null,_syn=false;
+function fP(v,d=2){return (v*100).toFixed(d)+'%'}
+function fB(v){const s=v<0?'-':'';return s+(Math.abs(v)/1e9).toFixed(3)}
+function fK(v){return Math.round(v/1e3).toLocaleString('vi-VN')+'k'}
+function g(id){return parseFloat(document.getElementById(id).value)}
+
+function updateDuNoMax(){document.getElementById('duNo').max=g('hanMuc')}
+function syncDuNoFromUtil(u){
+  if(_syn)return;_syn=true;
+  const dn=Math.min(g('hanMuc'),Math.max(1,Math.round(g('hanMuc')*(u/100))));
+  document.getElementById('duNo').value=dn;
+  document.getElementById('duNo-v').textContent=dn+' tr';
+  _syn=false;
+}
+function syncUtilFromDuNo(dn){
+  if(_syn)return;_syn=true;
+  const u=Math.min(100,Math.max(1,Math.round(dn/g('hanMuc')*100)));
+  document.getElementById('util').value=u;
+  document.getElementById('util-v').textContent=u+'%';
+  _syn=false;
+}
+
+function calcCore(L,D,util,laiSuat,feeInc,riskLimit,cof,uw,alloc,acqPct){
+  const laiInc=D*laiSuat;
+  const riskOnDN=util>0?riskLimit/util:0;
+  const riskGoc=L*riskLimit;
+  const riskLP=(laiInc+feeInc)*riskOnDN;
+  const totalRisk=riskGoc+riskLP;
+  const totalRiskOnDN=D>0?totalRisk/D:0;
+  const cofAbs=D*cof;
+  const toi=laiInc+feeInc-riskGoc-riskLP-cofAbs;
+  const acqAbs=Math.max(0,toi)*acqPct;
+  const acqOnDN=D>0?acqAbs/D:0;
+  const uwAbs=D*uw,allocAbs=D*alloc;
+  const pbtBefore=toi-acqAbs-uwAbs;
+  const pbtAfter=pbtBefore-allocAbs;
+  return {laiInc,riskOnDN,riskGoc,riskLP,totalRisk,totalRiskOnDN,cofAbs,toi,acqAbs,acqOnDN,uwAbs,allocAbs,pbtBefore,pbtAfter};
+}
+
+function calc(){
+  const nKH=g('nKH'),hm=g('hanMuc')*1e6,util=g('util')/100;
+  const laiSuat=g('laiSuat')/100;
+  const phiQL=g('phiQL')*1e3,phiP=g('phiPartner')*1e3,pctP=g('pctPartner')/100;
+  const riskLimit=g('riskLimit')/100;
+  const cof=g('cof')/100,uw=g('uwCost')/100,alloc=g('allocCost')/100;
+  const acqPct=g('acqPct')/100;
+  const L=nKH*hm,D=L*util;
+  const phiQLInc=nKH*phiQL*12,phiPInc=nKH*pctP*phiP*12;
+  const feeInc=phiQLInc+phiPInc;
+  const core=calcCore(L,D,util,laiSuat,feeInc,riskLimit,cof,uw,alloc,acqPct);
+  return {nKH,hm,util,L,D,laiSuat,phiQLInc,phiPInc,feeInc,riskLimit,cof,uw,alloc,acqPct,...core};
+}
+
+function renderKPI(c){
+  const pr=c.D>0?c.pbtAfter/c.D:0,tr=c.D>0?c.toi/c.D:0;
+  document.getElementById('kpis').innerHTML=`
+    <div class="kpi"><div class="kpi-l">Dư nợ bình quân</div><div class="kpi-v neu">${fB(c.D)} tỷ</div><div class="kpi-s">Util ${(c.util*100).toFixed(0)}% × ${fB(c.L)} tỷ HM</div></div>
+    <div class="kpi"><div class="kpi-l">TOI / dư nợ</div><div class="kpi-v ${tr>=0?'pos':'neg'}">${fP(tr)}</div><div class="kpi-s">${fB(c.toi)} tỷ/năm</div></div>
+    <div class="kpi"><div class="kpi-l">Acq cost / dư nợ</div><div class="kpi-v" style="color:#7F77DD">${fP(c.acqOnDN)}</div><div class="kpi-s">${fB(c.acqAbs)} tỷ/năm</div></div>
+    <div class="kpi"><div class="kpi-l">Lợi nhuận / dư nợ</div><div class="kpi-v ${pr>=0?'pos':'neg'}">${fP(pr)}</div><div class="kpi-s">${fB(c.pbtAfter)} tỷ/năm</div></div>`;
+}
+
+function renderDerived(c){
+  const rLPpct=c.D>0?c.riskLP/c.D:0;
+  document.getElementById('derived-dn').innerHTML=`
+    <span>Tổng HM: <b>${fB(c.L)} tỷ</b></span>
+    <span>Dư nợ BQ: <b>${fB(c.D)} tỷ</b></span>
+    <span>Dư nợ/KH: <b>${(c.D/c.nKH/1e6).toFixed(1)} tr</b></span>
+    <span>Risk gốc/dư nợ: <b style="color:#E24B4A">${fP(c.riskOnDN)}</b></span>
+    <span>Total risk/dư nợ: <b style="color:#E24B4A">${fP(c.totalRiskOnDN)}</b></span>`;
+  document.getElementById('riskOnDuNo').textContent=fP(c.riskOnDN)+' / dư nợ';
+  const lPct=c.D>0?c.laiInc/c.D:0,fPct=c.D>0?c.feeInc/c.D:0,rLP=c.D>0?c.riskLP/c.D:0;
+  document.getElementById('risk-note').innerHTML=
+    `<b>Risk gốc</b> = HM × ${fP(c.riskLimit)} → ${fP(c.riskOnDN)} / dư nợ &nbsp;|&nbsp;`+
+    ` <b>Risk lãi & phí</b> = (${fP(lPct,1)} + ${fP(fPct,1)}) × ${fP(c.riskOnDN)} = ${fP(rLP)} / dư nợ &nbsp;|&nbsp;`+
+    ` <b>Total risk</b> = <b style="color:#E24B4A">${fP(c.totalRiskOnDN)}</b> / dư nợ`;
+}
+
+function renderUtilChart(c){
+  const utils=[];for(let u=5;u<=95;u+=5)utils.push(u);
+  const riskData=[],profitData=[];
+  utils.forEach(u=>{
+    const D=c.L*(u/100);
+    const r=calcCore(c.L,D,u/100,c.laiSuat,c.feeInc,c.riskLimit,c.cof,c.uw,c.alloc,c.acqPct);
+    riskData.push(D>0?r.totalRisk/D*100:0);
+    profitData.push(D>0?r.pbtAfter/D*100:0);
+  });
+  const cu=Math.round(c.util*100);
+  const ci=utils.reduce((bi,u,i)=>Math.abs(u-cu)<Math.abs(utils[bi]-cu)?i:bi,0);
+  if(utCI)utCI.destroy();
+  utCI=new Chart(document.getElementById('utilChart'),{
+    type:'line',
+    data:{
+      labels:utils.map(u=>u+'%'),
+      datasets:[
+        {label:'% Total risk / dư nợ',data:riskData,
+          borderColor:'#E24B4A',backgroundColor:'rgba(226,75,74,0.06)',fill:true,
+          borderWidth:2,tension:0.3,pointRadius:0,yAxisID:'y1'},
+        {label:'% Lợi nhuận / dư nợ',data:profitData,
+          borderColor:'#1D9E75',backgroundColor:'transparent',
+          borderWidth:2.5,tension:0.3,
+          pointRadius:utils.map((_,i)=>i===ci?7:0),
+          pointBackgroundColor:'#1D9E75',
+          pointBorderColor:'#fff',pointBorderWidth:2,
+          yAxisID:'y1'}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          mode:'index',intersect:false,
+          callbacks:{
+            title:items=>`Utilization: ${items[0].label}`,
+            label:ctx=>`${ctx.dataset.label}: ${ctx.raw.toFixed(1)}%`
+          }
+        }
+      },
+      scales:{
+        x:{ticks:{font:{size:10},maxRotation:0},grid:{color:'rgba(128,128,128,0.06)'}},
+        y1:{type:'linear',position:'left',
+          ticks:{callback:v=>`${v.toFixed(0)}%`,font:{size:10}},
+          grid:{color:'rgba(128,128,128,0.08)'},
+          afterDataLimits(a){
+            const pad=Math.max(Math.abs(a.min),Math.abs(a.max))*0.2;
+            a.max+=pad;a.min-=pad;
+          }
+        }
+      }
+    }
+  });
+}
+
+function renderPartnerCards(c){
+  const levels=[
+    {pct:0.10,cls:'c10',label:'Acq 10%'},
+    {pct:0.20,cls:'c20',label:'Acq 20%'},
+    {pct:0.30,cls:'c30',label:'Acq 30%'},
+  ];
+  document.getElementById('curr-util-label').textContent=`util ${(c.util*100).toFixed(0)}%, dư nợ ${(c.D/c.nKH/1e6).toFixed(0)}tr/KH`;
+  let html='';
+  levels.forEach(lv=>{
+    const r=calcCore(c.L,c.D,c.util,c.laiSuat,c.feeInc,c.riskLimit,c.cof,c.uw,c.alloc,lv.pct);
+    const perKH=c.nKH>0?r.acqAbs/c.nKH:0;
+    const pctDN=c.D>0?r.acqAbs/c.D:0;
+    html+=`<div class="partner-card ${lv.cls}">
+      <div class="pc-label">${lv.label} × TOI</div>
+      <div class="pc-pct">${fP(pctDN)}<span style="font-size:11px;font-weight:400;color:var(--color-text-secondary)"> /dư nợ</span></div>
+      <div class="pc-rows">
+        <div class="pc-row"><span class="pck">Total / năm</span><span class="pcv">${fB(r.acqAbs)} tỷ</span></div>
+        <div class="pc-row"><span class="pck">/ KH / năm</span><span class="pcv">${fK(perKH)}</span></div>
+        <div class="pc-row"><span class="pck">/ KH / tháng</span><span class="pcv">${fK(perKH/12)}</span></div>
+        <div class="pc-row"><span class="pck">LN ngân hàng</span><span class="pcv ${r.pbtAfter>=0?'pos':'neg'}">${fP(c.D>0?r.pbtAfter/c.D:0)}</span></div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('partner-cards').innerHTML=html;
+  document.getElementById('partner-note').textContent=
+    `TOI hiện tại = ${fP(c.D>0?c.toi/c.D:0)} / dư nợ. Acquisition = % × max(0, TOI). Lợi nhuận NH = TOI − Acq − UW − Alloc.`;
+}
+
+function renderAcqConvert(c){
+  const toiPct=c.D>0?c.toi/c.D:0;
+  document.getElementById('acq-input-pct').textContent=fP(c.acqPct,0)+' × TOI';
+  document.getElementById('acq-input-abs').textContent='TOI = '+fP(toiPct)+' / dư nợ';
+  document.getElementById('acq-equiv-pct').textContent=fP(c.acqOnDN);
+  document.getElementById('acq-equiv-abs').textContent='= '+fB(c.acqAbs)+' tỷ/năm';
+  document.getElementById('acq-formula').innerHTML=
+    `<b>Công thức:</b> ${fP(c.acqPct,0)} × TOI ${fP(toiPct)} = <b>${fP(c.acqOnDN)}</b> / dư nợ<br>`+
+    `TOI = Lãi ${fP(c.laiSuat)} + Phí ${fP(c.D>0?c.feeInc/c.D:0,1)} − Risk ${fP(-c.totalRiskOnDN)} − CoF ${fP(-c.cof)} = <b>${fP(toiPct)}</b>`;
+}
+
+function renderPL(c){
+  const D=c.D||1,L=c.L||1;
+  const rLPpct=c.D>0?c.riskLP/c.D:0,toiPct=c.D>0?c.toi/c.D:0;
+  function row(l,pd,ph,ab,sub=false,bold=false,subtot=false){
+    const cls=bold?'total':subtot?'subtotal':sub?'sub':'';
+    const pds=pd!==null?`<span class="${pd<0?'neg':''}">${fP(pd)}</span>`:'—';
+    const phs=ph!==null?`<span class="${ph<0?'neg':''}">${fP(ph)}</span>`:'—';
+    const as=ab!==null?`<span class="${ab<0?'neg':''}">${fB(ab)}</span>`:'—';
+    return `<tr class="${cls}"><td>${l}</td><td>${pds}</td><td>${phs}</td><td>${as}</td></tr>`;
+  }
+  const rS=t=>`<tr class="sec-hdr"><td colspan="4">${t}</td></tr>`;
+  const rSp=()=>`<tr class="spacer"><td colspan="4"></td></tr>`;
+  let h='';
+  h+=rS('A. Thu nhập');
+  h+=row('1. Doanh thu lãi',c.laiSuat,c.laiInc/L,c.laiInc);
+  h+=row('Phí quản lý tháng (ngân hàng thu)',c.phiQLInc/D,c.phiQLInc/L,c.phiQLInc,true);
+  h+=row('Phí partner thu từ HKD',c.phiPInc/D,c.phiPInc/L,c.phiPInc,true);
+  h+=row('2. Tổng doanh thu phí',c.feeInc/D,c.feeInc/L,c.feeInc,false,false,true);
+  h+=rSp();
+  h+=rS('B. Chi phí rủi ro');
+  h+=row('3. Risk mất gốc',-c.riskOnDN,-c.riskLimit,-c.riskGoc);
+  h+=row('4. Risk mất lãi & phí',-rLPpct,-c.riskLP/L,-c.riskLP);
+  h+=row('Total risk',-c.totalRiskOnDN,-c.totalRisk/L,-c.totalRisk,false,false,true);
+  h+=rSp();
+  h+=rS('C. Chi phí vốn');
+  h+=row('5. Chi phí vốn CoF',-c.cof,-c.cofAbs/L,-c.cofAbs);
+  h+=rSp();
+  h+=rS('TOI = 1 + 2 − 3 − 4 − 5');
+  h+=row('TOI',toiPct,c.toi/L,c.toi,false,false,true);
+  h+=rSp();
+  h+=rS('D. Acquisition & vận hành');
+  h+=row('6. Acquisition = '+fP(c.acqPct,0)+' × TOI  (≡ '+fP(c.acqOnDN)+' / dư nợ)',-c.acqOnDN,-c.acqAbs/L,-c.acqAbs);
+  h+=row('7. UW + Disbursal',-c.uw,-c.uwAbs/L,-c.uwAbs);
+  h+=rSp();
+  h+=rS('E. PBT trước allocation');
+  h+=row('PBT before allocation',c.pbtBefore/D,c.pbtBefore/L,c.pbtBefore,false,false,true);
+  h+=rSp();
+  h+=row('8. Allocation cost',-c.alloc,-c.allocAbs/L,-c.allocAbs);
+  h+=rSp();
+  h+=rS('F. Lợi nhuận ròng');
+  h+=row('9. PBT after allocation',c.pbtAfter/D,c.pbtAfter/L,c.pbtAfter,false,true);
+  document.getElementById('pl-body').innerHTML=h;
+  const labels=['Thu lãi','Phí QL','Phí partner','Risk gốc','Risk lãi/phí','CoF','Acquisition','UW+Disb','Allocation'];
+  const vals=[c.laiInc,c.phiQLInc,c.phiPInc,-c.riskGoc,-c.riskLP,-c.cofAbs,-c.acqAbs,-c.uwAbs,-c.allocAbs].map(v=>v/1e6);
+  if(plCI)plCI.destroy();
+  plCI=new Chart(document.getElementById('plChart'),{
+    type:'bar',
+    data:{labels,datasets:[{data:vals,backgroundColor:vals.map(v=>v>=0?'#1D9E75':'#E24B4A'),borderRadius:3}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.raw.toFixed(0)} triệu VND`}}},
+      scales:{y:{ticks:{callback:v=>`${v.toFixed(0)}tr`,font:{size:11}}},x:{ticks:{font:{size:11},autoSkip:false,maxRotation:35}}}}
+  });
+}
+
+function renderSens(c){
+  const utils=[20,30,40,50,60,70,80],rates=[8,10,12,14,16,18,20,22];
+  const cu=Math.round(c.util*100);
+  let h=`<table class="st"><thead><tr><th>Util \\ LS</th>${rates.map(r=>`<th>${r}%</th>`).join('')}</tr></thead><tbody>`;
+  utils.forEach(u=>{
+    h+=`<tr><th>${u}%${Math.abs(u-cu)<=2?'<span class="curr-marker">now</span>':''}</th>`;
+    rates.forEach(r=>{
+      const D=c.L*(u/100);
+      const res=calcCore(c.L,D,u/100,r/100,c.feeInc,c.riskLimit,c.cof,c.uw,c.alloc,c.acqPct);
+      const pct=D>0?res.pbtAfter/D:0;
+      const hi=Math.abs(u-cu)<=2&&Math.abs(r-c.laiSuat*100)<=0.5;
+      h+=`<td class="${pct>=0.03?'cp':pct>=0?'cm':'cn'}" style="${hi?'outline:2px solid #1D9E75;outline-offset:-2px;':''}">${fP(pct,1)}</td>`;
+    });h+='</tr>';
+  });
+  h+='</tbody></table>';document.getElementById('s1').innerHTML=h;
+  const acqArr=[0,10,20,30,40,50,60],riskArr=[0.5,1,1.5,2,3,4,5];
+  let h2=`<table class="st"><thead><tr><th>Acq% \\ Risk%HM</th>${riskArr.map(r=>`<th>${r}%</th>`).join('')}</tr></thead><tbody>`;
+  acqArr.forEach(ap=>{
+    const isCA=Math.abs(ap-Math.round(c.acqPct*100))<=2;
+    h2+=`<tr><th>${ap}%${isCA?'<span class="curr-marker">now</span>':''}</th>`;
+    riskArr.forEach(rk=>{
+      const res=calcCore(c.L,c.D,c.util,c.laiSuat,c.feeInc,rk/100,c.cof,c.uw,c.alloc,ap/100);
+      const pct=c.D>0?res.pbtAfter/c.D:0;
+      const hi=isCA&&Math.abs(rk-c.riskLimit*100)<=0.1;
+      h2+=`<td class="${pct>=0.03?'cp':pct>=0?'cm':'cn'}" style="${hi?'outline:2px solid #1D9E75;outline-offset:-2px;':''}">${fP(pct,1)}</td>`;
+    });h2+='</tr>';
+  });
+  h2+='</tbody></table>';document.getElementById('s2').innerHTML=h2;
+}
+
+function refresh(){
+  const c=calc();
+  renderKPI(c);renderDerived(c);renderAcqConvert(c);renderUtilChart(c);renderPartnerCards(c);
+  const active=document.querySelector('.pane.active').id;
+  if(active==='pane-pl')renderPL(c);
+  if(active==='pane-sens')renderSens(c);
+}
+function ST(name){
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['params','pl','sens'][i]===name));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('active',p.id==='pane-'+name));
+  const c=calc();renderKPI(c);renderDerived(c);renderAcqConvert(c);renderUtilChart(c);renderPartnerCards(c);
+  if(name==='pl')renderPL(c);if(name==='sens')renderSens(c);
+}
+
+document.getElementById('util').addEventListener('input',function(){
+  document.getElementById('util-v').textContent=this.value+'%';syncDuNoFromUtil(parseInt(this.value));refresh();
+});
+document.getElementById('duNo').addEventListener('input',function(){
+  document.getElementById('duNo-v').textContent=parseInt(this.value)+' tr';syncUtilFromDuNo(parseInt(this.value));refresh();
+});
+document.getElementById('hanMuc').addEventListener('input',function(){
+  document.getElementById('hanMuc-v').textContent=parseInt(this.value).toLocaleString('vi-VN');
+  updateDuNoMax();syncDuNoFromUtil(g('util'));refresh();
+});
+const SL={nKH:v=>parseInt(v).toLocaleString('vi-VN'),laiSuat:v=>parseFloat(v).toFixed(1)+'%',
+  phiQL:v=>parseInt(v).toLocaleString('vi-VN'),phiPartner:v=>parseInt(v).toLocaleString('vi-VN'),
+  pctPartner:v=>v+'%',riskLimit:v=>parseFloat(v).toFixed(1)+'%',cof:v=>parseFloat(v).toFixed(1)+'%',
+  uwCost:v=>parseFloat(v).toFixed(1)+'%',allocCost:v=>parseFloat(v).toFixed(1)+'%',acqPct:v=>v+'%'};
+Object.keys(SL).forEach(id=>{
+  const el=document.getElementById(id);if(!el)return;
+  el.addEventListener('input',()=>{document.getElementById(id+'-v').textContent=SL[id](el.value);refresh()});
+  document.getElementById(id+'-v').textContent=SL[id](el.value);
+});
+updateDuNoMax();syncDuNoFromUtil(17);refresh();
+</script>

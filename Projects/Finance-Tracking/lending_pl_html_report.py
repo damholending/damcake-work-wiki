@@ -190,6 +190,12 @@ BUDGET_CHANNEL_ROWS = {
         "Payday": {"disb": 353, "toi": 357, "prov": 367, "pbo": 381},
     },
 }
+# CAKE CL xsale sub-line (R127-161) — must be summed with CAKE CL organic above
+BUDGET_CHANNEL_XSALE_ROWS = {
+    "CAKE": {
+        "CL": {"disb": 130, "toi": 134, "prov": 145, "pbo": 159},
+    },
+}
 OFFSET_2025 = {"disb": 0, "toi": 12, "prov": 23, "pbo": 33}
 OFFSET_2026_CLPD = {"disb": 0, "toi": 13, "prov": 24, "pbo": 34}
 OFFSET_2026_OD = {"disb": 0, "toi": 14, "prov": 25, "pbo": 35}
@@ -266,6 +272,12 @@ def load_channel_deep():
                 result[ch]["2026 Budget FY"][product] = {}
                 for metric, row in rows.items():
                     vals = [num(wsB.cell(row, c).value, 1.0) for c in range(62, 74)]
+                    # Add xsale sub-line if exists (e.g. CAKE CL xsale)
+                    xsale_rows = BUDGET_CHANNEL_XSALE_ROWS.get(ch, {}).get(product, {})
+                    if metric in xsale_rows:
+                        xs_vals = [num(wsB.cell(xsale_rows[metric], c).value, 1.0) for c in range(62, 74)]
+                        vals = [(a or 0) + (b or 0) if (a is not None or b is not None) else None
+                                for a, b in zip(vals, xs_vals)]
                     vals = absify(metric, vals)
                     result[ch]["2026 Budget YTD-Apr"][product][metric] = safe_sum(vals[:4])
                     result[ch]["2026 Budget FY"][product][metric] = safe_sum(vals)
@@ -306,6 +318,168 @@ def load_channel_deep():
 
 
 GROUP_CHANNELS = ["CAKE", "VDS", "ZLP", "MWG"]  # named groups; phần còn lại = Others
+
+
+def load_channel_budget_monthly():
+    """Returns {channel: {product: {metric: [12 monthly values]}}} for CAKE + VDS.
+    Actual 2026 monthly (Jan-Apr closed, rest None) + Budget 2026 monthly (full 12).
+    VDS-PR merged into VDS."""
+    result = {}
+
+    wb26 = openpyxl.load_workbook(RAW/"P&L_2026_Actual.xlsx", data_only=True)
+    wbB = openpyxl.load_workbook(RAW/"P&L-Budget-2026.xlsx", data_only=True)
+    wsB = wbB["Lending"]
+
+    CHANNEL_ACTUAL_MAP = {
+        "CAKE": {
+            "CL":     {"sheet": "CL",     "base": 207, "offsets": OFFSET_2026_CLPD},
+            "Payday": {"sheet": "Payday", "base": 126, "offsets": OFFSET_2026_CLPD},
+            "OD":     {"sheet": "OD",     "base": 6,   "offsets": OFFSET_2026_OD},
+        },
+        "VDS": {
+            "CL":     {"sheet": "CL",     "base": 47,  "offsets": OFFSET_2026_CLPD},
+            "Payday": {"sheet": "Payday", "base": 46,  "offsets": OFFSET_2026_CLPD},
+        },
+        "VDS-PR": {
+            "CL":     {"sheet": "CL",     "base": 87,  "offsets": OFFSET_2026_CLPD},
+            "Payday": {"sheet": "Payday", "base": 86,  "offsets": OFFSET_2026_CLPD},
+        },
+    }
+
+    METRICS_MONTHLY = ["disb", "toi", "prov", "pbo"]
+
+    for ch, products in CHANNEL_ACTUAL_MAP.items():
+        result[ch] = {}
+        for product, cfg in products.items():
+            ws = wb26[cfg["sheet"]]
+            actual = {}
+            for metric in METRICS_MONTHLY:
+                row = cfg["base"] + cfg["offsets"][metric]
+                vals = [num(ws.cell(row, c).value, 1e9) for c in range(6, 18)]
+                if metric == "prov":
+                    vals = [abs(v) if v is not None else None for v in vals]
+                vals = vals[:ACTUAL_2026_COMPLETE_MONTHS] + [None] * (12 - ACTUAL_2026_COMPLETE_MONTHS)
+                actual[metric] = vals
+            result[ch][product] = {"actual_monthly": actual}
+
+    # Budget monthly (full 12 months)
+    for ch, products in BUDGET_CHANNEL_ROWS.items():
+        for product, rows in products.items():
+            budget = {}
+            for metric, row in rows.items():
+                vals = [num(wsB.cell(row, c).value, 1.0) for c in range(62, 74)]
+                # Add xsale sub-line if exists (e.g. CAKE CL xsale)
+                xsale_rows = BUDGET_CHANNEL_XSALE_ROWS.get(ch, {}).get(product, {})
+                if metric in xsale_rows:
+                    xs_vals = [num(wsB.cell(xsale_rows[metric], c).value, 1.0) for c in range(62, 74)]
+                    vals = [(a or 0) + (b or 0) if (a is not None or b is not None) else None
+                            for a, b in zip(vals, xs_vals)]
+                if metric == "prov":
+                    vals = [abs(v) if v is not None else None for v in vals]
+                budget[metric] = vals
+            if ch in result and product in result[ch]:
+                result[ch][product]["budget_monthly"] = budget
+            else:
+                result.setdefault(ch, {}).setdefault(product, {})["budget_monthly"] = budget
+
+    wb26.close()
+    wbB.close()
+
+    # Merge VDS-PR into VDS (monthly arrays element-wise sum)
+    if "VDS-PR" in result:
+        for product, data in result["VDS-PR"].items():
+            if product in result.get("VDS", {}):
+                for period_key in ["actual_monthly"]:
+                    if period_key in data:
+                        for metric in METRICS_MONTHLY:
+                            vds_arr = result["VDS"][product][period_key].get(metric, [None]*12)
+                            pr_arr = data[period_key].get(metric, [None]*12)
+                            merged = []
+                            for a, b in zip(vds_arr, pr_arr):
+                                if a is not None or b is not None:
+                                    merged.append((a or 0) + (b or 0))
+                                else:
+                                    merged.append(None)
+                            result["VDS"][product][period_key][metric] = merged
+        del result["VDS-PR"]
+
+    return result
+
+
+def render_channel_monthly_budget(ch_monthly):
+    """Render monthly Actual vs Budget tables for CAKE + VDS channels."""
+    parts = []
+    parts.append("<h2>2.4 — Monthly Actual vs Budget by Channel × Product (CAKE + VDS)</h2>")
+    parts.append("<p class='note'>Budget monthly chỉ map riêng cho <strong>CAKE</strong> + <strong>VDS</strong> (incl. VDS-PR). "
+                 "Metrics: Disb, TOI, Provision, PBO. Đơn vị: Tỷ VND. "
+                 "2026 Actual closed qua tháng " + str(ACTUAL_2026_COMPLETE_MONTHS) + " — còn lại = trống.</p>")
+
+    METRIC_LABELS = {"disb": "Disbursement", "toi": "TOI", "prov": "Provision", "pbo": "PBO"}
+    CH_LABELS = {"CAKE": "CAKE", "VDS": "VDS (incl. VDS-PR)"}
+
+    for ch in ["CAKE", "VDS"]:
+        if ch not in ch_monthly:
+            continue
+        parts.append(f"<h3>{CH_LABELS[ch]} — Monthly Actual vs Budget 2026</h3>")
+        for product in ["CL", "Payday", "OD"]:
+            if product not in ch_monthly[ch]:
+                continue
+            data = ch_monthly[ch][product]
+            actual_m = data.get("actual_monthly", {})
+            budget_m = data.get("budget_monthly", {})
+            parts.append(f"<h4>{ch} × {product}</h4>")
+            parts.append("<table class='data'><thead><tr><th>Metric</th><th>Period</th>")
+            for m in MONTHS:
+                parts.append(f"<th>{m}</th>")
+            parts.append("<th class='accent'>YTD</th><th class='accent'>FY</th></tr></thead><tbody>")
+
+            for metric in ["disb", "toi", "prov", "pbo"]:
+                a_vals = actual_m.get(metric, [None]*12)
+                b_vals = budget_m.get(metric, [None]*12)
+                a_ytd = safe_sum(a_vals[:ACTUAL_2026_COMPLETE_MONTHS])
+                b_ytd = safe_sum(b_vals[:ACTUAL_2026_COMPLETE_MONTHS])
+                b_fy = safe_sum(b_vals)
+                # Actual row
+                parts.append(f"<tr><td class='label' rowspan='3'>{METRIC_LABELS[metric]}</td>"
+                             f"<td class='label'>Actual</td>")
+                for v in a_vals:
+                    parts.append(f"<td class='{cell_class(v)}'>{fmt(v)}</td>")
+                parts.append(f"<td class='accent'>{fmt(a_ytd)}</td><td class='accent'>-</td></tr>")
+                # Budget row
+                parts.append(f"<tr><td class='label'>Budget</td>")
+                for v in b_vals:
+                    parts.append(f"<td>{fmt(v)}</td>")
+                parts.append(f"<td class='accent'>{fmt(b_ytd)}</td><td class='accent'>{fmt(b_fy)}</td></tr>")
+                # Delta row
+                is_prov = (metric == "prov")
+                parts.append(f"<tr class='delta'><td class='label'>Δ</td>")
+                for a, b in zip(a_vals, b_vals):
+                    if a is not None and b is not None:
+                        d = a - b
+                        # For provision: positive delta = overshoot = bad
+                        if is_prov:
+                            cls = "neg" if d > 0 else ("pos" if d < 0 else "")
+                        else:
+                            cls = cell_class(d, neg_bad=False)
+                        parts.append(f"<td class='{cls}'>{fmt(d)}</td>")
+                    else:
+                        parts.append("<td>-</td>")
+                # YTD delta
+                if a_ytd is not None and b_ytd is not None:
+                    d_ytd = a_ytd - b_ytd
+                    pct_ytd = d_ytd / b_ytd * 100 if b_ytd else 0
+                    if is_prov:
+                        cls_ytd = "neg" if d_ytd > 0 else ("pos" if d_ytd < 0 else "")
+                    else:
+                        cls_ytd = cell_class(d_ytd, neg_bad=False)
+                    parts.append(f"<td class='accent {cls_ytd}'>{fmt(d_ytd)} ({pct_ytd:+.0f}%)</td>")
+                else:
+                    parts.append("<td class='accent'>-</td>")
+                parts.append("<td class='accent'>-</td></tr>")
+
+            parts.append("</tbody></table>")
+
+    return "\n".join(parts)
 
 
 def render_channel_deep_dive(deep, overall):
@@ -2136,7 +2310,7 @@ def build_comprehensive_matrix(deep, channel_matrix_2025, q126_cl_inputs, q126_p
     return matrix
 
 
-def export_ground_truth_json(overall, by_product, channel_matrix, deep, ue_q34, ue_q1, by_prod_q, cl_ue, q126_cl_inputs, q126_pd_inputs=None, paylater_q1=None, paylater_ch=None):
+def export_ground_truth_json(overall, by_product, channel_matrix, deep, ue_q34, ue_q1, by_prod_q, cl_ue, q126_cl_inputs, q126_pd_inputs=None, paylater_q1=None, paylater_ch=None, ch_monthly=None):
     """Export all extracted data to JSON for team-hub Claude Project ground truth."""
     import json
     from datetime import date
@@ -2169,6 +2343,10 @@ def export_ground_truth_json(overall, by_product, channel_matrix, deep, ue_q34, 
         "section_4_channel_deep_dive": {
             "description": "Channel deep dive (CAKE / VDS / ZLP / MWG — VDS-PR đã merge vào VDS) × product (CL/OD/Payday) × period (2025 FY, 2026 YTD-Apr, 2026 Budget YTD-Apr, 2026 Budget FY). Metrics: disb, toi, prov, pbo, balance, npl_cake, npl_cic, lg2. Budget chỉ có cho CAKE + VDS.",
             "data": deep,
+        },
+        "section_4_1_channel_budget_monthly": {
+            "description": "Monthly Actual vs Budget 2026 for CAKE + VDS channels × product (CL/Payday/OD). Structure: {channel: {product: {actual_monthly: {metric: [12 values]}, budget_monthly: {metric: [12 values]}}}}. Metrics: disb, toi, prov, pbo (Tỷ VND). Actual closed through month " + str(ACTUAL_2026_COMPLETE_MONTHS) + " (rest = null). VDS-PR merged into VDS. Budget = full 12 months. Dùng để xem pacing monthly, identify tháng nào miss/beat.",
+            "data": ch_monthly or {},
         },
         "section_5_1_unit_economics_aggregate": {
             "description": "Lending aggregate Unit Economics: Q3.25 + Q4.25 from UE Q425 SUM file, Q1.26 derived from P&L Actual + Balance ENR. Metrics: Disb, Balance(ANR), TOI, Provision, OPEX, PBT, NPL, LG2.",
@@ -2248,7 +2426,7 @@ def render_tab_pnl_2025(overall, channel_matrix, by_product):
     return "\n".join(parts)
 
 
-def render_tab_pnl_2026(overall, by_product, deep):
+def render_tab_pnl_2026(overall, by_product, deep, ch_monthly=None):
     parts = []
     parts.append("<h2>2.1 — Overall Lending P&L 2026 (Actual YTD-Apr vs Budget)</h2>")
     parts.append(render_overall_table(overall, ["2026 Actual", "2026 Budget"], show_delta=True))
@@ -2257,6 +2435,8 @@ def render_tab_pnl_2026(overall, by_product, deep):
     parts.append(render_by_product(by_product))
     parts.append("<h2>2.3 — Channel Deep Dive (CAKE / VDS / Others)</h2>")
     parts.append(render_channel_deep_dive(deep, overall))
+    if ch_monthly:
+        parts.append(render_channel_monthly_budget(ch_monthly))
     return "\n".join(parts)
 
 
@@ -2272,6 +2452,7 @@ def main():
     by_product = load_by_product()
     channel_matrix = load_channel_matrix_2025()
     deep = load_channel_deep()
+    ch_monthly = load_channel_budget_monthly()
 
     # Load UE/cohort/quarterly data
     ue_q34 = load_ue_q3q4_25()
@@ -2288,11 +2469,11 @@ def main():
 
     html_doc = HTML_TEMPLATE.format(
         tab_pnl_2025=render_tab_pnl_2025(overall, channel_matrix, by_product),
-        tab_pnl_2026=render_tab_pnl_2026(overall, by_product, deep),
+        tab_pnl_2026=render_tab_pnl_2026(overall, by_product, deep, ch_monthly),
         tab_unit_econ=render_tab_unit_econ(overall),
     )
 
-    export_ground_truth_json(overall, by_product, channel_matrix, deep, ue_q34, ue_q1, by_prod_q, cl_ue, q126_cl_inputs, q126_pd_inputs, paylater_q1, paylater_ch)
+    export_ground_truth_json(overall, by_product, channel_matrix, deep, ue_q34, ue_q1, by_prod_q, cl_ue, q126_cl_inputs, q126_pd_inputs, paylater_q1, paylater_ch, ch_monthly)
 
     OUT.write_text(html_doc, encoding="utf-8")
     print(f"✓ Report written: {OUT}")
