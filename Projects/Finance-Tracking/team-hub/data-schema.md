@@ -2,7 +2,7 @@
 status: team-facing
 type: data-schema
 audience: team-lending-cake
-last_updated: 2026-05-14
+last_updated: 2026-06-10
 ---
 
 # Data Schema — `lending-pl-data.json`
@@ -24,7 +24,7 @@ Schema reference cho ground truth file. Đọc cùng `lending-pl-guide.md`.
 
 | Dimension | Values |
 |---|---|
-| **Periods** | 2025 Actual (monthly+FY) · 2026 Actual (YTD-Apr) · 2026 Budget (monthly+FY) · UE quarters Q3.25 / Q4.25 / Q1.26 |
+| **Periods** | 2025 Actual (monthly+FY) · 2026 Actual (`2026 YTD`, key month-agnostic, count tự detect) · 2026 Budget (monthly+FY) · UE quarters Q3.25 / Q4.25 / Q1.26 |
 | **Products** | CL (CashLoan) · OD (Overdraft) · PD (Payday) · PL (Paylater) |
 | **Channels (named groups)** | CAKE · VDS (incl. VDS-PR) · ZLP (ZaloPay) · MWG · **Others** (= phần còn lại: VNPAY, VNPOST, BE, MISA, BEG, NGS, leadgen, xsale, IR-tier) |
 | **Channels (raw, section 3/6)** | CAKE · VDS · ZLP · MWG · VNPAY · ZALOPAY · VNPOST · BE · MISA · BEG · NGS · (PL only: VDS-EPASS, FPT) |

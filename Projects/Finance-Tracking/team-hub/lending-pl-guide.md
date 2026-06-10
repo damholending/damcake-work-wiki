@@ -2,7 +2,7 @@
 status: team-facing
 type: ground-truth-bundle
 audience: team-lending-cake
-last_updated: 2026-05-14
+last_updated: 2026-06-10
 ---
 
 # Lending P&L + Unit Economics — Team Ground Truth
@@ -88,7 +88,7 @@ Bundle này chứa số liệu **canonical** cho team Lending Cake query qua Cla
 {period: {"<product>_<channel>": {tất cả metrics}}}
 ```
 
-- **Periods:** `2025 FY`, `2026 YTD-Apr` (Jan-Apr), `2026 Budget YTD-Apr`, `2026 Budget FY`
+- **Periods:** `2025 FY`, `2026 YTD` (Jan → tháng đóng sổ gần nhất), `2026 Budget YTD`, `2026 Budget FY`. Key month-agnostic — KHÔNG đổi tên theo tháng; số tháng YTD tự detect từ disbursement (xem `_meta.actuals_2026_complete_through_month`).
 - **Keys:** `<product>_<channel>` — vd `CL_CAKE`, `CL_VDS` (đã gồm VDS-PR), `CL_ZLP`, `CL_MWG`, `OD_CAKE`, `Payday_CAKE`, `Payday_VDS`, `Payday_ZLP`, `PL_VDS`, `PL_VDS-EPASS`, `PL_BE`, `PL_VNPAY`, `PL_FPT`, `PL_MWG` ... + các raw channel khác từ 2025 matrix (`CL_BEG`, `CL_NGS`, `CL_VNPAY`, `CL_VNPOST`, `CL_MISA`)
 - **Metrics mỗi entry** (None nếu data không có):
   - P&L: `disb_bil_vnd`, `toi_bil_vnd`, `provision_bil_vnd`, `pbo_bil_vnd`

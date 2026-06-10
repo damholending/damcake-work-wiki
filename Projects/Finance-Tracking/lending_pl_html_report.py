@@ -19,8 +19,13 @@ OUT = Path("/tmp/lending-pl-report.html")
 
 MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
 
-# 2026 Actual is closed only through this many months (rest in source file = partial/draft)
-ACTUAL_2026_COMPLETE_MONTHS = 4  # Jan-Apr 2026
+# 2026 Actual is closed only through this many months (rest in source file = partial/draft).
+# AUTO-DETECTED at runtime in main() from the disbursement anchor — do NOT hand-edit.
+# Period dict-keys are month-agnostic ("2026 YTD") so they never change month-to-month;
+# only this count + the display label (YTD_LABEL) + annualization (ANNUALIZE) move.
+ACTUAL_2026_COMPLETE_MONTHS = 4   # placeholder; overwritten by detect_complete_months()
+YTD_LABEL = "YTD-Apr"             # display only; refined to "YTD-<Mon>" in main()
+ANNUALIZE = 3.0                   # 12 / complete_months; recomputed in main()
 
 
 def num(v, div=1.0):
@@ -50,6 +55,26 @@ OVERALL_CFG = {
 # Provision sign normalization: source files use mixed conventions
 # (2025 stores +, 2026 stores −). Always normalize to ABS value = expense magnitude.
 PROV_METRICS = {"prov"}
+
+
+def detect_complete_months():
+    """# of closed 2026 months = count of leading non-empty disbursement cells.
+
+    Disb is the anchor: it stays blank (' - ' → None) until a month fully closes,
+    whereas TOI/PBT can leak a draft value a month early. Stops at the first gap so
+    a stray future value never inflates the count.
+    """
+    cfg = OVERALL_CFG["2026 Actual"]
+    wb = openpyxl.load_workbook(cfg["path"], data_only=True)
+    ws = wb[cfg["sheet"]]
+    row = cfg["rows"]["disb"]
+    n = 0
+    for c in range(cfg["month_start"], cfg["month_end"] + 1):
+        if num(ws.cell(row, c).value, cfg["div"]) is None:
+            break
+        n += 1
+    wb.close()
+    return n
 
 def load_overall():
     out = {}
@@ -209,7 +234,7 @@ OFFSET_2025_CHANNEL_RISK = {"npl_cake_pct": 10, "npl_cic_pct": 11, "lg2_overdue"
 
 def load_channel_deep():
     """Returns {channel: {period: {product: {metric: value (Tỷ VND)}}}}.
-    period = '2025 FY' | '2026 YTD-Apr' | '2026 Budget YTD-Apr' | '2026 Budget FY'."""
+    period = '2025 FY' | '2026 YTD' | '2026 Budget YTD' | '2026 Budget FY'."""
     result = {}
 
     wb25 = openpyxl.load_workbook(RAW/"P&L_2025_final.xlsx", data_only=True)
@@ -224,7 +249,7 @@ def load_channel_deep():
         return vals
 
     for ch, periods in CHANNEL_DEEP.items():
-        result[ch] = {"2025 FY": {}, "2026 YTD-Apr": {}, "2026 Budget YTD-Apr": {}, "2026 Budget FY": {}}
+        result[ch] = {"2025 FY": {}, "2026 YTD": {}, "2026 Budget YTD": {}, "2026 Budget FY": {}}
         for product, base in periods["2025"].items():
             result[ch]["2025 FY"][product] = {}
             for metric, off in OFFSET_2025.items():
@@ -244,31 +269,31 @@ def load_channel_deep():
         for product, base in periods["2026"].items():
             ws = wb26[product]
             offsets = OFFSET_2026_OD if product == "OD" else OFFSET_2026_CLPD
-            result[ch]["2026 YTD-Apr"][product] = {}
+            result[ch]["2026 YTD"][product] = {}
             for metric, off in offsets.items():
                 row = base + off
-                vals = [num(ws.cell(row, c).value, 1e9) for c in range(6, 10)]
+                vals = [num(ws.cell(row, c).value, 1e9) for c in range(6, 6 + ACTUAL_2026_COMPLETE_MONTHS)]
                 vals = absify(metric, vals)
-                result[ch]["2026 YTD-Apr"][product][metric] = safe_sum(vals)
-            # 2026 channel risk (state at end of YTD = Apr col 9 for CL/PD; OD has different layout)
+                result[ch]["2026 YTD"][product][metric] = safe_sum(vals)
+            # 2026 channel risk = state at the last closed month. Col 6 = Jan, so month m → col 5+m.
             def _numcell(cell_v):
                 return cell_v if isinstance(cell_v, (int, float)) else None
+            end_col = 5 + ACTUAL_2026_COMPLETE_MONTHS  # e.g. Apr→9, May→10
             if product != "OD":
-                end_col = 9  # Apr 2026
                 bal = num(ws.cell(base + OFFSET_2026_CHANNEL_RISK["balance"], end_col).value, 1e9)
-                result[ch]["2026 YTD-Apr"][product]["balance"] = bal
-                result[ch]["2026 YTD-Apr"][product]["lg2"] = _numcell(ws.cell(base + OFFSET_2026_CHANNEL_RISK["lg2"], end_col).value)
-                result[ch]["2026 YTD-Apr"][product]["npl_cake"] = _numcell(ws.cell(base + OFFSET_2026_CHANNEL_RISK["npl_cake"], end_col).value)
-                result[ch]["2026 YTD-Apr"][product]["npl_cic"] = _numcell(ws.cell(base + OFFSET_2026_CHANNEL_RISK["npl_cic"], end_col).value)
+                result[ch]["2026 YTD"][product]["balance"] = bal
+                result[ch]["2026 YTD"][product]["lg2"] = _numcell(ws.cell(base + OFFSET_2026_CHANNEL_RISK["lg2"], end_col).value)
+                result[ch]["2026 YTD"][product]["npl_cake"] = _numcell(ws.cell(base + OFFSET_2026_CHANNEL_RISK["npl_cake"], end_col).value)
+                result[ch]["2026 YTD"][product]["npl_cic"] = _numcell(ws.cell(base + OFFSET_2026_CHANNEL_RISK["npl_cic"], end_col).value)
             else:
                 # OD = single channel (CAKE), top-level rows R9 Balance, R17 LG2, R18 NPL CAKE, R19 NPL CIC
-                result[ch]["2026 YTD-Apr"][product]["balance"] = num(ws.cell(9, 9).value, 1e9)
-                result[ch]["2026 YTD-Apr"][product]["lg2"] = _numcell(ws.cell(17, 9).value)
-                result[ch]["2026 YTD-Apr"][product]["npl_cake"] = _numcell(ws.cell(18, 9).value)
-                result[ch]["2026 YTD-Apr"][product]["npl_cic"] = _numcell(ws.cell(19, 9).value)
+                result[ch]["2026 YTD"][product]["balance"] = num(ws.cell(9, end_col).value, 1e9)
+                result[ch]["2026 YTD"][product]["lg2"] = _numcell(ws.cell(17, end_col).value)
+                result[ch]["2026 YTD"][product]["npl_cake"] = _numcell(ws.cell(18, end_col).value)
+                result[ch]["2026 YTD"][product]["npl_cic"] = _numcell(ws.cell(19, end_col).value)
         if ch in BUDGET_CHANNEL_ROWS:
             for product, rows in BUDGET_CHANNEL_ROWS[ch].items():
-                result[ch]["2026 Budget YTD-Apr"][product] = {}
+                result[ch]["2026 Budget YTD"][product] = {}
                 result[ch]["2026 Budget FY"][product] = {}
                 for metric, row in rows.items():
                     vals = [num(wsB.cell(row, c).value, 1.0) for c in range(62, 74)]
@@ -279,7 +304,7 @@ def load_channel_deep():
                         vals = [(a or 0) + (b or 0) if (a is not None or b is not None) else None
                                 for a, b in zip(vals, xs_vals)]
                     vals = absify(metric, vals)
-                    result[ch]["2026 Budget YTD-Apr"][product][metric] = safe_sum(vals[:4])
+                    result[ch]["2026 Budget YTD"][product][metric] = safe_sum(vals[:ACTUAL_2026_COMPLETE_MONTHS])
                     result[ch]["2026 Budget FY"][product][metric] = safe_sum(vals)
     wb25.close()
     wb26.close()
@@ -495,19 +520,19 @@ def render_channel_deep_dive(deep, overall):
 
     METRICS_4 = ["disb", "toi", "prov", "pbo"]
     # Per-group actual / budget / budget-FY
-    grp_a  = {ch: {m: channel_sum(ch, "2026 YTD-Apr", m) for m in METRICS_4} for ch in GROUP_CHANNELS}
-    grp_b  = {ch: {m: channel_sum(ch, "2026 Budget YTD-Apr", m) for m in METRICS_4} for ch in GROUP_CHANNELS}
+    grp_a  = {ch: {m: channel_sum(ch, "2026 YTD", m) for m in METRICS_4} for ch in GROUP_CHANNELS}
+    grp_b  = {ch: {m: channel_sum(ch, "2026 Budget YTD", m) for m in METRICS_4} for ch in GROUP_CHANNELS}
     grp_bf = {ch: {m: channel_sum(ch, "2026 Budget FY", m) for m in METRICS_4} for ch in GROUP_CHANNELS}
     # Overall
-    ov_a  = {m: safe_sum(overall["2026 Actual"][m][:4]) for m in METRICS_4}
-    ov_b  = {m: safe_sum(overall["2026 Budget"][m][:4]) for m in METRICS_4}
+    ov_a  = {m: safe_sum(overall["2026 Actual"][m][:ACTUAL_2026_COMPLETE_MONTHS]) for m in METRICS_4}
+    ov_b  = {m: safe_sum(overall["2026 Budget"][m][:ACTUAL_2026_COMPLETE_MONTHS]) for m in METRICS_4}
     ov_bf = {m: safe_sum(overall["2026 Budget"][m]) for m in METRICS_4}
     # Others = Overall − named groups (budget: only CAKE+VDS have budget → Others_b = Overall − CAKE − VDS)
     oth_a  = {m: ov_a[m]  - sum((grp_a[ch][m]  or 0) for ch in GROUP_CHANNELS) for m in METRICS_4}
     oth_b  = {m: ov_b[m]  - sum((grp_b[ch][m]  or 0) for ch in GROUP_CHANNELS) for m in METRICS_4}
     oth_bf = {m: ov_bf[m] - sum((grp_bf[ch][m] or 0) for ch in GROUP_CHANNELS) for m in METRICS_4}
 
-    parts.append("<h3>4.1 — Channel Split Summary (YTD-Apr 2026, Tỷ VND)</h3>")
+    parts.append(f"<h3>4.1 — Channel Split Summary ({YTD_LABEL} 2026, Tỷ VND)</h3>")
     parts.append("<table class='data'><thead><tr>"
                  "<th rowspan='2'>Channel</th>"
                  "<th colspan='4'>Disbursement</th>"
@@ -588,8 +613,8 @@ def render_channel_deep_dive(deep, overall):
                      "</tr></thead><tbody>")
         for product in ["CL", "OD", "Payday"]:
             d25 = deep[ch]["2025 FY"].get(product, {})
-            d26 = deep[ch]["2026 YTD-Apr"].get(product, {})
-            dB = deep[ch].get("2026 Budget YTD-Apr", {}).get(product, {})
+            d26 = deep[ch]["2026 YTD"].get(product, {})
+            dB = deep[ch].get("2026 Budget YTD", {}).get(product, {})
             disb25, toi25, pbo25 = d25.get("disb"), d25.get("toi"), d25.get("pbo")
             disb26, toi26, pbo26 = d26.get("disb"), d26.get("toi"), d26.get("pbo")
             disbB, toiB, pboB = dB.get("disb"), dB.get("toi"), dB.get("pbo")
@@ -617,25 +642,25 @@ def render_channel_deep_dive(deep, overall):
         def sum_metric(period, metric):
             return sum(v for p in deep[ch][period] for v in [deep[ch][period][p].get(metric)] if v is not None)
         tot_d25, tot_t25, tot_p25 = sum_metric("2025 FY","disb"), sum_metric("2025 FY","toi"), sum_metric("2025 FY","pbo")
-        tot_d26, tot_t26, tot_p26 = sum_metric("2026 YTD-Apr","disb"), sum_metric("2026 YTD-Apr","toi"), sum_metric("2026 YTD-Apr","pbo")
+        tot_d26, tot_t26, tot_p26 = sum_metric("2026 YTD","disb"), sum_metric("2026 YTD","toi"), sum_metric("2026 YTD","pbo")
         yld26 = tot_t26/tot_d26*100 if tot_d26 else None
         mgn26 = tot_p26/tot_d26*100 if tot_d26 else None
         row_html = f"<tr class='total-row'><td class='label'>Total {ch}</td>"
         row_html += f"<td>{fmt(tot_d25)}</td><td>{fmt(tot_d26)}</td>"
         if has_budget:
-            tot_dB = sum_metric("2026 Budget YTD-Apr","disb")
+            tot_dB = sum_metric("2026 Budget YTD","disb")
             d = tot_d26 - tot_dB
             pct = d/tot_dB*100 if tot_dB else 0
             row_html += f"<td>{fmt(tot_dB)}</td><td class='{cell_class(d, neg_bad=False)}'>{fmt(d)} ({pct:+.0f}%)</td>"
         row_html += f"<td>{fmt(tot_t25)}</td><td>{fmt(tot_t26)}</td>"
         if has_budget:
-            tot_tB = sum_metric("2026 Budget YTD-Apr","toi")
+            tot_tB = sum_metric("2026 Budget YTD","toi")
             d = tot_t26 - tot_tB
             pct = d/tot_tB*100 if tot_tB else 0
             row_html += f"<td>{fmt(tot_tB)}</td><td class='{cell_class(d, neg_bad=False)}'>{fmt(d)} ({pct:+.0f}%)</td>"
         row_html += f"<td>{fmt(tot_p25)}</td><td>{fmt(tot_p26)}</td>"
         if has_budget:
-            tot_pB = sum_metric("2026 Budget YTD-Apr","pbo")
+            tot_pB = sum_metric("2026 Budget YTD","pbo")
             d = tot_p26 - tot_pB
             pct = d/tot_pB*100 if tot_pB else 0
             row_html += f"<td>{fmt(tot_pB)}</td><td class='{cell_class(d, neg_bad=False)}'>{fmt(d)} ({pct:+.0f}%)</td>"
@@ -650,7 +675,7 @@ def render_channel_deep_dive(deep, overall):
     for ch_key, target in [("VDS", vds_family), ("CAKE", cake)]:
         for product in deep[ch_key]["2025 FY"]:
             d25 = deep[ch_key]["2025 FY"][product]
-            d26 = deep[ch_key]["2026 YTD-Apr"][product]
+            d26 = deep[ch_key]["2026 YTD"][product]
             for m in ["disb", "toi", "pbo"]:
                 if d25.get(m) is not None: target[f"{m}_25"] += d25[m]
                 if d26.get(m) is not None: target[f"{m}_26"] += d26[m]
@@ -658,9 +683,9 @@ def render_channel_deep_dive(deep, overall):
     parts.append("<table class='data'><thead><tr><th>Metric</th><th>VDS Channel</th><th>CAKE</th><th>Δ (CAKE − VDS)</th></tr></thead><tbody>")
     rows = [
         ("Disbursement 2025 FY", vds_family["disb_25"], cake["disb_25"]),
-        ("Disbursement 2026 YTD-Apr", vds_family["disb_26"], cake["disb_26"]),
-        ("TOI 2026 YTD-Apr", vds_family["toi_26"], cake["toi_26"]),
-        ("PBO 2026 YTD-Apr", vds_family["pbo_26"], cake["pbo_26"]),
+        (f"Disbursement 2026 {YTD_LABEL}", vds_family["disb_26"], cake["disb_26"]),
+        (f"TOI 2026 {YTD_LABEL}", vds_family["toi_26"], cake["toi_26"]),
+        (f"PBO 2026 {YTD_LABEL}", vds_family["pbo_26"], cake["pbo_26"]),
     ]
     for label, vds, cak in rows:
         diff = cak - vds
@@ -696,7 +721,7 @@ def render_channel_deep_dive(deep, overall):
             if product not in deep[ch]["2025 FY"]:
                 continue
             d25 = deep[ch]["2025 FY"][product]
-            d26 = deep[ch]["2026 YTD-Apr"][product]
+            d26 = deep[ch]["2026 YTD"][product]
             nc25 = d25.get("npl_cake"); nc26 = d26.get("npl_cake")
             ni25 = d25.get("npl_cic"); ni26 = d26.get("npl_cic")
             lg2_25 = d25.get("lg2"); lg2_26 = d26.get("lg2")
@@ -758,7 +783,7 @@ def render_channel_deep_dive(deep, overall):
     vds_disb_gap = vds_disb_a - vds_disb_b
     oth_disb_gap = oth_disb_a - oth_disb_b
     total_gap = ov_disb_a - ov_disb_b
-    parts.append(f"<p class='note'><strong>Disbursement gap attribution (Tỷ VND, YTD-Apr):</strong><br>"
+    parts.append(f"<p class='note'><strong>Disbursement gap attribution (Tỷ VND, {YTD_LABEL}):</strong><br>"
                  f"Total miss = <strong>{total_gap:+,.0f}</strong> ({total_gap/ov_disb_b*100:+.0f}%)<br>"
                  f"&nbsp;&nbsp;• CAKE: <strong>{cake_disb_gap:+,.0f}</strong> ({cake_disb_gap/total_gap*100:.0f}% of gap)<br>"
                  f"&nbsp;&nbsp;• VDS: <strong>{vds_disb_gap:+,.0f}</strong> ({vds_disb_gap/total_gap*100:.0f}% of gap)<br>"
@@ -770,16 +795,16 @@ def render_channel_deep_dive(deep, overall):
                  f"({((cake['pbo_25']-vds_family['pbo_25'])/vds_family['pbo_25']*100):+.0f}%).</li>")
     parts.append(f"<li><strong>CAKE margin gấp đôi VDS</strong> ({mgn_c_26:.1f}% vs {mgn_v_26:.1f}% PBO/Disb 2026 YTD). "
                  f"VDS yield cao hơn ({yld_v_26:.1f}% vs {yld_c_26:.1f}%) nhưng partner acquisition cost + commission ăn margin.</li>")
-    parts.append(f"<li><strong>CAKE Payday đang explode:</strong> 2026 YTD-Apr Disbursement {cake.get('disb_26', 0):,.0f} (riêng PD: "
-                 f"{deep['CAKE']['2026 YTD-Apr']['Payday']['disb']:,.0f}) — chỉ 4 tháng đã vượt PD CAKE cả năm 2025 ({deep['CAKE']['2025 FY']['Payday']['disb']:,.0f}). "
-                 f"Annualized YoY +{(deep['CAKE']['2026 YTD-Apr']['Payday']['disb']*3 - deep['CAKE']['2025 FY']['Payday']['disb'])/deep['CAKE']['2025 FY']['Payday']['disb']*100:.0f}%.</li>")
+    parts.append(f"<li><strong>CAKE Payday đang explode:</strong> 2026 {YTD_LABEL} Disbursement {cake.get('disb_26', 0):,.0f} (riêng PD: "
+                 f"{deep['CAKE']['2026 YTD']['Payday']['disb']:,.0f}) — chỉ {ACTUAL_2026_COMPLETE_MONTHS} tháng đã vượt PD CAKE cả năm 2025 ({deep['CAKE']['2025 FY']['Payday']['disb']:,.0f}). "
+                 f"Annualized YoY +{(deep['CAKE']['2026 YTD']['Payday']['disb']*ANNUALIZE - deep['CAKE']['2025 FY']['Payday']['disb'])/deep['CAKE']['2025 FY']['Payday']['disb']*100:.0f}%.</li>")
     parts.append(f"<li><strong>CAKE OD lỗ kéo dài:</strong> PBO 2025 FY {deep['CAKE']['2025 FY']['OD']['pbo']:+.1f}, "
-                 f"2026 YTD {deep['CAKE']['2026 YTD-Apr']['OD']['pbo']:+.1f}. "
-                 f"Volume 2026 annualized = {deep['CAKE']['2026 YTD-Apr']['OD']['disb']*3:.0f} vs 2025 {deep['CAKE']['2025 FY']['OD']['disb']:.0f} → {(deep['CAKE']['2026 YTD-Apr']['OD']['disb']*3 - deep['CAKE']['2025 FY']['OD']['disb'])/deep['CAKE']['2025 FY']['OD']['disb']*100:+.0f}% YoY. "
+                 f"2026 YTD {deep['CAKE']['2026 YTD']['OD']['pbo']:+.1f}. "
+                 f"Volume 2026 annualized = {deep['CAKE']['2026 YTD']['OD']['disb']*ANNUALIZE:.0f} vs 2025 {deep['CAKE']['2025 FY']['OD']['disb']:.0f} → {(deep['CAKE']['2026 YTD']['OD']['disb']*ANNUALIZE - deep['CAKE']['2025 FY']['OD']['disb'])/deep['CAKE']['2025 FY']['OD']['disb']*100:+.0f}% YoY. "
                  f"Đang cố ý down-scale hay mất market?</li>")
     parts.append(f"<li><strong>CAKE CL margin compression:</strong> "
                  f"PBO/Disb CL: 2025 = {deep['CAKE']['2025 FY']['CL']['pbo']/deep['CAKE']['2025 FY']['CL']['disb']*100:.1f}%, "
-                 f"2026 YTD = {deep['CAKE']['2026 YTD-Apr']['CL']['pbo']/deep['CAKE']['2026 YTD-Apr']['CL']['disb']*100:.1f}%. "
+                 f"2026 YTD = {deep['CAKE']['2026 YTD']['CL']['pbo']/deep['CAKE']['2026 YTD']['CL']['disb']*100:.1f}%. "
                  f"Provision tăng / mix shift sang segment yield thấp / hay one-off recovery 2025?</li>")
     parts.append("</ol>")
 
@@ -834,9 +859,9 @@ def render_overall_table(overall, periods=None, show_delta=True):
         html_parts.append("<thead><tr><th>Period</th>")
         for m in MONTHS:
             html_parts.append(f"<th>{m}</th>")
-        html_parts.append("<th class='accent'>YTD-Apr</th><th class='accent'>FY</th></tr></thead><tbody>")
+        html_parts.append(f"<th class='accent'>{YTD_LABEL}</th><th class='accent'>FY</th></tr></thead><tbody>")
 
-        ytd_n = 4
+        ytd_n = ACTUAL_2026_COMPLETE_MONTHS
         for period in periods:
             vals = overall[period][metric_key]
             ytd = safe_sum(vals[:ytd_n])
@@ -853,7 +878,7 @@ def render_overall_table(overall, periods=None, show_delta=True):
             if a_ytd is not None and b_ytd:
                 d = a_ytd - b_ytd
                 pct = d / b_ytd * 100
-                html_parts.append(f"<tr class='delta'><td class='label'>Δ Actual vs Budget YTD-Apr</td>"
+                html_parts.append(f"<tr class='delta'><td class='label'>Δ Actual vs Budget {YTD_LABEL}</td>"
                                   f"<td colspan='12'></td>"
                                   f"<td class='accent {cell_class(d)}'>{fmt(d)} ({pct:+.0f}%)</td><td></td></tr>")
         html_parts.append("</tbody></table>")
@@ -867,16 +892,16 @@ def render_by_product(by_product):
         parts.append(f"<h3>{metric_label} — by Product</h3>")
         parts.append("<table class='data'>")
         parts.append("<thead><tr><th>Product</th><th>2025 Actual FY</th>"
-                     "<th>2026 Actual YTD-Apr</th><th>2026 Budget YTD-Apr</th>"
+                     f"<th>2026 Actual {YTD_LABEL}</th><th>2026 Budget {YTD_LABEL}</th>"
                      "<th>Δ vs BG YTD</th><th>YoY vs 2025 YTD</th>"
                      "<th>2026 Budget FY</th><th>% FY done</th></tr></thead><tbody>")
 
         for product in ["CashLoan", "Overdraft", "Payday", "Paylater"]:
             metric_data = by_product[product][metric_key]
             a25_fy = safe_sum(metric_data.get("2025 Actual", [None]*12))
-            a25_ytd = safe_sum(metric_data.get("2025 Actual", [None]*12)[:4])
-            a26_ytd = safe_sum(metric_data.get("2026 Actual", [None]*12)[:4])
-            b26_ytd = safe_sum(metric_data.get("2026 Budget", [None]*12)[:4])
+            a25_ytd = safe_sum(metric_data.get("2025 Actual", [None]*12)[:ACTUAL_2026_COMPLETE_MONTHS])
+            a26_ytd = safe_sum(metric_data.get("2026 Actual", [None]*12)[:ACTUAL_2026_COMPLETE_MONTHS])
+            b26_ytd = safe_sum(metric_data.get("2026 Budget", [None]*12)[:ACTUAL_2026_COMPLETE_MONTHS])
             b26_fy = safe_sum(metric_data.get("2026 Budget", [None]*12))
             delta = (a26_ytd - b26_ytd) if (a26_ytd is not None and b26_ytd is not None) else None
             delta_pct = (delta/b26_ytd*100) if (delta is not None and b26_ytd) else None
@@ -2106,8 +2131,8 @@ def overall_pbt_alloc_context(overall):
     A25, A26, B26 = overall["2025 Actual"], overall["2026 Actual"], overall["2026 Budget"]
     return {
         "2025 FY":              (s(A25["pbo"], range(12)), s(A25["pbt"], range(12)), s(A25["disb"], range(12))),
-        "2026 YTD-Apr":         (s(A26["pbo"], range(4)),  s(A26["pbt"], range(4)),  s(A26["disb"], range(4))),
-        "2026 Budget YTD-Apr":  (s(B26["pbo"], range(4)),  s(B26["pbt"], range(4)),  s(B26["disb"], range(4))),
+        "2026 YTD":         (s(A26["pbo"], range(ACTUAL_2026_COMPLETE_MONTHS)),  s(A26["pbt"], range(ACTUAL_2026_COMPLETE_MONTHS)),  s(A26["disb"], range(ACTUAL_2026_COMPLETE_MONTHS))),
+        "2026 Budget YTD":  (s(B26["pbo"], range(ACTUAL_2026_COMPLETE_MONTHS)),  s(B26["pbt"], range(ACTUAL_2026_COMPLETE_MONTHS)),  s(B26["disb"], range(ACTUAL_2026_COMPLETE_MONTHS))),
         "2026 Budget FY":       (s(B26["pbo"], range(12)), s(B26["pbt"], range(12)), s(B26["disb"], range(12))),
         "Q3.25": (s(A25["pbo"], [6,7,8]),    s(A25["pbt"], [6,7,8]),    s(A25["disb"], [6,7,8])),
         "Q4.25": (s(A25["pbo"], [9,10,11]),  s(A25["pbt"], [9,10,11]),  s(A25["disb"], [9,10,11])),
@@ -2145,7 +2170,7 @@ def apply_pbt_allocation(overall, deep, by_prod_q):
 def build_comprehensive_matrix(deep, channel_matrix_2025, q126_cl_inputs, q126_pd_inputs, paylater_ch):
     """Comprehensive (period, product, channel) flat matrix combining ALL metrics for team queries.
 
-    Periods: '2025 FY', '2026 YTD-Apr', '2026 Budget YTD-Apr', '2026 Budget FY'.
+    Periods: '2025 FY', '2026 YTD', '2026 Budget YTD', '2026 Budget FY'.
     Channels: CAKE, VDS (incl. merged VDS-PR), ZLP, MWG (full P&L+risk data) + others (CL: VNPAY, BE, VNPOST, MISA;
               PD: VNPAY, ZALOPAY; PL: Total, VDS, VDS-EPASS, BE, VNPAY, FPT, MWG) where data available.
     Products: CL, OD, PD, PL.
@@ -2156,10 +2181,10 @@ def build_comprehensive_matrix(deep, channel_matrix_2025, q126_cl_inputs, q126_p
       Paylater specific: accumulated_account, active_account, active_rate, new_issued_q1,
                          spending_per_active_mar, avg_balance_per_active
     """
-    matrix = {p: {} for p in ["2025 FY", "2026 YTD-Apr", "2026 Budget YTD-Apr", "2026 Budget FY"]}
+    matrix = {p: {} for p in ["2025 FY", "2026 YTD", "2026 Budget YTD", "2026 Budget FY"]}
 
     # Channels in deep (CAKE/VDS/ZLP/MWG × CL/OD/Payday) — VDS-PR đã merge vào VDS
-    for period in ["2025 FY", "2026 YTD-Apr", "2026 Budget YTD-Apr", "2026 Budget FY"]:
+    for period in ["2025 FY", "2026 YTD", "2026 Budget YTD", "2026 Budget FY"]:
         for channel in GROUP_CHANNELS:
             if channel not in deep or period not in deep[channel]:
                 continue
@@ -2188,8 +2213,8 @@ def build_comprehensive_matrix(deep, channel_matrix_2025, q126_cl_inputs, q126_p
                 entry["pbo_per_anr_pct"] = (pbo/bal*100) if (bal and pbo is not None) else None
                 matrix[period][key] = entry
 
-    # Add Q1.26 pricing inputs to 2026 YTD-Apr CL channels (Note: pricing is Q1 from DATA sheet, ~= YTD-Apr proxy)
-    period_inputs = "2026 YTD-Apr"
+    # Add Q1.26 pricing inputs to 2026 YTD CL channels (Note: pricing is Q1 from DATA sheet, ~= YTD proxy)
+    period_inputs = "2026 YTD"
     for channel, d in q126_cl_inputs.items():
         if channel == "All":
             continue
@@ -2235,7 +2260,7 @@ def build_comprehensive_matrix(deep, channel_matrix_2025, q126_cl_inputs, q126_p
             "insurance_penetration": d.get("insurance_pen"),
         })
 
-    # Paylater channels — add to 2026 YTD-Apr period (Q1 data closest)
+    # Paylater channels — add to 2026 YTD period (Q1 data closest)
     for channel, d in paylater_ch.items():
         if channel == "Total":
             continue
@@ -2341,7 +2366,7 @@ def export_ground_truth_json(overall, by_product, channel_matrix, deep, ue_q34, 
             "data": channel_matrix,
         },
         "section_4_channel_deep_dive": {
-            "description": "Channel deep dive (CAKE / VDS / ZLP / MWG — VDS-PR đã merge vào VDS) × product (CL/OD/Payday) × period (2025 FY, 2026 YTD-Apr, 2026 Budget YTD-Apr, 2026 Budget FY). Metrics: disb, toi, prov, pbo, balance, npl_cake, npl_cic, lg2. Budget chỉ có cho CAKE + VDS.",
+            "description": "Channel deep dive (CAKE / VDS / ZLP / MWG — VDS-PR đã merge vào VDS) × product (CL/OD/Payday) × period (2025 FY, 2026 YTD, 2026 Budget YTD, 2026 Budget FY). Metrics: disb, toi, prov, pbo, balance, npl_cake, npl_cic, lg2. Budget chỉ có cho CAKE + VDS.",
             "data": deep,
         },
         "section_4_1_channel_budget_monthly": {
@@ -2379,7 +2404,7 @@ def export_ground_truth_json(overall, by_product, channel_matrix, deep, ue_q34, 
             "data": paylater_ch or {},
         },
         "section_6_comprehensive_channel_product_matrix": {
-            "description": "MASTER QUERY TABLE — comprehensive channel × product matrix. Flat structure {period: {<product>_<channel>: {all_metrics}}}. Periods: 2025 FY, 2026 YTD-Apr (Jan-Apr), 2026 Budget YTD-Apr, 2026 Budget FY. Each entry contains: product, channel, period, P&L absolutes (disb/toi/provision/pbo Tỷ VND), risk state (balance/npl/lg2), computed ratios (%Disb: yield/CoR/PBO_margin; %ANR: yield/CoR/PBO), NET YIELD (toi_minus_risk: net_yield_toi_minus_risk_bil_vnd + net_yield_per_disb_pct + net_yield_per_anr_pct), pricing inputs (ir/cof/nim/avg_ticket/avg_tenor/approval/signed/insurance_pen — Q1.26 CL+PD only), Paylater-specific (accumulated/active/active_rate/new_issued/spending_per_active/avg_balance_per_active). None where data missing. Use this section first cho mọi câu hỏi về channel × product breakdown.",
+            "description": "MASTER QUERY TABLE — comprehensive channel × product matrix. Flat structure {period: {<product>_<channel>: {all_metrics}}}. Periods: 2025 FY, 2026 YTD (Jan through last closed month), 2026 Budget YTD, 2026 Budget FY. Each entry contains: product, channel, period, P&L absolutes (disb/toi/provision/pbo Tỷ VND), risk state (balance/npl/lg2), computed ratios (%Disb: yield/CoR/PBO_margin; %ANR: yield/CoR/PBO), NET YIELD (toi_minus_risk: net_yield_toi_minus_risk_bil_vnd + net_yield_per_disb_pct + net_yield_per_anr_pct), pricing inputs (ir/cof/nim/avg_ticket/avg_tenor/approval/signed/insurance_pen — Q1.26 CL+PD only), Paylater-specific (accumulated/active/active_rate/new_issued/spending_per_active/avg_balance_per_active). None where data missing. Use this section first cho mọi câu hỏi về channel × product breakdown.",
             "data": build_comprehensive_matrix(deep, channel_matrix, q126_cl_inputs, q126_pd_inputs or {}, paylater_ch or {}),
         },
         "section_7_partner_sharing_params": {
@@ -2391,6 +2416,25 @@ def export_ground_truth_json(overall, by_product, channel_matrix, deep, ue_q34, 
             "data": load_cohort_ue_per_channel(),
         },
     }
+    # Carry forward quarterly snapshots the monthly generator can't reproduce.
+    # section_9 = per-loan P&L+pricing Q1.26 extracted via AppleScript (refresh-q126-cohort.md),
+    # not built from the monthly Excel feed. It only changes on a new QUARTER, so a monthly
+    # run must preserve it from the prior canonical bundle instead of dropping it.
+    prior = Path(__file__).resolve().parent / "team-hub" / "lending-pl-data.json"
+    for carry_key in ("section_9_ue_q126_per_channel_extracted",):
+        if carry_key in out:
+            continue
+        if prior.exists():
+            prior_data = json.loads(prior.read_text())
+            if carry_key in prior_data:
+                out[carry_key] = prior_data[carry_key]
+                print(f"  ↪ carried forward {carry_key} from prior bundle "
+                      f"(extracted_at {prior_data[carry_key].get('extracted_at', '?')})")
+            else:
+                print(f"  ⚠ {carry_key} not in prior bundle — skipped")
+        else:
+            print(f"  ⚠ no prior bundle at {prior} — {carry_key} not carried")
+
     out_path = Path("/tmp/lending-pl-data.json")
     out_path.write_text(json.dumps(out, ensure_ascii=False, indent=2, default=str))
     print(f"✓ Ground-truth JSON written: {out_path}")
@@ -2407,7 +2451,7 @@ def render_by_product_year(by_product, period_key, period_label, ytd_only=False)
         parts.append(f"<tr><td class='label'>{product}</td>")
         for mkey, _ in metrics:
             arr = by_product[product][mkey].get(period_key, [None]*12)
-            val = safe_sum(arr[:4]) if ytd_only else safe_sum(arr)
+            val = safe_sum(arr[:ACTUAL_2026_COMPLETE_MONTHS]) if ytd_only else safe_sum(arr)
             parts.append(f"<td>{fmt(val)}</td>")
         parts.append("</tr>")
     parts.append("</tbody></table>")
@@ -2428,10 +2472,10 @@ def render_tab_pnl_2025(overall, channel_matrix, by_product):
 
 def render_tab_pnl_2026(overall, by_product, deep, ch_monthly=None):
     parts = []
-    parts.append("<h2>2.1 — Overall Lending P&L 2026 (Actual YTD-Apr vs Budget)</h2>")
+    parts.append(f"<h2>2.1 — Overall Lending P&L 2026 (Actual {YTD_LABEL} vs Budget)</h2>")
     parts.append(render_overall_table(overall, ["2026 Actual", "2026 Budget"], show_delta=True))
     parts.append("<h2>2.2 — By Product 2026 (Actual YTD vs Budget vs YoY)</h2>")
-    parts.append("<p class='legend'>So sánh 2026 Actual YTD-Apr với Budget YTD và YoY vs 2025. PBT chỉ có top-level.</p>")
+    parts.append(f"<p class='legend'>So sánh 2026 Actual {YTD_LABEL} với Budget YTD và YoY vs 2025. PBT chỉ có top-level.</p>")
     parts.append(render_by_product(by_product))
     parts.append("<h2>2.3 — Channel Deep Dive (CAKE / VDS / Others)</h2>")
     parts.append(render_channel_deep_dive(deep, overall))
@@ -2448,6 +2492,13 @@ def render_tab_unit_econ(overall):
 
 
 def main():
+    global ACTUAL_2026_COMPLETE_MONTHS, YTD_LABEL, ANNUALIZE
+    ACTUAL_2026_COMPLETE_MONTHS = detect_complete_months()
+    YTD_LABEL = f"YTD-{MONTHS[ACTUAL_2026_COMPLETE_MONTHS - 1]}"
+    ANNUALIZE = 12 / ACTUAL_2026_COMPLETE_MONTHS
+    print(f"→ 2026 Actual closed through month {ACTUAL_2026_COMPLETE_MONTHS} "
+          f"({YTD_LABEL}); annualize ×{ANNUALIZE:.2f}")
+
     overall = load_overall()
     by_product = load_by_product()
     channel_matrix = load_channel_matrix_2025()

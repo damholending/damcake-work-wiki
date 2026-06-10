@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "generated_date": "2026-05-26",
+    "generated_date": "2026-06-10",
     "currency": "Tỷ VND (Bil VND), unless noted",
     "scope": "Cake Lending segment (Head of Lending Product = Đạm)",
     "actuals_2026_complete_through_month": 4,
@@ -887,7 +887,7 @@
     }
   },
   "section_4_channel_deep_dive": {
-    "description": "Channel deep dive (CAKE / VDS / ZLP / MWG — VDS-PR đã merge vào VDS) × product (CL/OD/Payday) × period (2025 FY, 2026 YTD-Apr, 2026 Budget YTD-Apr, 2026 Budget FY). Metrics: disb, toi, prov, pbo, balance, npl_cake, npl_cic, lg2. Budget chỉ có cho CAKE + VDS.",
+    "description": "Channel deep dive (CAKE / VDS / ZLP / MWG — VDS-PR đã merge vào VDS) × product (CL/OD/Payday) × period (2025 FY, 2026 YTD, 2026 Budget YTD, 2026 Budget FY). Metrics: disb, toi, prov, pbo, balance, npl_cake, npl_cic, lg2. Budget chỉ có cho CAKE + VDS.",
     "data": {
       "VDS": {
         "2025 FY": {
@@ -914,7 +914,7 @@
             "pbt_allocated_by_disb_share": 26.974858518819424
           }
         },
-        "2026 YTD-Apr": {
+        "2026 YTD": {
           "CL": {
             "disb": 1896.77819,
             "toi": 440.674164435,
@@ -938,7 +938,7 @@
             "pbt_allocated_by_disb_share": 16.902647238321926
           }
         },
-        "2026 Budget YTD-Apr": {
+        "2026 Budget YTD": {
           "CL": {
             "disb": 1963.2924699999999,
             "toi": 444.7041114476195,
@@ -1007,7 +1007,7 @@
             "pbt_allocated_by_disb_share": 72.26543180057288
           }
         },
-        "2026 YTD-Apr": {
+        "2026 YTD": {
           "CL": {
             "disb": 1628.27708,
             "toi": 373.578059568,
@@ -1042,7 +1042,7 @@
             "pbt_allocated_by_disb_share": 73.36338540861138
           }
         },
-        "2026 Budget YTD-Apr": {
+        "2026 Budget YTD": {
           "CL": {
             "disb": 1624.42611,
             "toi": 373.18046434960684,
@@ -1114,7 +1114,7 @@
             "pbt_allocated_by_disb_share": 0.0006279339914994447
           }
         },
-        "2026 YTD-Apr": {
+        "2026 YTD": {
           "CL": {
             "disb": 458.16706999999997,
             "toi": 88.492296408,
@@ -1138,7 +1138,7 @@
             "pbt_allocated_by_disb_share": 0.9063280031734301
           }
         },
-        "2026 Budget YTD-Apr": {},
+        "2026 Budget YTD": {},
         "2026 Budget FY": {}
       },
       "MWG": {
@@ -1155,7 +1155,7 @@
             "pbt_allocated_by_disb_share": 30.151557106605914
           }
         },
-        "2026 YTD-Apr": {
+        "2026 YTD": {
           "CL": {
             "disb": 503.19053999999994,
             "toi": 102.81813813900001,
@@ -1168,7 +1168,7 @@
             "pbt_allocated_by_disb_share": 30.216425372512376
           }
         },
-        "2026 Budget YTD-Apr": {},
+        "2026 Budget YTD": {},
         "2026 Budget FY": {}
       }
     }
@@ -2901,7 +2901,7 @@
     }
   },
   "section_6_comprehensive_channel_product_matrix": {
-    "description": "MASTER QUERY TABLE — comprehensive channel × product matrix. Flat structure {period: {<product>_<channel>: {all_metrics}}}. Periods: 2025 FY, 2026 YTD-Apr (Jan-Apr), 2026 Budget YTD-Apr, 2026 Budget FY. Each entry contains: product, channel, period, P&L absolutes (disb/toi/provision/pbo Tỷ VND), risk state (balance/npl/lg2), computed ratios (%Disb: yield/CoR/PBO_margin; %ANR: yield/CoR/PBO), NET YIELD (toi_minus_risk: net_yield_toi_minus_risk_bil_vnd + net_yield_per_disb_pct + net_yield_per_anr_pct), pricing inputs (ir/cof/nim/avg_ticket/avg_tenor/approval/signed/insurance_pen — Q1.26 CL+PD only), Paylater-specific (accumulated/active/active_rate/new_issued/spending_per_active/avg_balance_per_active). None where data missing. Use this section first cho mọi câu hỏi về channel × product breakdown.",
+    "description": "MASTER QUERY TABLE — comprehensive channel × product matrix. Flat structure {period: {<product>_<channel>: {all_metrics}}}. Periods: 2025 FY, 2026 YTD (Jan through last closed month), 2026 Budget YTD, 2026 Budget FY. Each entry contains: product, channel, period, P&L absolutes (disb/toi/provision/pbo Tỷ VND), risk state (balance/npl/lg2), computed ratios (%Disb: yield/CoR/PBO_margin; %ANR: yield/CoR/PBO), NET YIELD (toi_minus_risk: net_yield_toi_minus_risk_bil_vnd + net_yield_per_disb_pct + net_yield_per_anr_pct), pricing inputs (ir/cof/nim/avg_ticket/avg_tenor/approval/signed/insurance_pen — Q1.26 CL+PD only), Paylater-specific (accumulated/active/active_rate/new_issued/spending_per_active/avg_balance_per_active). None where data missing. Use this section first cho mọi câu hỏi về channel × product breakdown.",
     "data": {
       "2025 FY": {
         "CL_CAKE": {
@@ -3232,11 +3232,11 @@
           "net_yield_per_anr_pct": null
         }
       },
-      "2026 YTD-Apr": {
+      "2026 YTD": {
         "CL_CAKE": {
           "product": "CL",
           "channel": "CAKE",
-          "period": "2026 YTD-Apr",
+          "period": "2026 YTD",
           "disb_bil_vnd": 1628.27708,
           "toi_bil_vnd": 373.578059568,
           "provision_bil_vnd": 242.34754896,
@@ -3267,7 +3267,7 @@
         "OD_CAKE": {
           "product": "OD",
           "channel": "CAKE",
-          "period": "2026 YTD-Apr",
+          "period": "2026 YTD",
           "disb_bil_vnd": 222.25366746,
           "toi_bil_vnd": 11.106405799000001,
           "provision_bil_vnd": 17.330217141000002,
@@ -3290,7 +3290,7 @@
         "Payday_CAKE": {
           "product": "Payday",
           "channel": "CAKE",
-          "period": "2026 YTD-Apr",
+          "period": "2026 YTD",
           "disb_bil_vnd": 1624.629636,
           "toi_bil_vnd": 149.86813411900002,
           "provision_bil_vnd": 48.756389361000004,
@@ -3321,7 +3321,7 @@
         "CL_VDS": {
           "product": "CL",
           "channel": "VDS",
-          "period": "2026 YTD-Apr",
+          "period": "2026 YTD",
           "disb_bil_vnd": 1896.77819,
           "toi_bil_vnd": 440.674164435,
           "provision_bil_vnd": 218.173195634,
@@ -3352,7 +3352,7 @@
         "Payday_VDS": {
           "product": "Payday",
           "channel": "VDS",
-          "period": "2026 YTD-Apr",
+          "period": "2026 YTD",
           "disb_bil_vnd": 1323.9691719999998,
           "toi_bil_vnd": 125.03244780899999,
           "provision_bil_vnd": 61.260195163,
@@ -3383,7 +3383,7 @@
         "CL_ZLP": {
           "product": "CL",
           "channel": "ZLP",
-          "period": "2026 YTD-Apr",
+          "period": "2026 YTD",
           "disb_bil_vnd": 458.16706999999997,
           "toi_bil_vnd": 88.492296408,
           "provision_bil_vnd": 32.891630418,
@@ -3406,7 +3406,7 @@
         "Payday_ZLP": {
           "product": "Payday",
           "channel": "ZLP",
-          "period": "2026 YTD-Apr",
+          "period": "2026 YTD",
           "disb_bil_vnd": 31.717880000000005,
           "toi_bil_vnd": 2.277252464,
           "provision_bil_vnd": 0.13050304100000001,
@@ -3429,7 +3429,7 @@
         "CL_MWG": {
           "product": "CL",
           "channel": "MWG",
-          "period": "2026 YTD-Apr",
+          "period": "2026 YTD",
           "disb_bil_vnd": 503.19053999999994,
           "toi_bil_vnd": 102.81813813900001,
           "provision_bil_vnd": 42.145883877,
@@ -3460,7 +3460,7 @@
         "CL_BE": {
           "product": "CL",
           "channel": "BE",
-          "period": "2026 YTD-Apr",
+          "period": "2026 YTD",
           "ir_pct": 0.46197930751202176,
           "cof_pct": 0.08029070421011632,
           "nim_pct": 0.38168860330190546,
@@ -3476,7 +3476,7 @@
         "CL_MISA": {
           "product": "CL",
           "channel": "MISA",
-          "period": "2026 YTD-Apr",
+          "period": "2026 YTD",
           "ir_pct": 0.46642569180108445,
           "cof_pct": 0.0817823257885735,
           "nim_pct": 0.3846433660125109,
@@ -3492,7 +3492,7 @@
         "CL_VNPOST": {
           "product": "CL",
           "channel": "VNPOST",
-          "period": "2026 YTD-Apr",
+          "period": "2026 YTD",
           "ir_pct": 0.4709206949350222,
           "cof_pct": 0.08204082704060343,
           "nim_pct": 0.38887986789441875,
@@ -3508,7 +3508,7 @@
         "CL_VNPAY": {
           "product": "CL",
           "channel": "VNPAY",
-          "period": "2026 YTD-Apr",
+          "period": "2026 YTD",
           "ir_pct": 0.4526056937666787,
           "cof_pct": 0.07675405303463279,
           "nim_pct": 0.3758516407320459,
@@ -3524,7 +3524,7 @@
         "CL_ZALOPAY": {
           "product": "CL",
           "channel": "ZALOPAY",
-          "period": "2026 YTD-Apr",
+          "period": "2026 YTD",
           "ir_pct": 0.5092392141301928,
           "cof_pct": 0.0787735867166321,
           "nim_pct": 0.4304656274135607,
@@ -3540,7 +3540,7 @@
         "PD_VNPAY": {
           "product": "Payday",
           "channel": "VNPAY",
-          "period": "2026 YTD-Apr",
+          "period": "2026 YTD",
           "ir_pct": 0.6,
           "cof_pct": 0.0718390278020034,
           "nim_pct": 0.5281609721979966,
@@ -3556,7 +3556,7 @@
         "PD_ZALOPAY": {
           "product": "Payday",
           "channel": "ZALOPAY",
-          "period": "2026 YTD-Apr",
+          "period": "2026 YTD",
           "ir_pct": 0.6,
           "cof_pct": 0.07038534562324242,
           "nim_pct": 0.5296146543767576,
@@ -3572,7 +3572,7 @@
         "PL_VDS": {
           "product": "PL",
           "channel": "VDS",
-          "period": "2026 YTD-Apr",
+          "period": "2026 YTD",
           "disb_bil_vnd": 22.431539088,
           "toi_bil_vnd": 2.90630909,
           "provision_bil_vnd": 3.422816758,
@@ -3600,7 +3600,7 @@
         "PL_VDS-EPASS": {
           "product": "PL",
           "channel": "VDS-EPASS",
-          "period": "2026 YTD-Apr",
+          "period": "2026 YTD",
           "disb_bil_vnd": 0.06507863,
           "toi_bil_vnd": 0.003900092,
           "provision_bil_vnd": 0.000722113,
@@ -3628,7 +3628,7 @@
         "PL_BE": {
           "product": "PL",
           "channel": "BE",
-          "period": "2026 YTD-Apr",
+          "period": "2026 YTD",
           "disb_bil_vnd": 30.732255412,
           "toi_bil_vnd": 2.404386692,
           "provision_bil_vnd": 2.85793422,
@@ -3656,7 +3656,7 @@
         "PL_VNPAY": {
           "product": "PL",
           "channel": "VNPAY",
-          "period": "2026 YTD-Apr",
+          "period": "2026 YTD",
           "disb_bil_vnd": 44.782166071,
           "toi_bil_vnd": 2.7281467,
           "provision_bil_vnd": 5.955858744,
@@ -3684,7 +3684,7 @@
         "PL_FPT": {
           "product": "PL",
           "channel": "FPT",
-          "period": "2026 YTD-Apr",
+          "period": "2026 YTD",
           "disb_bil_vnd": 1.306709319,
           "toi_bil_vnd": 0.006084979,
           "provision_bil_vnd": 0.35739293,
@@ -3712,7 +3712,7 @@
         "PL_MWG": {
           "product": "PL",
           "channel": "MWG",
-          "period": "2026 YTD-Apr",
+          "period": "2026 YTD",
           "disb_bil_vnd": 124.480502742,
           "toi_bil_vnd": 9.285326172,
           "provision_bil_vnd": 8.661424081,
@@ -3738,11 +3738,11 @@
           "net_yield_per_anr_pct": 0.5031696405729212
         }
       },
-      "2026 Budget YTD-Apr": {
+      "2026 Budget YTD": {
         "CL_CAKE": {
           "product": "CL",
           "channel": "CAKE",
-          "period": "2026 Budget YTD-Apr",
+          "period": "2026 Budget YTD",
           "disb_bil_vnd": 1624.42611,
           "toi_bil_vnd": 373.18046434960684,
           "provision_bil_vnd": 248.78738366771896,
@@ -3765,7 +3765,7 @@
         "Payday_CAKE": {
           "product": "Payday",
           "channel": "CAKE",
-          "period": "2026 Budget YTD-Apr",
+          "period": "2026 Budget YTD",
           "disb_bil_vnd": 1539.21897,
           "toi_bil_vnd": 145.09038977231324,
           "provision_bil_vnd": 51.4971951978564,
@@ -3788,7 +3788,7 @@
         "OD_CAKE": {
           "product": "OD",
           "channel": "CAKE",
-          "period": "2026 Budget YTD-Apr",
+          "period": "2026 Budget YTD",
           "disb_bil_vnd": 217.354826753,
           "toi_bil_vnd": 11.260844372174851,
           "provision_bil_vnd": 19.984658722271345,
@@ -3811,7 +3811,7 @@
         "CL_VDS": {
           "product": "CL",
           "channel": "VDS",
-          "period": "2026 Budget YTD-Apr",
+          "period": "2026 Budget YTD",
           "disb_bil_vnd": 1963.2924699999999,
           "toi_bil_vnd": 444.7041114476195,
           "provision_bil_vnd": 228.55029353297348,
@@ -3834,7 +3834,7 @@
         "Payday_VDS": {
           "product": "Payday",
           "channel": "VDS",
-          "period": "2026 Budget YTD-Apr",
+          "period": "2026 Budget YTD",
           "disb_bil_vnd": 1400.5548755968714,
           "toi_bil_vnd": 134.96132970184516,
           "provision_bil_vnd": 67.11303890104904,
